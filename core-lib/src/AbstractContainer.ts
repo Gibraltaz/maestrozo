@@ -1,15 +1,19 @@
 import { IContainer } from '@/interfaces/IContainer';
-import { IElement, ElementName, ElementKind } from '@/interfaces/IElement';
+import { IElement, ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 
 class AbstractContainer implements IContainer{
   name: ElementName;
   kind: ElementKind;
+  path: ElementPath;
 
   protected _children : Record<ElementName, IElement> = {};
 
-  constructor(elementName: ElementName, elementKind: ElementKind) {
+  constructor(elementName: ElementName, elementKind: ElementKind, parentElementPath: ElementPath) {
     this.name = elementName;
     this.kind = elementKind;
+    if (parentElementPath === undefined)
+      throw new Error("Parent element path not defined");
+    this.path = [ ...parentElementPath, elementName ];
     this._children = {};
   }
 

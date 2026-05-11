@@ -9,7 +9,7 @@ const rootElementKind: ElementKind = 'root' as ElementKind;
 class RootElement extends AbstractContainer{
 
     constructor() {
-      super(rootElementName, rootElementKind);
+      super(rootElementName, rootElementKind, []);
       const typeContainer = new RootTypeContainer();
       this._children[typeContainer.name] = typeContainer;
     }

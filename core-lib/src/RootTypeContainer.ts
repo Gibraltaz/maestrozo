@@ -16,8 +16,8 @@ const BooleanTypeName : ElementName = 'boolean' as ElementName;
 class RootTypeContainer extends AbstractContainer {
 
     constructor() {
-        super(elementName, elementKind);
-        const dataTypeContainer = new TypeContainer(DataTypeName);
+        super(elementName, elementKind, []);
+        const dataTypeContainer = new TypeContainer(DataTypeName, this.path);
         this.addChild(dataTypeContainer);
         this.declareDataType(IntegerTypeName);
         this.declareDataType(StringTypeName);
@@ -25,7 +25,7 @@ class RootTypeContainer extends AbstractContainer {
     }
 
     declareDataType(typeName: ElementName) {
-        let typeElement = new TypeElement(typeName);
+        let typeElement = new TypeElement(typeName, this.path);
         const dataTypeContainer = this._children[DataTypeName] as RootTypeContainer;
         dataTypeContainer.declareDataType(typeName);
     }

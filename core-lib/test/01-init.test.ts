@@ -17,6 +17,9 @@ describe("Engine initialization", () => {
         expect (r).toHaveProperty('kind');
         expect(r.kind).toBe('root');
 
+        expect (r).toHaveProperty('path');
+        expect(r.path).deep.equals(['root']);
+
         expect (r).toHaveProperty('children');
         expect(r.children).toBeInstanceOf(Array);
     });
