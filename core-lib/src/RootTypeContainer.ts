@@ -1,8 +1,11 @@
-import { IContainer } from '@/interfaces/IContainer';
-import { IElement, ElementName, ElementKind } from '@/interfaces/IElement';
-import { TypeElement } from '@/TypeElement';
+import { ElementName, ElementKind } from '@/interfaces/IElement';
 import { AbstractContainer } from '@/AbstractContainer';
 import { TypeContainer } from '@/TypeContainer';
+
+import { IDataFactory } from '@/interfaces/IDataFactory';
+import { IntegerDataFactory } from '@/data/IntegerData';
+import { StringDataFactory  } from '@/data/StringData';
+import { BooleanDataFactory } from '@/data/BooleanData';
 
 const elementName : ElementName = 'types' as ElementName;
 const elementKind : ElementKind = 'type' as ElementKind;
@@ -15,20 +18,19 @@ const BooleanTypeName : ElementName = 'boolean' as ElementName;
 
 class RootTypeContainer extends AbstractContainer {
 
-    constructor() {
-        super(elementName, elementKind, []);
-        const dataTypeContainer = new TypeContainer(DataTypeName, this.path);
-        this.addChild(dataTypeContainer);
-        this.declareDataType(IntegerTypeName);
-        this.declareDataType(StringTypeName);
-        this.declareDataType(BooleanTypeName);
-    }
+  constructor() {
+    super(elementName, elementKind, []);
 
-    declareDataType(typeName: ElementName) {
-        let typeElement = new TypeElement(typeName, this.path);
-        const dataTypeContainer = this._children[DataTypeName] as RootTypeContainer;
-        dataTypeContainer.declareDataType(typeName);
-    }
+    // create element root/data
+    const dataTypeContainer = new TypeContainer(DataTypeName, this.path);
+    this.addChild(dataTypeContainer);
+
+    // create elements root/data/integer, root/data/string, root/data/boolean
+    dataTypeContainer.declareDataType(new IntegerDataFactory());
+    dataTypeContainer.declareDataType(new StringDataFactory());
+    dataTypeContainer.declareDataType(new BooleanDataFactory());
+  }
+
 }
 
 export {

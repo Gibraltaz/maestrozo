@@ -2,7 +2,7 @@ import { RootElement } from '@/RootElement';
 
 class Engine{
     private _version = '0.0.1';
-    private _rootElement;
+    private _rootElement : RootElement;
 
     constructor() {
         this._rootElement = new RootElement();
@@ -12,7 +12,7 @@ class Engine{
         return this._version;
     }
 
-    getRootElement() {
+    getRootElement() : RootElement {
         return this._rootElement;
     }
 }

@@ -1,6 +1,5 @@
 type ElementName = string & { __brand: 'ElementName' };
 type ElementKind = string & { __brand: 'ElementKind' };
-const LeafElementKind: ElementKind = 'leaf' as ElementKind;
 type ElementPath = Array<ElementName>;
 
 interface IElement {
@@ -9,4 +8,4 @@ interface IElement {
     readonly path: ElementPath;
 }
 
-export { IElement, ElementKind, ElementName, LeafElementKind, ElementPath };
+export { IElement, ElementKind, ElementName, ElementPath };
