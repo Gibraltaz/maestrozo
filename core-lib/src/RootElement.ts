@@ -1,6 +1,6 @@
 import { IContainer } from '@/interfaces/IContainer';
 import { IElement, ElementName, ElementKind } from '@/interfaces/IElement';
-import { RootTypeContainer } from '@/RootTypeContainer';
+import { TypesRoot } from '@/TypesRoot';
 import { AbstractContainer } from './AbstractContainer';
 
 const rootElementName: ElementName = 'root' as ElementName;
@@ -10,8 +10,8 @@ class RootElement extends AbstractContainer{
 
     constructor() {
       super(rootElementName, rootElementKind, []);
-      const typeContainer = new RootTypeContainer();
-      this._children[typeContainer.name] = typeContainer;
+      const typesContainer = new TypesRoot();
+      this._children[typesContainer.name] = typesContainer;
     }
 }
 

@@ -3,7 +3,7 @@ import { Engine } from "@/main";
 
 describe("Type manager", () => {
 
-    it("check type container", () => {
+    it("check data type container", () => {
         const e = new Engine();
         const root = e.getRootElement();
         expect(root).toHaveProperty('children');
