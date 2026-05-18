@@ -1,7 +1,7 @@
 import { IContainer } from '@/interfaces/IContainer';
 import { IElement, ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 
-class AbstractContainer implements IContainer{
+abstract class AbstractContainer implements IContainer {
   name: ElementName;
   kind: ElementKind;
   path: ElementPath;
@@ -22,8 +22,7 @@ class AbstractContainer implements IContainer{
   }
 
   protected addChild(element: IElement) {
-    // TODO auto-test sur doublon
-    if (this.getElementByName(element.name) !== null)
+    if (this._children[element.name] !== undefined)
       throw new Error("Element is already in this container");
     this._children[element.name] = element;
   }
@@ -31,7 +30,7 @@ class AbstractContainer implements IContainer{
   getElementByName(elementName: ElementName): IElement {
     const element = this._children[elementName];
     if (element === undefined)
-      throw new Error(`Element «${elementName}» not found`);
+      throw new Error(`Element «${elementName}» not found in container «${this.name}»`);
     return element;
   }
 }
