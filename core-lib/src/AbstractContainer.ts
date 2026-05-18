@@ -22,14 +22,18 @@ class AbstractContainer implements IContainer{
   }
 
   protected addChild(element: IElement) {
+    // TODO auto-test sur doublon
+    if (this.getElementByName(element.name) !== null)
+      throw new Error("Element is already in this container");
     this._children[element.name] = element;
   }
 
-  getElementByName(elementName: ElementName): IElement | null {
-    return this._children[elementName] ?? null;
+  getElementByName(elementName: ElementName): IElement {
+    const element = this._children[elementName];
+    if (element === undefined)
+      throw new Error(`Element «${elementName}» not found`);
+    return element;
   }
-
-
 }
 
 export { AbstractContainer };

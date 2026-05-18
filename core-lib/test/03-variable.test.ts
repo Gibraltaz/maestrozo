@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { Engine } from '../src/Engine';
-import { TypeElement } from '../src/TypeElement';
+import { Engine } from '@/Engine';
+import { DataTypeElement } from '@/DataTypeElement';
+import { ElementName } from '@/interfaces/IElement';
+
 
 describe("Data instanciation", () => {
 
@@ -10,9 +12,8 @@ describe("Data instanciation", () => {
     expect(root).toHaveProperty('children');
     expect(root.children).toBeInstanceOf(Array);
 
-    const typeContainer = root.getElementByName('types');
-    const dataTypeContainer = typeContainer.getElementByName('data');
-    const dataType = dataTypeContainer.getElementByName('integer') as TypeElement;
+    const dataTypeContainer = root.typesContainer.dataTypeContainer;
+    const dataType = dataTypeContainer.getElementByName('integer' as ElementName) as DataTypeElement;
 
     const integerData = dataType.createData({ value: 5});
     expect(integerData).toBeInstanceOf(Object);
@@ -29,9 +30,8 @@ describe("Data instanciation", () => {
     expect(root).toHaveProperty('children');
     expect(root.children).toBeInstanceOf(Array);
 
-    const typeContainer = root.getElementByName('types');
-    const dataTypeContainer = typeContainer.getElementByName('data');
-    const dataType = dataTypeContainer.getElementByName('string') as TypeElement;
+    const dataTypeContainer = root.typesContainer.dataTypeContainer;
+    const dataType = dataTypeContainer.getElementByName('string' as ElementName) as DataTypeElement;
 
     const stringData = dataType.createData({ value: 'abc'});
     expect(stringData).toBeInstanceOf(Object);
@@ -48,9 +48,8 @@ describe("Data instanciation", () => {
     expect(root).toHaveProperty('children');
     expect(root.children).toBeInstanceOf(Array);
 
-    const typeContainer = root.getElementByName('types');
-    const dataTypeContainer = typeContainer.getElementByName('data');
-    const dataType = dataTypeContainer.getElementByName('boolean') as TypeElement;
+    const dataTypeContainer = root.typesContainer.dataTypeContainer;
+    const dataType = dataTypeContainer.getElementByName('boolean' as ElementName) as DataTypeElement;
 
     const booleanData = dataType.createData({ value: true});
     expect(booleanData).toBeInstanceOf(Object);

@@ -1,9 +1,12 @@
-import { IContainer } from '@/interfaces/IContainer';
-import { TypeElement } from '@/TypeElement';
-import { IElement, ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
+import { ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 import { ITypeContainer } from '@/interfaces/ITypeContainer';
 import { AbstractContainer } from '@/AbstractContainer';
-import { ITypeFactory } from '@/interfaces/ITypeFactory';
+
+import { DataTypeElement } from '@/DataTypeElement';
+import { IDataFactory } from '@/interfaces/IDataFactory';
+
+import { ComponentTypeElement } from '@/ComponentTypeElement';
+import { IComponentFactory } from '@/interfaces/IComponentFactory';
 
 const typeElementKind : ElementKind = 'type-container' as ElementKind;
 
@@ -14,11 +17,16 @@ class TypeContainer extends AbstractContainer implements ITypeContainer {
     super(elementName, typeElementKind, parentElementPath);
   }
 
-  declareDataType(typeFactory : ITypeFactory) : void {
-    let typeElement = new TypeElement(typeFactory, this.path);
-    //typeFactory.declare(this);
+  declareDataType(dataFactory : IDataFactory) : void {
+    let typeElement = new DataTypeElement(dataFactory, this.path);
     this.addChild(typeElement);
   }
+
+  declareComponentType(componentFactory : IComponentFactory) : void {
+    let typeElement = new ComponentTypeElement(componentFactory, this.path);
+    this.addChild(typeElement);
+  }
+
 
 }
 

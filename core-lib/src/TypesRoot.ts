@@ -1,26 +1,28 @@
-import { ElementName, ElementKind } from '@/interfaces/IElement';
+import { ElementName, ElementPath, ElementKind } from '@/interfaces/IElement';
 import { AbstractContainer } from '@/AbstractContainer';
 import { TypeContainer } from '@/TypeContainer';
 
-import { IDataFactory } from '@/interfaces/IDataFactory';
 import { IntegerDataFactory } from '@/data/IntegerData';
 import { StringDataFactory  } from '@/data/StringData';
 import { BooleanDataFactory } from '@/data/BooleanData';
+import { FakeComponentFactory } from '@/components/FakeComponent';
 
-const elementName : ElementName = 'types' as ElementName;
-const elementKind : ElementKind = 'type' as ElementKind;
+const typesRootName     : ElementName = 'types'      as ElementName;
+const typesRootKind     : ElementKind = 'types-root' as ElementKind;
 
-const DataTypeName    : ElementName = 'data'    as ElementName;
-
-const ComponentTypeName    : ElementName = 'component'    as ElementName;
+const dataTypeName      : ElementName = 'data'       as ElementName;
+const componentTypeName : ElementName = 'component'  as ElementName;
 
 class TypesRoot extends AbstractContainer {
+  readonly dataTypeContainer : TypeContainer;
+  readonly componentTypeContainer : TypeContainer;
 
   constructor() {
-    super(elementName, elementKind, []);
+    super(typesRootName, typesRootKind, [] as ElementPath);
 
     // create element /types/data
-    const dataTypeContainer = new TypeContainer(DataTypeName, this.path);
+    const dataTypeContainer = new TypeContainer(dataTypeName, this.path);
+    this.dataTypeContainer = dataTypeContainer;
     this.addChild(dataTypeContainer);
 
     // create elements /types/data/integer, /types/data/string, /types/data/boolean
@@ -28,15 +30,19 @@ class TypesRoot extends AbstractContainer {
     dataTypeContainer.declareDataType(new StringDataFactory());
     dataTypeContainer.declareDataType(new BooleanDataFactory());
 
-    // create element /types/container
-    const componentTypeContainer = new TypeContainer(ComponentTypeName, this.path);
+    // create element /component/container
+    const componentTypeContainer = new TypeContainer(componentTypeName, this.path);
+    this.componentTypeContainer = componentTypeContainer;
     this.addChild(componentTypeContainer);
+
+    // create elements /types/component/fake-component
+    componentTypeContainer.declareComponentType(new FakeComponentFactory());
   }
 
 }
 
 export {
     TypesRoot,
-    DataTypeName,
-    ComponentTypeName,
+    dataTypeName,
+    componentTypeName
 };

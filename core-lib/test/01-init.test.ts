@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Engine, somme } from "@/main";
+import { Engine } from "@/main";
 
 describe("Engine initialization", () => {
     it("check engine version", () => {
