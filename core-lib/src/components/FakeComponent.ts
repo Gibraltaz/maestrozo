@@ -1,6 +1,7 @@
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
 import { ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 import { IComponent } from '@/interfaces/IComponent';
+import { InputPinContainer, OutputPinContainer } from '@/PinContainer';
 
 const fakeElementKind: ElementKind = 'fake-component' as ElementKind;
 
@@ -9,12 +10,16 @@ class FakeComponent implements IComponent {
   kind: ElementKind;
   path: ElementPath;
   factory : IComponentFactory;
+  inputPins : PinContainer;
+  outputPins: PinContainer;
 
   constructor (componentName: ElementName, parentElementPath: ElementPath, factory : IComponentFactory ) {
     this.name = componentName;
     this.kind = fakeElementKind;
     this.path = [ ...parentElementPath, componentName ];
     this.factory = factory;
+    this.inputPins  = new InputPinContainer(this.path);
+    this.outputPins = new OutputPinContainer(this.path);
   }
 }
 
