@@ -12,7 +12,7 @@ class ComponentTypeElement extends AbstractContainer implements ITypeElement {
   readonly factory : ITypeFactory;
 
   constructor(factory: ITypeFactory, parentElementPath: ElementPath) {
-    super(factory.name, ComponentTypeElementKind, parentElementPath);
+    super(factory.typeName, ComponentTypeElementKind, parentElementPath);
     this.factory = factory;
   }
 

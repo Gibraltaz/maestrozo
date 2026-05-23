@@ -12,7 +12,7 @@ class DataTypeElement extends AbstractContainer implements ITypeElement {
   factory : ITypeFactory;
 
   constructor(factory: ITypeFactory, parentElementPath: ElementPath) {
-    super(factory.name, DataTypeElementKind, parentElementPath);
+    super(factory.typeName, DataTypeElementKind, parentElementPath);
     this.factory = factory;
   }
 

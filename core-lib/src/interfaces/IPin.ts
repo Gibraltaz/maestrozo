@@ -1,10 +1,24 @@
-import { IElement, ElementName  } from '@/interfaces/IElement';
+import { IElement, ElementName,ElementPath  } from '@/interfaces/IElement';
+import { IData } from '@/interfaces/IData';
+import { IDataFactory } from '@/interfaces/IDataFactory';
 
-interface IPin extends IElement {
+interface IPin extends IElement, IData {
+}
+
+interface IInputPin extends IPin {
+}
+
+interface IOutputPin extends IPin {
 }
 
 interface IPinFactory {
-  readonly name : ElementName;
+  typeName : ElementName;
+  createInstance(pinName: ElementName, pinContainerPath: ElementPath, dataFactory: IDataFactory, params: Record<string, unknown>): IPin;
 };
 
-export { IPin, IPinFactory };
+export {
+  IPin, 
+  IInputPin,
+  IOutputPin,
+  IPinFactory
+};

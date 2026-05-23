@@ -77,9 +77,13 @@ describe("Component manager", () => {
 
     const fakeComponentFactory = fakeComponentType.factory as IComponentFactory;
     expect(fakeComponentFactory).toBeInstanceOf(Object);
-    expect(fakeComponentFactory).toHaveProperty('name', 'fake-component');
+    expect(fakeComponentFactory).toHaveProperty('typeName', 'fake-component');
 
-    const fakeComponent = fakeComponentFactory.createInstance('fake-component-01' as ElementName, runtimeContainer.path, {} );
+    const fakeComponent = runtimeContainer.createComponentInstance(
+      'fake-component-01' as ElementName, 
+      fakeComponentFactory,
+      {}
+    );
     expect(fakeComponent).toBeInstanceOf(Object);
     expect(fakeComponent).toHaveProperty('name', 'fake-component-01');
     expect(fakeComponent).toHaveProperty('kind', 'fake-component');
@@ -101,7 +105,6 @@ describe("Component manager", () => {
     expect(outputPins).toHaveProperty('kind', 'output-pin-container');
     expect(outputPins.path).deep.equals(['runtime', 'fake-component-01', 'output-pins']);
 
-    runtimeContainer.addComponent(fakeComponent);
     const newComponent = runtimeContainer.getElementByName('fake-component-01' as ElementName);
     expect(newComponent).deep.equal(fakeComponent);
 

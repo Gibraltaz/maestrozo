@@ -1,7 +1,7 @@
 import { IDataFactory } from '@/interfaces/IDataFactory';
 
 interface IData {
-  factory : IDataFactory;
+  dataFactory : IDataFactory;
   value: any;
 }
 

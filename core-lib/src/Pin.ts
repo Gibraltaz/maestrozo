@@ -1,8 +1,9 @@
 import { IPin, IPinFactory } from '@/interfaces/IPin';
 import { IElement, ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
-import { AbstractContainer } from './AbstractContainer';
-import { ITypeFactory } from './interfaces/ITypeFactory';
-import { ITypeElement } from './interfaces/ITypeElement';
+import { AbstractContainer } from '@/AbstractContainer';
+import { ITypeFactory } from '@/interfaces/ITypeFactory';
+import { ITypeElement } from '@/interfaces/ITypeElement';
+import { IDataFactory } from '@/interfaces/IDataFactory';
 
 const PinTypeElementKind : ElementKind = 'pin-type' as ElementKind;
 
@@ -17,30 +18,25 @@ class PinTypeElement extends AbstractContainer implements ITypeElement {
   factory : ITypeFactory;
 
   constructor(factory: ITypeFactory, parentElementPath: ElementPath) {
-    super(factory.name, PinTypeElementKind, parentElementPath);
+    super(factory.typeName, PinTypeElementKind, parentElementPath);
     this.factory = factory;
-  }
-
-  createPin(): IPin {
-    const pinFactory = this.factory as IPinFactory;
-    const pin = pinFactory.createInstance();
-    if (pin === undefined)
-      throw new Error("Pin was not created");
-    return pin;
   }
 
 }
 
-abstract class Pin implements IPin {
+abstract class AbstractPin implements IPin {
   readonly name: ElementName;
   readonly kind: ElementKind;
   readonly path: ElementPath;
+  readonly dataFactory : IDataFactory;
+  readonly value: any;
   protected _children : Record<ElementName, IElement> = {};
 
-  constructor(elementName: ElementName, elementKind: ElementKind, parentElementPath: ElementPath) {
-    this.name = elementName;
+  constructor(pinName: ElementName, elementKind: ElementKind, pinContainerPath: ElementPath, dataFactory: IDataFactory) {
+    this.name = pinName;
     this.kind = elementKind;
-    this.path = [ ...parentElementPath, elementName ];
+    this.dataFactory = dataFactory;
+    this.path = [ ...pinContainerPath, pinName ];
   }
 
   get children() : readonly IElement[] {
@@ -49,35 +45,34 @@ abstract class Pin implements IPin {
 
 }
 
-class InputPin extends Pin {
-  constructor(componentPath: ElementPath) {
-    super(inputPinTypeName, inputPinTypeKind, componentPath);
+class InputPin extends AbstractPin {
+  constructor(pinName: ElementName, pinContainerPath: ElementPath, dataFactory:IDataFactory) {
+    super(pinName, inputPinTypeKind, pinContainerPath, dataFactory);
   }
 }
 
 class InputPinFactory implements IPinFactory {
-  name = 'input-pin' as ElementName;
-  createInstance(componentPath: ElementPath): IPin {
-    return new InputPin(componentPath);
+  typeName = 'input-pin' as ElementName;
+  createInstance(pinName: ElementName, pinContainerPath: ElementPath, dataFactory: IDataFactory): IPin {
+    return new InputPin(pinName, pinContainerPath, dataFactory);
   }
-
 }
 
-class OutputPin extends Pin {
-  constructor(componentPath: ElementPath) {
-    super(outputPinTypeName, outputPinTypeKind, componentPath);
+class OutputPin extends AbstractPin {
+  constructor(pinName: ElementName, pinContainerPath: ElementPath, dataFactory:IDataFactory) {
+    super(pinName, outputPinTypeKind, pinContainerPath, dataFactory );
   }
 }
 
 class OutputPinFactory implements IPinFactory {
-  name = 'output-pin' as ElementName;
-  createInstance(componentPath: ElementPath): IPin {
-    return new OutputPin(componentPath);
+  typeName = 'output-pin' as ElementName;
+  createInstance(pinName: ElementName, pinContainerPath: ElementPath, dataFactory: IDataFactory): IPin {
+    return new OutputPin(pinName, pinContainerPath, dataFactory);
   }
 }
 
 export {
-  Pin, PinTypeElement,
-  inputPinTypeName, inputPinTypeKind, InputPin, InputPinFactory,
-  outputPinTypeName, outputPinTypeKind, OutputPin, OutputPinFactory,
+  PinTypeElement,
+  InputPin, InputPinFactory, inputPinTypeName, inputPinTypeKind,
+  OutputPin, OutputPinFactory, outputPinTypeName, outputPinTypeKind 
 };

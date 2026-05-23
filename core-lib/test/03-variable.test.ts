@@ -18,10 +18,10 @@ describe("Data instanciation", () => {
     const integerData = dataType.createData({ value: 5});
     expect(integerData).toBeInstanceOf(Object);
     expect(integerData).toHaveProperty('value', 5);
-    expect(integerData).toHaveProperty('factory');
-    const integerFactory = integerData.factory;
+    expect(integerData).toHaveProperty('dataFactory');
+    const integerFactory = integerData.dataFactory;
     expect(integerFactory).toBeInstanceOf(Object);
-    expect(integerFactory).toHaveProperty('name', 'integer');
+    expect(integerFactory).toHaveProperty('typeName', 'integer');
   });
 
   it("should create a string data", () => {
@@ -36,10 +36,10 @@ describe("Data instanciation", () => {
     const stringData = dataType.createData({ value: 'abc'});
     expect(stringData).toBeInstanceOf(Object);
     expect(stringData).toHaveProperty('value', 'abc');
-    expect(stringData).toHaveProperty('factory');
-    const stringFactory = stringData.factory;
+    expect(stringData).toHaveProperty('dataFactory');
+    const stringFactory = stringData.dataFactory;
     expect(stringFactory).toBeInstanceOf(Object);
-    expect(stringFactory).toHaveProperty('name', 'string');
+    expect(stringFactory).toHaveProperty('typeName', 'string');
   });
 
   it("should create a boolean data", () => {
@@ -54,10 +54,10 @@ describe("Data instanciation", () => {
     const booleanData = dataType.createData({ value: true});
     expect(booleanData).toBeInstanceOf(Object);
     expect(booleanData).toHaveProperty('value', true);
-    expect(booleanData).toHaveProperty('factory');
-    const booleanFactory = booleanData.factory;
+    expect(booleanData).toHaveProperty('dataFactory');
+    const booleanFactory = booleanData.dataFactory;
     expect(booleanFactory).toBeInstanceOf(Object);
-    expect(booleanFactory).toHaveProperty('name', 'boolean');
+    expect(booleanFactory).toHaveProperty('typeName', 'boolean');
   });
 
 

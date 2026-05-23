@@ -3,17 +3,17 @@ import { ElementName } from '@/interfaces/IElement';
 import { IData } from '@/interfaces/IData';
 
 class BooleanData implements IData {
-  factory : IDataFactory;
+  dataFactory : IDataFactory;
   value: boolean;
 
   constructor (factory : IDataFactory , value : boolean) {
-    this.factory = factory;
+    this.dataFactory = factory;
     this.value = value;
   }
 }
 
 class BooleanDataFactory implements IDataFactory {
-  name = 'boolean' as ElementName;
+  typeName = 'boolean' as ElementName;
 
   createInstance(params: Record<string, unknown>): IData {
     const booleanValue = params['value'];

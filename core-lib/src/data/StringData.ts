@@ -3,17 +3,17 @@ import { ElementName } from '@/interfaces/IElement';
 import { IData } from '@/interfaces/IData';
 
 class StringData implements IData {
-  factory : IDataFactory;
+  dataFactory : IDataFactory;
   value: string;
 
   constructor (factory : IDataFactory , value : string) {
-    this.factory = factory;
+    this.dataFactory = factory;
     this.value = value;
   }
 }
 
 class StringDataFactory implements IDataFactory {
-  name = 'string' as ElementName;
+  typeName = 'string' as ElementName;
 
   createInstance(params: Record<string, unknown>): IData {
     const stringValue = params['value'];

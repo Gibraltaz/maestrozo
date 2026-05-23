@@ -22,8 +22,10 @@ abstract class AbstractContainer implements IContainer {
   }
 
   protected addChild(element: IElement) {
+    if (! element.name)
+      throw new Error(`Name of element to add is not defined in the container «${this.name}»`);
     if (this._children[element.name] !== undefined)
-      throw new Error("Element is already in this container");
+      throw new Error(`Element «${element.name}» is already in the container «${this.name}»`);
     this._children[element.name] = element;
   }
 

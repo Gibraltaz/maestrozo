@@ -1,7 +1,7 @@
 import { ElementName } from '@/interfaces/IElement';
 
 interface ITypeFactory {
-  readonly name : ElementName;
+  readonly typeName : ElementName; // nom du type des éléments fabriqués
 };
 
 export { ITypeFactory };

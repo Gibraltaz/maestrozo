@@ -10,8 +10,8 @@ class FakeComponent implements IComponent {
   kind: ElementKind;
   path: ElementPath;
   factory : IComponentFactory;
-  inputPins : PinContainer;
-  outputPins: PinContainer;
+  inputPins : InputPinContainer;
+  outputPins: OutputPinContainer;
 
   constructor (componentName: ElementName, parentElementPath: ElementPath, factory : IComponentFactory ) {
     this.name = componentName;
@@ -24,9 +24,9 @@ class FakeComponent implements IComponent {
 }
 
 class FakeComponentFactory implements IComponentFactory {
-  name = 'fake-component' as ElementName;
+  typeName = 'fake-component' as ElementName;
 
-  createInstance(componentName: ElementName, parentElementPath: ElementPath,params: Record<string, unknown>): IComponent {
+  createInstance(componentName: ElementName, parentElementPath: ElementPath, _params: Record<string, unknown>): IComponent {
     const fakeComponent = new FakeComponent(componentName, parentElementPath, this);
     return fakeComponent;
   }
