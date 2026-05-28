@@ -19,6 +19,11 @@ describe("Component manager", () => {
     expect(runtimeContainer).toHaveProperty('path');
     expect(runtimeContainer.path).deep.equals(['runtime']);
     expect(runtimeContainer).deep.equal(root.getElementByName('runtime' as ElementName));
+
+    // TODO vérifier la présence de root.runtime.components
+    expect(runtimeContainer).toHaveProperty('components');
+    // TODO vérifier la présence de root.runtime.pinConnections
+    expect(runtimeContainer).toHaveProperty('pinConnections');
   });
 
 
@@ -79,7 +84,7 @@ describe("Component manager", () => {
     expect(fakeComponentFactory).toBeInstanceOf(Object);
     expect(fakeComponentFactory).toHaveProperty('typeName', 'fake-component');
 
-    const fakeComponent = runtimeContainer.createComponentInstance(
+    const fakeComponent = runtimeContainer.createComponent(
       'fake-component-01' as ElementName, 
       fakeComponentFactory,
       {}
@@ -87,7 +92,7 @@ describe("Component manager", () => {
     expect(fakeComponent).toBeInstanceOf(Object);
     expect(fakeComponent).toHaveProperty('name', 'fake-component-01');
     expect(fakeComponent).toHaveProperty('kind', 'fake-component');
-    expect(fakeComponent.path).deep.equals(['runtime', 'fake-component-01']);
+    expect(fakeComponent.path).deep.equals(['runtime', 'components', 'fake-component-01']);
     expect(fakeComponent).toHaveProperty('factory');
     expect(fakeComponent.factory).toBeInstanceOf(Object);
 
@@ -96,16 +101,16 @@ describe("Component manager", () => {
     const inputPins = fakeComponent.inputPins;
     expect(inputPins).toHaveProperty('name', 'input-pins');
     expect(inputPins).toHaveProperty('kind', 'input-pin-container');
-    expect(inputPins.path).deep.equals(['runtime', 'fake-component-01', 'input-pins']);
+    expect(inputPins.path).deep.equals(['runtime', 'components', 'fake-component-01', 'input-pins']);
 
     expect(fakeComponent).toHaveProperty('outputPins');
     expect(fakeComponent.factory).toBeInstanceOf(Object);
     const outputPins = fakeComponent.outputPins;
     expect(outputPins).toHaveProperty('name', 'output-pins');
     expect(outputPins).toHaveProperty('kind', 'output-pin-container');
-    expect(outputPins.path).deep.equals(['runtime', 'fake-component-01', 'output-pins']);
+    expect(outputPins.path).deep.equals(['runtime', 'components', 'fake-component-01', 'output-pins']);
 
-    const newComponent = runtimeContainer.getElementByName('fake-component-01' as ElementName);
+    const newComponent = runtimeContainer.components.getElementByName('fake-component-01' as ElementName);
     expect(newComponent).deep.equal(fakeComponent);
 
   });

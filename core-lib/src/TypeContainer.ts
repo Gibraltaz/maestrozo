@@ -11,6 +11,8 @@ import { IComponentFactory } from '@/interfaces/IComponentFactory';
 import { PinTypeElement } from '@/Pin';
 import { IPinFactory } from '@/interfaces/IPin';
 
+import { PinConnectionTypeElement } from '@/PinConnection';
+import { IPinConnectionFactory } from '@/interfaces/IPinConnection';
 const typeElementKind : ElementKind = 'type-container' as ElementKind;
 
 class TypeContainer extends AbstractContainer implements ITypeContainer {
@@ -32,6 +34,11 @@ class TypeContainer extends AbstractContainer implements ITypeContainer {
 
   declareComponentType(componentFactory : IComponentFactory) : void {
     let typeElement = new ComponentTypeElement(componentFactory, this.path);
+    this.addChild(typeElement);
+  }
+
+  declarePinConnectionType(pinConnectionFactory : IPinConnectionFactory) : void {
+    let typeElement = new PinConnectionTypeElement(pinConnectionFactory, this.path);
     this.addChild(typeElement);
   }
 

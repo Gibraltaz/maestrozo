@@ -1,5 +1,7 @@
 import { ElementPath } from '@/interfaces/IElement';
 
+const pathSeparator = '/';
+
 function elementPathAreEquals ( pathA: ElementPath, pathB: ElementPath ) : boolean {
   if (pathA.length != pathB.length)
     return false;
@@ -18,4 +20,8 @@ function parentElementPath(path : ElementPath) : ElementPath {
 //  return path.at(-1) ?? null;
 //}
 
-export { elementPathAreEquals, parentElementPath };
+function pathToString(path: ElementPath) : string {
+  return pathSeparator + path.join(pathSeparator);
+}
+
+export { elementPathAreEquals, parentElementPath, pathToString };
