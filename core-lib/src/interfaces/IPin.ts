@@ -2,6 +2,10 @@ import { IElement, ElementName,ElementPath  } from '@/interfaces/IElement';
 import { IData } from '@/interfaces/IData';
 import { IDataFactory } from '@/interfaces/IDataFactory';
 
+type PinName = ElementName;
+type InputPinName = PinName;
+type OutputPinName = PinName;
+
 interface IPin extends IElement, IData {
 }
 
@@ -20,5 +24,8 @@ export {
   IPin, 
   IInputPin,
   IOutputPin,
-  IPinFactory
-};
+  IPinFactory,
+  PinName,
+  InputPinName,
+  OutputPinName
+}
