@@ -6,14 +6,13 @@
     "strict": true,
     "declaration": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
     "ignoreDeprecations": "6.0"
   },
-  "include": ["src"],
-  "exclude": ["test", "vitest.config.ts"]
+  "include": ["src", "test"],
+  "exclude": ["vitest.config.ts"]
 }
-
