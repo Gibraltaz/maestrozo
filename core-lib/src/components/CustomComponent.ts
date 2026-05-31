@@ -1,7 +1,9 @@
-import { IComponent } from '@/interfaces/IComponent';
+import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
 import { ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
 import { InputPinContainer, OutputPinContainer } from '@/PinContainer';
+import { Message } from '@/interfaces/MessageQueue';
+import { elementPathAreEquals, pathToString } from '@/utils/path';
 
 class CustomComponent implements IComponent {
   name: ElementName;
@@ -18,6 +20,15 @@ class CustomComponent implements IComponent {
     this.factory = factory;
     this.inputPins  = new InputPinContainer(this.path);
     this.outputPins = new OutputPinContainer(this.path);
+  }
+
+  evaluate(message: Message): EvaluationResult {
+    if (! elementPathAreEquals(message.componentPath, this.path)) {
+      const msgPath = pathToString(message.componentPath);
+      const cmpPath = pathToString(this.path);
+      throw new Error(`The message component path «${msgPath}» does not match the component path ${cmpPath}`);
+    }
+    return this.factory.evaluateComponent(this, message);
   }
 
 }

@@ -5,11 +5,15 @@ import { ElementName } from '@/interfaces/IElement';
 import { ITypeElement } from '@/interfaces/ITypeElement';
 import { RootElement } from "@/RootElement";
 import { DataTypeElement } from "@/DataTypeElement";
-import { CustomComponentBuilder } from '@/components/CustomComponentBuilder';
+import { CustomComponentBuilder, EvaluateMessageFunction } from '@/components/CustomComponentBuilder';
 import { IRuntimeContainer } from '@/interfaces/IRuntimeContainer';
-import { ComponentName, IComponent, InputPinName, OutputPinName } from '@/interfaces/IComponent';
+import { ComponentName, EvaluationResult, IComponent, InputPinName, OutputPinName } from '@/interfaces/IComponent';
 import { PinConnectionTypeElementName, IPinConnectionFactory } from '@/interfaces/IPinConnection';
+import { Message } from "@/interfaces/MessageQueue";
 
+const evaluateFunction : EvaluateMessageFunction = (_component: IComponent, _message: Message) => {
+  return {} as EvaluationResult;
+} ;
 
 describe("Custom component", () => {
   let engine : Engine;
@@ -31,6 +35,8 @@ describe("Custom component", () => {
 
   it("should create first component", () => {
 
+
+
     const myComponentBuilderA = new CustomComponentBuilder(
       'my-component-A' as ElementName,
       [],
@@ -41,7 +47,8 @@ describe("Custom component", () => {
           initialValuePropertyName: 'value'
         }
       ],
-      componentTypeContainer
+      componentTypeContainer,
+      evaluateFunction 
     );
 
     myCustomComponentA1 = runtimeContainer.createComponent(
@@ -67,7 +74,8 @@ describe("Custom component", () => {
         }
       ],
       [],
-      componentTypeContainer
+      componentTypeContainer,
+      evaluateFunction 
     );
     myCustomComponentB1 = runtimeContainer.createComponent(
       'my-component-B-1' as ElementName,

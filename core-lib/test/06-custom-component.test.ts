@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { Engine } from '@/Engine';
-import { IComponent } from '@/interfaces/IComponent';
+import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
 import { ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 import { ITypeElement } from '@/interfaces/ITypeElement';
 import { RootElement } from "@/RootElement";
@@ -10,9 +10,14 @@ import { DataTypeElement } from "@/DataTypeElement";
 import { IntegerData } from '@/data/IntegerData';
 import { StringData } from '@/data/StringData';
 import { BooleanData } from '@/data/BooleanData';
-import { CustomComponentBuilder } from '@/components/CustomComponentBuilder';
+import { CustomComponentBuilder, EvaluateMessageFunction } from '@/components/CustomComponentBuilder';
+import { Message } from "@/interfaces/MessageQueue";
 
 const myCustomElementKind : ElementKind = 'my-custom-component' as ElementKind;
+
+const evaluateFunction : EvaluateMessageFunction = (_component: IComponent, _message: Message) => {
+  return {} as EvaluationResult;
+} ;
 
 type PinDeclaration = {
   name: ElementName;
@@ -52,6 +57,10 @@ class MyCustomComponentFactory implements IComponentFactory{
       },
     ];
 
+  }
+
+  evaluateComponent(component: IComponent): EvaluationResult {
+      throw new Error("Method not implemented.");
   }
 
   createInstance(componentName: ElementName, parentElementPath: ElementPath, params: Record<string, unknown>): IComponent {
@@ -215,7 +224,8 @@ describe("Custom component", () => {
         'my-other-custom-component' as ElementName,
         inputPinDeclarations,
         outputPinDeclarations,
-        componentTypeContainer
+        componentTypeContainer,
+        evaluateFunction 
       );
 
       expect(myComponentBuilder).to.be.instanceOf(Object);

@@ -5,9 +5,9 @@ import {
   MessageTime, 
   ComponentMessage, COMPONENT_MESSAGE_SCOPE, 
   PinMessage, PIN_MESSAGE_SCOPE,
-  MESSAGE_CREATION
+  MESSAGE_CREATION, MESSAGE_CHANGE,
 } from '@/interfaces/MessageQueue';
-import { ComponentPath } from '@/interfaces/IComponent';
+import { ComponentPath, InputPinName } from '@/interfaces/IComponent';
 
 
 describe("Message queue", () => {
@@ -53,7 +53,8 @@ describe("Message queue", () => {
       expect(message).to.have.property('scope', 'component');
       expect(message).to.have.property('event', 'created');
       expect(message).to.have.property('componentPath');
-      expect(message.componentPath).to.deep.equal(['runtime','my-component']);
+      const componentMessage = message as ComponentMessage;
+      expect(componentMessage.componentPath).to.deep.equal(['runtime','my-component']);
     });
 
     it("should have an empty queue", () => {
@@ -123,6 +124,41 @@ describe("Message queue", () => {
       expect(messageQueue.messageCount).to.equal(0);
     });
   });
+
+  describe("Check pin message", () => {
+
+    it("should push a pin message", () => {
+      const messageQueue = engine.messageQueue;
+      const msg: PinMessage  = {
+        at: 1234 as MessageTime,
+        scope: PIN_MESSAGE_SCOPE,
+        event: MESSAGE_CHANGE,
+        inputPinName: 'my-input' as InputPinName,
+        componentPath:['runtime','my-component'] as ComponentPath
+      };
+      messageQueue.pushMessage(msg);
+      expect(messageQueue.messageCount).to.equal(1);
+    });
+
+    it("should pop the pin message", () => {
+      const messageQueue = engine.messageQueue;
+      const message = messageQueue.popMessage(1234 as MessageTime);
+      if (message === undefined)
+        throw new Error("Can't pop last message");
+      expect(messageQueue.messageCount).to.equal(0);
+      expect(message).to.be.instanceOf(Object);
+      expect(message).to.have.property('at', 1234);
+      expect(message).to.have.property('scope', 'pin');
+      expect(message).to.have.property('event', 'changed');
+      expect(message).to.have.property('inputPinName', 'my-input');
+      expect(message).to.have.property('componentPath');
+      const pinMessage = message as PinMessage;
+      expect(pinMessage.componentPath).to.deep.equal(['runtime','my-component']);
+    });
+
+
+  });
+
 
 
 });

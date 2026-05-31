@@ -1,10 +1,11 @@
 import { CustomComponent } from "./CustomComponent";
 import { IComponentFactory } from "@/interfaces/IComponentFactory";
 import { ElementName, ElementPath } from '@/interfaces/IElement';
-import { IComponent } from '@/interfaces/IComponent';
+import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
 import { ITypeContainer } from '@/interfaces/ITypeContainer';
 import { DataTypeElement } from "@/DataTypeElement";
 import { ComponentTypeElementKind } from '@/ComponentTypeElement';
+import { Message } from "@/interfaces/MessageQueue";
 
 type PinDeclaration = {
   name: ElementName;
@@ -12,24 +13,28 @@ type PinDeclaration = {
   initialValuePropertyName: string; //FIXME mettre un type «PropertyName»
 };
 
+type EvaluateMessageFunction = (component: IComponent, message: Message) => EvaluationResult;
 
 class CustomComponentBuilder implements IComponentFactory {
   typeName: ElementName;
   componentTypeContainer: ITypeContainer;
   private inputPinDeclarations: PinDeclaration[];
   private outputPinDeclarations: PinDeclaration[];
+  private evaluateMessageFunction: EvaluateMessageFunction;
 
   constructor(
     typeName: ElementName,
     inputPinDeclarations: PinDeclaration[],
     outputPinDeclarations: PinDeclaration[],
-    componentTypeContainer: ITypeContainer
+    componentTypeContainer: ITypeContainer,
+    evaluateMessageFunction: EvaluateMessageFunction
   ) {
     this.componentTypeContainer = componentTypeContainer;
     this.typeName = typeName;
     componentTypeContainer.declareComponentType(this);
     this.inputPinDeclarations = inputPinDeclarations;
     this.outputPinDeclarations = outputPinDeclarations;
+    this.evaluateMessageFunction = evaluateMessageFunction;
   }
 
   createInstance(componentName: ElementName, parentElementPath: ElementPath, params: Record<string, unknown>) : IComponent {
@@ -66,6 +71,9 @@ class CustomComponentBuilder implements IComponentFactory {
     return newComponent;
   }
 
+  evaluateComponent(component: IComponent, message: Message): EvaluationResult {
+    return this.evaluateMessageFunction(component, message);
+  }
 }
 
-export { CustomComponentBuilder, PinDeclaration };
+export { CustomComponentBuilder, PinDeclaration, EvaluateMessageFunction };
