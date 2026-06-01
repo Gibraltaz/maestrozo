@@ -1,6 +1,8 @@
 import { IContainer } from '@/interfaces/IContainer';
 import { IElement, ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 
+
+
 abstract class AbstractContainer implements IContainer {
   name: ElementName;
   kind: ElementKind;
@@ -34,6 +36,14 @@ abstract class AbstractContainer implements IContainer {
     if (element === undefined)
       throw new Error(`Element «${elementName}» not found in container «${this.name}»`);
     return element;
+  }
+
+  findElementByPath(elementPath: ElementPath): IElement | undefined {
+    const [ elementName, _restElementPath ] = [... elementPath ];
+    const element = this._children[elementName];
+    if (element === undefined)
+      throw new Error(`Element «${elementName}» not found in container «${this.name}»`);
+    throw ("Not yet implemented");
   }
 }
 

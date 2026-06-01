@@ -1,4 +1,4 @@
-import { ElementName, ElementKind } from '@/interfaces/IElement';
+import { ElementName, ElementKind, ElementPath, IElement } from '@/interfaces/IElement';
 import { TypesRoot } from '@/TypesRoot';
 import { RuntimeRoot } from '@/RuntimeRoot';
 import { AbstractContainer } from './AbstractContainer';
@@ -6,7 +6,7 @@ import { AbstractContainer } from './AbstractContainer';
 const rootElementName: ElementName = 'root' as ElementName;
 const rootElementKind: ElementKind = 'root' as ElementKind;
 
-class RootElement extends AbstractContainer{
+class RootElement extends AbstractContainer {
 
   readonly typesContainer :  TypesRoot;
   readonly runtimeContainer : RuntimeRoot;
@@ -21,6 +21,14 @@ class RootElement extends AbstractContainer{
     this._children[this.runtimeContainer.name] = this.runtimeContainer;
   }
 
+  findElementByPath(elementPath: ElementPath): IElement | undefined {
+    const [ baseElementName, ...restElementPath ] = [... elementPath ];
+    if (baseElementName === this.typesContainer.name)
+      return this.typesContainer.findElementByPath(restElementPath);
+    if (baseElementName === this.runtimeContainer.name)
+      return this.runtimeContainer.findElementByPath(restElementPath);
+    throw new Error(`Invalid base element name «${baseElementName}»`);
+  }
 }
 
 export { RootElement };

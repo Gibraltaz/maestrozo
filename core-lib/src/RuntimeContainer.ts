@@ -27,6 +27,16 @@ class ComponentContainer implements IComponentContainer {
     this._children = {};
   }
 
+  findElementByPath(elementPath: ElementPath): IElement | undefined {
+    if (elementPath.length === 0)
+      throw new Error("Path is empty");
+    if (elementPath.length === 1) {
+      const elementName = elementPath[0];
+      return this.getElementByName(elementName);
+    }
+    throw new Error("Finding element in runtime container not implemented.");
+  }
+
   get children() : readonly IElement[] {
     return Object.values(this._children);
   }
@@ -75,6 +85,10 @@ class PinConnectionContainer implements IPinConnectionContainer {
     this.kind = pinConnectionContainerKind ;
     this.path = [ ...parentElementPath, pinConnectionContainerName ];
     this._children = {};
+  }
+
+  findElementByPath(_elementPath: ElementPath): IElement | undefined {
+      throw new Error('Method not implemented.');
   }
 
   get children() : readonly IElement[] {
@@ -139,9 +153,8 @@ class RuntimeContainer extends AbstractContainer implements IRuntimeContainer {
     params: Record<string, any>
   ): IComponent {
     const componentContainer = this.components as ComponentContainer;
-    const newComponent = componentContainer._createComponent(componentName, componentFactory, params);
-    return newComponent;
-  } 
+    return componentContainer._createComponent(componentName, componentFactory, params);
+  }
 
   createPinConnection(
     sourceComponentName: ComponentName, sourcePinName: OutputPinName,
@@ -149,14 +162,14 @@ class RuntimeContainer extends AbstractContainer implements IRuntimeContainer {
     pinConnectionFactory: IPinConnectionFactory
   ): IPinConnection {
 
-    // check existence of source component and source output pin 
+    // check existence of source component and source output pin
     const sourceComponent = this.components.getElementByName(sourceComponentName) as IComponent;
     sourceComponent.outputPins.getElementByName(sourcePinName);
 
-    // check existence of target component and source input pin 
+    // check existence of target component and source input pin
     const targetComponent = this.components.getElementByName(targetComponentName) as IComponent;
     targetComponent.inputPins.getElementByName(targetPinName);
-    
+
     const pinConnectionsContainer = this.pinConnections as PinConnectionContainer;
     const pinConnection = pinConnectionsContainer._createPinConnection(
       sourceComponentName, sourcePinName,
@@ -167,6 +180,14 @@ class RuntimeContainer extends AbstractContainer implements IRuntimeContainer {
     return pinConnection;
   }
 
+  findElementByPath(elementPath: ElementPath): IElement | undefined {
+    const [ baseElementName, ...restElementPath ] = [... elementPath ];
+    if (baseElementName === this.components.name)
+      return this.components.findElementByPath(restElementPath);
+    if (baseElementName === this.pinConnections.name)
+      return this.pinConnections.findElementByPath(restElementPath);
+    throw new Error(`Invalid base element name «${baseElementName}»`);
+  }
 }
 
 export { RuntimeContainer, runtimeElementKind };
