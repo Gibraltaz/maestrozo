@@ -22,24 +22,28 @@ class TypeContainer extends AbstractContainer implements ITypeContainer {
     super(elementName, typeElementKind, parentElementPath);
   }
 
-  declareDataType(dataFactory : IDataFactory) : void {
-    let typeElement = new DataTypeElement(dataFactory, this.path);
+  declareDataType(dataFactory : IDataFactory) : DataTypeElement {
+    const typeElement = new DataTypeElement(dataFactory, this.path);
     this.addChild(typeElement);
+    return typeElement;
   }
 
-  declarePinType(pinFactory : IPinFactory) : void {
-    let typeElement = new PinTypeElement(pinFactory, this.path);
+  declarePinType(pinFactory : IPinFactory) : PinTypeElement {
+    const typeElement = new PinTypeElement(pinFactory, this.path);
     this.addChild(typeElement);
+    return typeElement;
   }
 
-  declareComponentType(componentFactory : IComponentFactory) : void {
-    let typeElement = new ComponentTypeElement(componentFactory, this.path);
+  declareComponentType(componentFactory : IComponentFactory) : ComponentTypeElement {
+    const typeElement = new ComponentTypeElement(componentFactory, this.path);
     this.addChild(typeElement);
+    return typeElement;
   }
 
-  declarePinConnectionType(pinConnectionFactory : IPinConnectionFactory) : void {
+  declarePinConnectionType(pinConnectionFactory : IPinConnectionFactory) : PinConnectionTypeElement {
     let typeElement = new PinConnectionTypeElement(pinConnectionFactory, this.path);
     this.addChild(typeElement);
+    return typeElement;
   }
 
 }

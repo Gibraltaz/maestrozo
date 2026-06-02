@@ -39,11 +39,13 @@ abstract class AbstractContainer implements IContainer {
   }
 
   findElementByPath(elementPath: ElementPath): IElement | undefined {
-    const [ elementName, _restElementPath ] = [... elementPath ];
+    const [ elementName, ...elementPathRest ] = [... elementPath ];
     const element = this._children[elementName];
     if (element === undefined)
       throw new Error(`Element «${elementName}» not found in container «${this.name}»`);
-    throw ("Not yet implemented");
+    if (elementPathRest.length === 0 )
+      return element;
+    throw ("AbstractContainer.findElementByPath find sub-element not implemented");
   }
 }
 

@@ -31,7 +31,6 @@ class CustomComponentBuilder implements IComponentFactory {
   ) {
     this.componentTypeContainer = componentTypeContainer;
     this.typeName = typeName;
-    componentTypeContainer.declareComponentType(this);
     this.inputPinDeclarations = inputPinDeclarations;
     this.outputPinDeclarations = outputPinDeclarations;
     this.evaluateMessageFunction = evaluateMessageFunction;

@@ -227,6 +227,7 @@ describe("Custom component", () => {
         componentTypeContainer,
         evaluateFunction 
       );
+      componentTypeContainer.declareComponentType(myComponentBuilder);
 
       expect(myComponentBuilder).to.be.instanceOf(Object);
 

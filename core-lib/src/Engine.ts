@@ -1,9 +1,13 @@
 import { RootElement } from '@/RootElement';
 import { MessageQueueImpl } from '@/MessageQueueImpl';
 import { MessageTime } from '@/interfaces/MessageQueue';
-import { ElementPath, IElement } from '@/interfaces/IElement';
+import { ElementName, ElementPath, IElement } from '@/interfaces/IElement';
 import { pathToString } from '@/utils/path';
-import { IComponent } from './interfaces/IComponent';
+import { ComponentName, IComponent } from './interfaces/IComponent';
+import { CustomComponentBuilder, EvaluateMessageFunction, PinDeclaration } from './components/CustomComponentBuilder';
+import { ITypeContainer } from './interfaces/ITypeContainer';
+import { ITypeElement } from './interfaces/ITypeElement';
+import { ComponentTypeElement } from './ComponentTypeElement';
 
 type TimeFunction = () => MessageTime;
 
@@ -40,6 +44,42 @@ class Engine {
       throw new Error(`Can not find element with path «${pathToString(message.componentPath)}»`);
     component.evaluate(message);
   }
+
+  declareCustomComponent(
+    componentTypeName: ElementName,
+    typeContainerPath : ElementPath,
+    inputPinDeclarations: PinDeclaration[],
+    outputPinDeclarations: PinDeclaration[],
+    evaluateMessageFunction: EvaluateMessageFunction
+  ): ComponentTypeElement {
+
+    const typeContainer = this._rootElement.findElementByPath(typeContainerPath) as ITypeContainer;
+    if (typeContainer === undefined)
+      throw new Error(`Can't find type container «${typeContainerPath}»`)
+
+    // TODO vérifier que componentTypeContainer est bien un conteneur
+
+    const componentBuilder = new CustomComponentBuilder(
+        componentTypeName,
+        inputPinDeclarations,
+        outputPinDeclarations,
+        typeContainer,
+        evaluateMessageFunction
+      );
+
+    const componentTypeElement = typeContainer.declareComponentType(componentBuilder);
+
+    return componentTypeElement;
+  }
+
+  createComponent(
+    _componentName: ComponentName,
+    _componentTypePath: ElementPath,
+    _params: Record<string, any>
+  ): ElementPath {
+    throw new Error("Engine.createComponent ot yet implemented");
+  }
+
 }
 
 export { Engine };
