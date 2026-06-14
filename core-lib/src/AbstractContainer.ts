@@ -1,6 +1,6 @@
 import { IContainer } from '@/interfaces/IContainer';
-import { IElement, ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
-
+import { IElement } from '@/interfaces/IElement';
+import { ElementKind, ElementName, ElementPath } from './global/types';
 
 
 abstract class AbstractContainer implements IContainer {
@@ -45,7 +45,8 @@ abstract class AbstractContainer implements IContainer {
       throw new Error(`Element «${elementName}» not found in container «${this.name}»`);
     if (elementPathRest.length === 0 )
       return element;
-    throw ("AbstractContainer.findElementByPath find sub-element not implemented");
+    else // FIXME comment savoir si l'élément a une méthode findElementByPath ?
+      return element.findElementByPath(elementPathRest);
   }
 }
 

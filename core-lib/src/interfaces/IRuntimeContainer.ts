@@ -1,8 +1,8 @@
-import { ElementName } from '@/interfaces/IElement';
 import { IContainer } from '@/interfaces/IContainer';
 import { IPinConnection, IPinConnectionFactory } from '@/interfaces/IPinConnection';
-import { IComponent, ComponentName, InputPinName, OutputPinName } from '@/interfaces/IComponent';
+import { IComponent } from '@/interfaces/IComponent';
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
+import { ComponentName, ElementName, InputPinName, OutputPinName } from '@/global/types';
 
 interface IComponentContainer extends IContainer {
 };

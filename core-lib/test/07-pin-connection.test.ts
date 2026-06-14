@@ -1,15 +1,15 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { Engine } from '@/Engine';
 import { ITypeContainer } from '@/interfaces/ITypeContainer';
-import { ElementName } from '@/interfaces/IElement';
-import { ITypeElement } from '@/interfaces/ITypeElement';
 import { RootElement } from "@/RootElement";
 import { DataTypeElement } from "@/DataTypeElement";
 import { CustomComponentBuilder, EvaluateMessageFunction } from '@/components/CustomComponentBuilder';
 import { IRuntimeContainer } from '@/interfaces/IRuntimeContainer';
-import { ComponentName, EvaluationResult, IComponent, InputPinName, OutputPinName } from '@/interfaces/IComponent';
+import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
 import { PinConnectionTypeElementName, IPinConnectionFactory } from '@/interfaces/IPinConnection';
-import { Message } from "@/interfaces/MessageQueue";
+import { Message } from "@/global/messages";
+import { ComponentName, ElementName, InputPinName, OutputPinName } from "@/global/types";
+import { ITypeElement } from "@/interfaces/ITypeElement";
 
 const evaluateFunction : EvaluateMessageFunction = (_component: IComponent, _message: Message) => {
   return {} as EvaluationResult;

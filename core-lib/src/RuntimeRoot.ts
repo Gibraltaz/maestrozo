@@ -1,8 +1,6 @@
-import { ElementName, ElementPath } from '@/interfaces/IElement';
 import { RuntimeContainer } from '@/RuntimeContainer';
-
-const runtimeElementName : ElementName = 'runtime' as ElementName;
-const componentTypeName : ElementName = 'component' as ElementName;
+import { runtimeElementName } from './global/names';
+import { ElementPath } from './global/types';
 
 class RuntimeRoot extends RuntimeContainer {
 
@@ -12,8 +10,4 @@ class RuntimeRoot extends RuntimeContainer {
 
 }
 
-export {
-    RuntimeRoot,
-    runtimeElementName,
-    componentTypeName,
-};
+export { RuntimeRoot };

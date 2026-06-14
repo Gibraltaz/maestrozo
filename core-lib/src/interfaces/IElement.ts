@@ -1,6 +1,4 @@
-type ElementName = string & { __brand: 'ElementName' };
-type ElementKind = string & { __brand: 'ElementKind' };
-type ElementPath = Array<ElementName>;
+import { ElementKind, ElementName, ElementPath } from "@/global/types";
 
 interface IElement {
   readonly name: ElementName;
@@ -8,4 +6,4 @@ interface IElement {
   readonly path: ElementPath;
 }
 
-export { IElement, ElementKind, ElementName, ElementPath };
+export { IElement };

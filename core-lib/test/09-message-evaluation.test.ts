@@ -1,13 +1,14 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { Engine } from '@/Engine';
 import { ITypeContainer } from '@/interfaces/ITypeContainer';
-import { ElementName } from '@/interfaces/IElement';
 import { RootElement } from "@/RootElement";
 import { DataTypeElement } from "@/DataTypeElement";
 import { CustomComponentBuilder, EvaluateMessageFunction } from '@/components/CustomComponentBuilder';
 import { IRuntimeContainer } from '@/interfaces/IRuntimeContainer';
 import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
-import { ComponentMessage, Message, MessageQueue, MessageTime } from "@/interfaces/MessageQueue";
+import { ComponentMessage, MessageQueue } from "@/interfaces/MessageQueue";
+import { Message, MessageEvent } from "@/global/messages";
+import { ElementName, MessageTime } from "@/global/types";
 
 
 describe("Custom component message evaluation", () => {
@@ -70,7 +71,7 @@ describe("Custom component message evaluation", () => {
         scope: "component",
         componentPath: [ 'runtime' as ElementName, 'components' as ElementName, 'my-component-A-1' as ElementName],
         at: 1234 as MessageTime,
-        event: "created"
+        event: "created" as MessageEvent
     };
     myCustomComponentA1.evaluate(initMessage);
     expect(messageToEvaluate).toBeDefined;

@@ -1,8 +1,7 @@
-import { IElement, ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
-import { ComponentName, InputPinName, OutputPinName } from '@/interfaces/IComponent';
-
-const PinConnectionTypeElementName: ElementName = 'pin-connection' as ElementName;
-const PinConnectionTypeElementKind: ElementKind = 'pin-connection-type' as ElementKind;
+import { IElement } from '@/interfaces/IElement';
+import { ComponentName, ElementName, ElementPath, InputPinName, OutputPinName } from '@/global/types';
+import { PinConnectionTypeElementName } from '@/global/names';
+import { PinConnectionTypeElementKind } from '@/global/kinds';
 
 interface IPinConnection extends IElement {
   readonly sourceComponentName : ComponentName ;

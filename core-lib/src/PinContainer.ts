@@ -1,15 +1,12 @@
 import { IPinContainer } from '@/interfaces/IPinContainer';
 import { IPin } from '@/interfaces/IPin';
 import { IDataFactory } from '@/interfaces/IDataFactory';
-import { IElement, ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
-import { InputPin, inputPinTypeKind, OutputPin, outputPinTypeKind }  from '@/Pin';
+import { IElement } from '@/interfaces/IElement';
+import { InputPin, OutputPin }  from '@/Pin';
 import { DataTypeElement } from "@/DataTypeElement";
-
-const inputPinContainerName : ElementName = 'input-pins' as ElementName;
-const inputPinContainerType : ElementKind = 'input-pin-container' as ElementKind;
-
-const outputPinContainerName : ElementName = 'output-pins' as ElementName;
-const outputPinContainerType : ElementKind = 'output-pin-container' as ElementKind;
+import { ElementKind, ElementName, ElementPath } from './global/types';
+import { inputPinContainerName, outputPinContainerName } from './global/names';
+import { inputPinContainerType, inputPinTypeKind, outputPinContainerType, outputPinTypeKind } from './global/kinds';
 
 
 class PinContainer implements IPinContainer {
@@ -26,6 +23,10 @@ class PinContainer implements IPinContainer {
       throw new Error("Parent element path not defined");
     this.path = [ ...parentElementPath, elementName ];
     this._children = {};
+  }
+
+  findElementByPath(_elementPath: ElementPath): IElement | undefined {
+      throw new Error('Method not implemented.');
   }
 
   get children() : readonly IElement[] {

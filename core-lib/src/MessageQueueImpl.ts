@@ -1,4 +1,6 @@
-import { MessageQueue, Message, MessageTime } from '@/interfaces/MessageQueue';
+import { MessageQueue } from '@/interfaces/MessageQueue';
+import { Message } from './global/messages';
+import { MessageTime } from './global/types';
 
 class MessageQueueImpl implements MessageQueue {
 

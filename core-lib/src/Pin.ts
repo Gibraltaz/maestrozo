@@ -1,17 +1,11 @@
 import { IPin, IPinFactory } from '@/interfaces/IPin';
-import { IElement, ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
+import { IElement } from '@/interfaces/IElement';
 import { AbstractContainer } from '@/AbstractContainer';
 import { ITypeFactory } from '@/interfaces/ITypeFactory';
 import { ITypeElement } from '@/interfaces/ITypeElement';
 import { IDataFactory } from '@/interfaces/IDataFactory';
-
-const PinTypeElementKind : ElementKind = 'pin-type' as ElementKind;
-
-const inputPinTypeName  : ElementName = 'input-pin' as ElementName;
-const inputPinTypeKind : ElementKind = 'input-pin-type' as ElementKind;
-
-const outputPinTypeName : ElementName = 'output-pin' as ElementName;
-const outputPinTypeKind : ElementKind = 'output-pin-type' as ElementKind;
+import { ElementKind, ElementName, ElementPath } from './global/types';
+import { inputPinTypeKind, outputPinTypeKind, PinTypeElementKind } from './global/kinds';
 
 class PinTypeElement extends AbstractContainer implements ITypeElement {
 
@@ -73,6 +67,6 @@ class OutputPinFactory implements IPinFactory {
 
 export {
   PinTypeElement,
-  InputPin, InputPinFactory, inputPinTypeName, inputPinTypeKind,
-  OutputPin, OutputPinFactory, outputPinTypeName, outputPinTypeKind 
+  InputPin, InputPinFactory,
+  OutputPin, OutputPinFactory
 };

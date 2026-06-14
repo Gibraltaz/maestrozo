@@ -1,13 +1,14 @@
 import { RootElement } from '@/RootElement';
 import { MessageQueueImpl } from '@/MessageQueueImpl';
-import { MessageTime } from '@/interfaces/MessageQueue';
-import { ElementName, ElementPath, IElement } from '@/interfaces/IElement';
 import { pathToString } from '@/utils/path';
-import { ComponentName, IComponent } from './interfaces/IComponent';
+import { IComponent } from './interfaces/IComponent';
 import { CustomComponentBuilder, EvaluateMessageFunction, PinDeclaration } from './components/CustomComponentBuilder';
 import { ITypeContainer } from './interfaces/ITypeContainer';
-import { ITypeElement } from './interfaces/ITypeElement';
 import { ComponentTypeElement } from './ComponentTypeElement';
+import { IRuntimeContainer } from './interfaces/IRuntimeContainer';
+import { ITypeElement } from './interfaces/ITypeElement';
+import { IComponentFactory } from './interfaces/IComponentFactory';
+import { ComponentName, ElementName, ElementPath, MessageTime } from './global/types';
 
 type TimeFunction = () => MessageTime;
 
@@ -73,11 +74,29 @@ class Engine {
   }
 
   createComponent(
-    _componentName: ComponentName,
-    _componentTypePath: ElementPath,
-    _params: Record<string, any>
-  ): ElementPath {
-    throw new Error("Engine.createComponent ot yet implemented");
+    componentName: ComponentName,
+    parentContainerPath: ElementPath,
+    typePath: ElementPath,
+    params: Record<string, any>
+  ): IComponent {
+
+    const runtimeContainer = this._rootElement.findElementByPath(parentContainerPath) as IRuntimeContainer;
+    if (runtimeContainer === undefined) // FIXME utile si exception générée
+      throw new Error(`Can't find parent container «${parentContainerPath}»`)
+
+    const typeElement = this._rootElement.findElementByPath(typePath) as ITypeElement;
+    if (typeElement === undefined) // FIXME utile si exception générée
+      throw new Error(`Can't find type «${typePath}»`)
+
+    const componentFactory = typeElement.factory as IComponentFactory;
+
+    const component = runtimeContainer.createComponent(
+      componentName,
+      componentFactory,
+      params
+    );
+
+    return component;
   }
 
 }

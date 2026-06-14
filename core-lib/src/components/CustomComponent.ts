@@ -1,8 +1,8 @@
+import { Message } from '@/global/messages';
+import { ElementKind, ElementName, ElementPath } from '@/global/types';
 import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
-import { ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
 import { InputPinContainer, OutputPinContainer } from '@/PinContainer';
-import { Message } from '@/interfaces/MessageQueue';
 import { elementPathAreEquals, pathToString } from '@/utils/path';
 
 class CustomComponent implements IComponent {

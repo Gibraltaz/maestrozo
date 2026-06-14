@@ -2,12 +2,11 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { Engine } from '@/Engine';
 import { MessageQueueImpl } from '@/MessageQueueImpl';
 import {
-  MessageTime, 
-  ComponentMessage, COMPONENT_MESSAGE_SCOPE, 
-  PinMessage, PIN_MESSAGE_SCOPE,
-  MESSAGE_CREATION, MESSAGE_CHANGE,
+  ComponentMessage, 
+  PinMessage, 
 } from '@/interfaces/MessageQueue';
-import { ComponentPath, InputPinName } from '@/interfaces/IComponent';
+import { ComponentPath, InputPinName, MessageTime } from "@/global/types";
+import { COMPONENT_MESSAGE_SCOPE, MESSAGE_CHANGE, MESSAGE_CREATION, PIN_MESSAGE_SCOPE } from "@/global/messages";
 
 
 describe("Message queue", () => {

@@ -1,4 +1,4 @@
-import { ElementPath } from '@/interfaces/IElement';
+import { ElementPath } from "@/global/types";
 
 const pathSeparator = '/';
 

@@ -1,8 +1,8 @@
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
-import { ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
 import { InputPinContainer, OutputPinContainer } from '@/PinContainer';
-import { Message } from '@/interfaces/MessageQueue';
+import { ElementKind, ElementName, ElementPath } from '@/global/types';
+import { Message } from '@/global/messages';
 
 const fakeElementKind: ElementKind = 'fake-component' as ElementKind;
 

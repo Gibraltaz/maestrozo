@@ -1,6 +1,7 @@
-import { IElement, ElementName,ElementPath  } from '@/interfaces/IElement';
+import { IElement  } from '@/interfaces/IElement';
 import { IData } from '@/interfaces/IData';
 import { IDataFactory } from '@/interfaces/IDataFactory';
+import { ElementName, ElementPath } from '@/global/types';
 
 type PinName = ElementName;
 type InputPinName = PinName;

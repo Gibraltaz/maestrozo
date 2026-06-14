@@ -1,10 +1,11 @@
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect } from "vitest";
 import { Engine } from '@/Engine';
-import { ElementName } from '@/interfaces/IElement';
 import { DataTypeElement } from "@/DataTypeElement";
 import { CustomComponentBuilder, EvaluateMessageFunction } from '@/components/CustomComponentBuilder';
 import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
-import { ComponentMessage, Message, MessageTime } from "@/interfaces/MessageQueue";
+import { ComponentMessage } from "@/interfaces/MessageQueue";
+import { Message, MessageEvent } from "@/global/messages";
+import { ElementName, MessageTime } from "@/global/types";
 
 
 describe("Engine runOnce", () => {
@@ -55,7 +56,7 @@ describe("Engine runOnce", () => {
         scope: "component",
         componentPath: myCustomComponentA1.path,
         at: 1234 as MessageTime,
-        event: "created"
+        event: 'created' as MessageEvent
     };
 
     engine.messageQueue.pushMessage(initMessage);

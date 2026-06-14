@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { Engine } from "@/main";
-import { ElementName } from '@/interfaces/IElement';
+import { ElementName } from "@/global/types";
 
 describe("Type manager", () => {
 

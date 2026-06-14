@@ -1,4 +1,3 @@
-import { ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 import { ITypeContainer } from '@/interfaces/ITypeContainer';
 import { AbstractContainer } from '@/AbstractContainer';
 
@@ -13,7 +12,8 @@ import { IPinFactory } from '@/interfaces/IPin';
 
 import { PinConnectionTypeElement } from '@/PinConnection';
 import { IPinConnectionFactory } from '@/interfaces/IPinConnection';
-const typeElementKind : ElementKind = 'type-container' as ElementKind;
+import { typeElementKind } from './global/kinds';
+import { ElementName, ElementPath } from './global/types';
 
 class TypeContainer extends AbstractContainer implements ITypeContainer {
   readonly kind = typeElementKind;
@@ -48,4 +48,4 @@ class TypeContainer extends AbstractContainer implements ITypeContainer {
 
 }
 
-export { TypeContainer, typeElementKind };
+export { TypeContainer };

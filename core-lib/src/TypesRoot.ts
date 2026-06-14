@@ -1,4 +1,3 @@
-import { ElementName, ElementPath, ElementKind } from '@/interfaces/IElement';
 import { AbstractContainer } from '@/AbstractContainer';
 import { TypeContainer } from '@/TypeContainer';
 
@@ -8,14 +7,10 @@ import { BooleanDataFactory } from '@/data/BooleanData';
 import { InputPinFactory, OutputPinFactory } from '@/Pin';
 import { FakeComponentFactory } from '@/components/FakeComponent';
 import { PinConnectionFactory } from '@/PinConnection';
+import { componentTypeContainerName, dataTypeContainerName, pinConnectionTypeContainerName, pinTypeContainerName, typesRootName } from '@/global/names';
+import { typesRootKind } from './global/kinds';
+import { ElementPath } from './global/types';
 
-const typesRootName         : ElementName = 'types'      as ElementName;
-const typesRootKind         : ElementKind = 'types-root' as ElementKind;
-
-const dataTypeName          : ElementName = 'data'       as ElementName;
-const pinTypeName           : ElementName = 'pin'        as ElementName;
-const componentTypeName     : ElementName = 'component'  as ElementName;
-const pinConnectionTypeName : ElementName = 'connection'  as ElementName;
 
 class TypesRoot extends AbstractContainer {
   readonly dataTypeContainer : TypeContainer;
@@ -27,7 +22,7 @@ class TypesRoot extends AbstractContainer {
     super(typesRootName, typesRootKind, [] as ElementPath);
 
     // create element /types/data
-    const dataTypeContainer = new TypeContainer(dataTypeName, this.path);
+    const dataTypeContainer = new TypeContainer(dataTypeContainerName, this.path);
     this.dataTypeContainer = dataTypeContainer;
     this.addChild(dataTypeContainer);
 
@@ -36,8 +31,8 @@ class TypesRoot extends AbstractContainer {
     dataTypeContainer.declareDataType(new StringDataFactory());
     dataTypeContainer.declareDataType(new BooleanDataFactory());
 
-    // create element /types/pin
-    const pinTypeContainer = new TypeContainer(pinTypeName, this.path);
+    // create element /types/pins
+    const pinTypeContainer = new TypeContainer(pinTypeContainerName, this.path);
     this.pinTypeContainer = pinTypeContainer;
     this.addChild(pinTypeContainer);
 
@@ -46,16 +41,16 @@ class TypesRoot extends AbstractContainer {
     pinTypeContainer.declarePinType(new OutputPinFactory());
 
 
-    // create element /types/component
-    const componentTypeContainer = new TypeContainer(componentTypeName, this.path);
+    // create element /types/components
+    const componentTypeContainer = new TypeContainer(componentTypeContainerName, this.path);
     this.componentTypeContainer = componentTypeContainer;
     this.addChild(componentTypeContainer);
 
-    // create element /types/component/fake-component
+    // create element /types/components/fake-component
     componentTypeContainer.declareComponentType(new FakeComponentFactory());
 
-    // create element /types/pin-connection
-    const pinConnectionTypeContainer = new TypeContainer(pinConnectionTypeName, this.path);
+    // create element /types/connections
+    const pinConnectionTypeContainer = new TypeContainer(pinConnectionTypeContainerName, this.path);
     this.pinConnectionTypeContainer = pinConnectionTypeContainer;
     pinConnectionTypeContainer.declarePinConnectionType(new PinConnectionFactory());
 
@@ -63,8 +58,4 @@ class TypesRoot extends AbstractContainer {
 
 }
 
-export {
-    TypesRoot,
-    dataTypeName,
-    componentTypeName
-};
+export { TypesRoot };

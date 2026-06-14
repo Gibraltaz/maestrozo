@@ -1,11 +1,11 @@
 import { CustomComponent } from "./CustomComponent";
 import { IComponentFactory } from "@/interfaces/IComponentFactory";
-import { ElementName, ElementPath } from '@/interfaces/IElement';
 import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
 import { ITypeContainer } from '@/interfaces/ITypeContainer';
 import { DataTypeElement } from "@/DataTypeElement";
 import { ComponentTypeElementKind } from '@/ComponentTypeElement';
-import { Message } from "@/interfaces/MessageQueue";
+import { ElementName, ElementPath } from "@/global/types";
+import { Message } from "@/global/messages";
 
 type PinDeclaration = {
   name: ElementName;
@@ -41,8 +41,10 @@ class CustomComponentBuilder implements IComponentFactory {
 
     const inputPinsParamName = 'inputPins';
     const inputPinParams = params[inputPinsParamName] as Record<string, unknown>;
+    // TODO ne pas générer d'erreurs si la section inputPins n'est pas fournie quand le composant n'a pas d'entrées
     if (inputPinParams === undefined)
       throw new Error(`The «${inputPinsParamName}» section is missing from params to create «${componentName}» component`);
+    // TODO ne pas générer d'erreurs si la section inputPins n'est pas fournie quand le composant n'a pas de sorties
     if (inputPinParams === null || typeof(inputPinParams) != 'object')
       throw new Error(`The «${inputPinsParamName}» section must be a key-value object while creating "${componentName}" component`);
 

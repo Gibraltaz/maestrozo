@@ -1,18 +1,13 @@
-import { IElement, ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
+import { IElement } from '@/interfaces/IElement';
 import { AbstractContainer } from '@/AbstractContainer';
 import { IRuntimeContainer, IComponentContainer, IPinConnectionContainer } from '@/interfaces/IRuntimeContainer';
 import { IPinConnection, IPinConnectionFactory } from '@/interfaces/IPinConnection';
-import { IComponent, ComponentName, InputPinName, OutputPinName } from '@/interfaces/IComponent';
+import { IComponent } from '@/interfaces/IComponent';
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
 import { parentElementPath, pathToString } from '@/utils/path';
-
-const runtimeElementKind : ElementKind = 'runtime-container' as ElementKind;
-
-const componentContainerName : ElementName = 'components' as ElementName;
-const componentContainerKind : ElementKind = 'component-container' as ElementKind;
-
-const pinConnectionContainerName : ElementName = 'pinConnections' as ElementName;
-const pinConnectionContainerKind : ElementKind = 'pin-connection-container' as ElementKind;
+import { ComponentName, ElementKind, ElementName, ElementPath, InputPinName, OutputPinName } from './global/types';
+import { componentContainerKind, pinConnectionContainerKind, runtimeElementKind } from './global/kinds';
+import { componentContainerName, pinConnectionContainerName } from './global/names';
 
 class ComponentContainer implements IComponentContainer {
   name: ElementName;
@@ -29,11 +24,12 @@ class ComponentContainer implements IComponentContainer {
 
   findElementByPath(elementPath: ElementPath): IElement | undefined {
     if (elementPath.length === 0)
-      throw new Error("Path is empty");
+      return this;
     if (elementPath.length === 1) {
       const elementName = elementPath[0];
       return this.getElementByName(elementName);
     }
+    // TODO implémenter la recherche d'un élément à l'intérieur d'un conteneur
     throw new Error("Finding element in runtime container not implemented.");
   }
 
@@ -181,7 +177,11 @@ class RuntimeContainer extends AbstractContainer implements IRuntimeContainer {
   }
 
   findElementByPath(elementPath: ElementPath): IElement | undefined {
-    const [ baseElementName, ...restElementPath ] = [... elementPath ];
+
+    if (elementPath.length === 0)
+      throw new Error(`Invalid runtime path (should be «components» or «pinConnections»)`);
+
+    const [ baseElementName, ...restElementPath ] = [...elementPath];
     if (baseElementName === this.components.name)
       return this.components.findElementByPath(restElementPath);
     if (baseElementName === this.pinConnections.name)
@@ -190,4 +190,4 @@ class RuntimeContainer extends AbstractContainer implements IRuntimeContainer {
   }
 }
 
-export { RuntimeContainer, runtimeElementKind };
+export { RuntimeContainer };

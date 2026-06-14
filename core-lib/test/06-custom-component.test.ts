@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { Engine } from '@/Engine';
 import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
-import { ElementName, ElementKind, ElementPath } from '@/interfaces/IElement';
 import { ITypeElement } from '@/interfaces/ITypeElement';
 import { RootElement } from "@/RootElement";
 import { CustomComponent } from "@/components/CustomComponent";
@@ -11,7 +10,9 @@ import { IntegerData } from '@/data/IntegerData';
 import { StringData } from '@/data/StringData';
 import { BooleanData } from '@/data/BooleanData';
 import { CustomComponentBuilder, EvaluateMessageFunction } from '@/components/CustomComponentBuilder';
-import { Message } from "@/interfaces/MessageQueue";
+import { Message } from "@/global/messages";
+import { ElementKind, ElementPath } from "@/global/types";
+import { ElementName } from '@/global/names';
 
 const myCustomElementKind : ElementKind = 'my-custom-component' as ElementKind;
 
@@ -59,7 +60,7 @@ class MyCustomComponentFactory implements IComponentFactory{
 
   }
 
-  evaluateComponent(component: IComponent): EvaluationResult {
+  evaluateComponent(_component: IComponent): EvaluationResult {
       throw new Error("Method not implemented.");
   }
 

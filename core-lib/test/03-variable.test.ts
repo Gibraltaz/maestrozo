@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Engine } from '@/Engine';
 import { DataTypeElement } from '@/DataTypeElement';
-import { ElementName } from '@/interfaces/IElement';
+import { ElementName } from "@/global/types";
 
 
 describe("Data instanciation", () => {

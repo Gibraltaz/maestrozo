@@ -1,11 +1,11 @@
 import { ITypeElement } from '@/interfaces/ITypeElement';
-import { ElementKind, ElementPath} from '@/interfaces/IElement';
 import { ITypeFactory } from '@/interfaces/ITypeFactory';
 import { IData } from '@/interfaces/IData';
 import { IDataFactory } from '@/interfaces/IDataFactory';
 import { AbstractContainer } from './AbstractContainer';
+import { ElementPath } from './global/types';
+import { DataTypeElementKind } from './global/kinds';
 
-const DataTypeElementKind : ElementKind = 'data-type' as ElementKind;
 
 class DataTypeElement extends AbstractContainer implements ITypeElement {
 

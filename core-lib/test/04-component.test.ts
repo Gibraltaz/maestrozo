@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { Engine } from '@/Engine';
 import { IComponentFactory} from '@/interfaces/IComponentFactory';
 import { ITypeElement } from '@/interfaces/ITypeElement';
-import { ElementName } from '@/interfaces/IElement';
+import { ElementName } from '@/global/types';
 
 describe("Component manager", () => {
 
@@ -41,9 +41,9 @@ describe("Component manager", () => {
     // root.types.component
     const componentTypeContainer = typeContainer.componentTypeContainer;
     expect(componentTypeContainer).toBeInstanceOf(Object);
-    expect(componentTypeContainer).toHaveProperty('name', 'component');
+    expect(componentTypeContainer).toHaveProperty('name', 'components');
     expect(componentTypeContainer).toHaveProperty('kind', 'type-container');
-    expect(componentTypeContainer.path).deep.equals(['types', 'component']);
+    expect(componentTypeContainer.path).deep.equals(['types', 'components']);
   });
 
   it("check component fake-component type", () => {
@@ -61,7 +61,7 @@ describe("Component manager", () => {
     expect(fakeComponentType).toBeInstanceOf(Object);
     expect(fakeComponentType).toHaveProperty('name', 'fake-component');
     expect(fakeComponentType).toHaveProperty('kind', 'component-type');
-    expect(fakeComponentType.path).deep.equals(['types', 'component', 'fake-component']);
+    expect(fakeComponentType.path).deep.equals(['types', 'components', 'fake-component']);
 
   });
 

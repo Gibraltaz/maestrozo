@@ -1,6 +1,6 @@
 import { IDataFactory } from '@/interfaces/IDataFactory';
-import { ElementName } from '@/interfaces/IElement';
 import { IData } from '@/interfaces/IData';
+import { ElementName } from '@/global/types';
 
 class StringData implements IData {
   dataFactory : IDataFactory;

@@ -1,11 +1,10 @@
 import { ITypeElement } from '@/interfaces/ITypeElement';
-import { ElementName, ElementKind, ElementPath} from '@/interfaces/IElement';
 import { ITypeFactory } from '@/interfaces/ITypeFactory';
 import { IComponent } from '@/interfaces/IComponent';
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
 import { AbstractContainer } from './AbstractContainer';
-
-const ComponentTypeElementKind : ElementKind = 'component-type' as ElementKind;
+import { ComponentTypeElementKind } from './global/kinds';
+import { ElementName, ElementPath } from './global/types';
 
 class ComponentTypeElement extends AbstractContainer implements ITypeElement {
 

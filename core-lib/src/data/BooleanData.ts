@@ -1,6 +1,6 @@
 import { IDataFactory } from '@/interfaces/IDataFactory';
-import { ElementName } from '@/interfaces/IElement';
 import { IData } from '@/interfaces/IData';
+import { ElementName } from '@/global/types';
 
 class BooleanData implements IData {
   dataFactory : IDataFactory;

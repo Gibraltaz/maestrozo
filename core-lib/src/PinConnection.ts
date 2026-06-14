@@ -1,9 +1,8 @@
-import { ElementName, ElementKind, ElementPath } from "./interfaces/IElement";
 import { IPinConnection, IPinConnectionFactory, PinConnectionTypeElementKind } from "./interfaces/IPinConnection";
 import { ITypeFactory } from '@/interfaces/ITypeFactory';
 import { ITypeElement } from '@/interfaces/ITypeElement';
-import { ComponentName, InputPinName, OutputPinName } from '@/interfaces/IComponent';
 import { AbstractContainer } from "./AbstractContainer";
+import { ComponentName, ElementKind, ElementName, ElementPath, InputPinName, OutputPinName } from "./global/types";
 
 const PinConnectionName: ElementName = 'pin-connection' as ElementName;
 const PinConnectionKind: ElementKind = 'pin-connection' as ElementKind;
@@ -24,9 +23,9 @@ class PinConnection implements IPinConnection {
   readonly name: ElementName;
   readonly kind: ElementKind;
   readonly path: ElementPath;
-  readonly sourceComponentName : ComponentName ;
+  readonly sourceComponentName : ComponentName;
   readonly sourcePinName : OutputPinName;
-  readonly targetComponentName : ComponentName ;
+  readonly targetComponentName : ComponentName;
   readonly targetPinName : InputPinName;
 
   constructor(
