@@ -69,7 +69,7 @@ describe("Custom component message evaluation", () => {
 
     const initMessage: ComponentMessage = {
         scope: "component",
-        componentPath: [ 'runtime' as ElementName, 'components' as ElementName, 'my-component-A-1' as ElementName],
+        componentPath: [ 'runtime' as ElementName, 'my-component-A-1' as ElementName],
         at: 1234 as MessageTime,
         event: "created" as MessageEvent
     };

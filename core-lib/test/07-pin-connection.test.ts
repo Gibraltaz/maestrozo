@@ -104,7 +104,7 @@ describe("Custom component", () => {
     expect(connection).to.have.property('name', 'my-component-A-1:integer-output-my-component-B-1:integer-input');
     expect(connection).to.have.property('kind', 'pin-connection');
     expect(connection).to.have.property('path');
-    expect(connection.path).to.deep.equal([ 'runtime', 'pinConnections', 'my-component-A-1:integer-output-my-component-B-1:integer-input' ]);
+    expect(connection.path).to.deep.equal([ 'runtime', 'my-component-A-1:integer-output-my-component-B-1:integer-input' ]);
 
     expect(connection).to.have.property('sourceComponentName', 'my-component-A-1');
     expect(connection).to.have.property('sourcePinName', 'integer-output');

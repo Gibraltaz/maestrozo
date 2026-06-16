@@ -11,7 +11,7 @@ import { StringData } from '@/data/StringData';
 import { BooleanData } from '@/data/BooleanData';
 import { CustomComponentBuilder, EvaluateMessageFunction } from '@/components/CustomComponentBuilder';
 import { Message } from "@/global/messages";
-import { ElementKind, ElementPath } from "@/global/types";
+import { ComponentName, ElementKind, ElementPath } from "@/global/types";
 import { ElementName } from '@/global/names';
 
 const myCustomElementKind : ElementKind = 'my-custom-component' as ElementKind;
@@ -128,13 +128,13 @@ describe("Custom component", () => {
           'string-output'  : { 'value': 'abc' }
         }
       );
-      const newComponent = engine.getRootElement().runtimeContainer.components.getElementByName('my-custom-component-01' as ElementName) as IComponent;
+      const newComponent = engine.getRootElement().runtimeContainer.getComponentByName('my-custom-component-01' as ComponentName) as IComponent;
       expect(newComponent).to.deep.equal(myCustomComponent);
 
       expect(myCustomComponent).toBeInstanceOf(Object);
       expect(myCustomComponent).toHaveProperty('name', 'my-custom-component-01');
       expect(myCustomComponent).toHaveProperty('kind', 'my-custom-component');
-      expect(myCustomComponent.path).deep.equals(['runtime', 'components', 'my-custom-component-01']);
+      expect(myCustomComponent.path).deep.equals(['runtime', 'my-custom-component-01']);
       expect(myCustomComponent).toHaveProperty('factory');
       expect(myCustomComponent.factory).toBeInstanceOf(Object);
 
@@ -143,7 +143,7 @@ describe("Custom component", () => {
       const inputPinContainer = myCustomComponent.inputPins;
       expect(inputPinContainer).toHaveProperty('name', 'input-pins');
       expect(inputPinContainer).toHaveProperty('kind', 'input-pin-container');
-      expect(inputPinContainer.path).deep.equals(['runtime', 'components', 'my-custom-component-01', 'input-pins']);
+      expect(inputPinContainer.path).deep.equals(['runtime', 'my-custom-component-01', 'input-pins']);
       expect(inputPinContainer).toHaveProperty('pins');
       const inputPinArray = inputPinContainer.pins;
       expect(inputPinArray).toBeInstanceOf(Array);
@@ -154,7 +154,7 @@ describe("Custom component", () => {
       expect(pin).toHaveProperty('name', 'boolean-input');
       expect(pin).toHaveProperty('kind', 'input-pin-type');
       expect(pin).toHaveProperty('path');
-      expect(pin.path).deep.equals(['runtime', 'components', 'my-custom-component-01', 'input-pins', 'boolean-input']);
+      expect(pin.path).deep.equals(['runtime', 'my-custom-component-01', 'input-pins', 'boolean-input']);
       expect(pin).toHaveProperty('value');
       let pinValue = pin.value;
       expect(pinValue).to.be.instanceOf(BooleanData);
@@ -166,7 +166,7 @@ describe("Custom component", () => {
       const outputPinContainer = myCustomComponent.outputPins;
       expect(outputPinContainer).toHaveProperty('name', 'output-pins');
       expect(outputPinContainer).toHaveProperty('kind', 'output-pin-container');
-      expect(outputPinContainer.path).deep.equals(['runtime', 'components', 'my-custom-component-01', 'output-pins']);
+      expect(outputPinContainer.path).deep.equals(['runtime', 'my-custom-component-01', 'output-pins']);
       expect(outputPinContainer).toHaveProperty('pins');
       const outputPinArray = outputPinContainer.pins;
       expect(outputPinArray).toBeInstanceOf(Array);
@@ -177,7 +177,7 @@ describe("Custom component", () => {
       expect(pin).toHaveProperty('name', 'integer-output');
       expect(pin).toHaveProperty('kind', 'output-pin-type');
       expect(pin).toHaveProperty('path');
-      expect(pin.path).deep.equals(['runtime', 'components', 'my-custom-component-01', 'output-pins', 'integer-output']);
+      expect(pin.path).deep.equals(['runtime', 'my-custom-component-01', 'output-pins', 'integer-output']);
       expect(pin).toHaveProperty('value');
       pinValue = pin.value;
       expect(pinValue).to.be.instanceOf(IntegerData);
@@ -189,7 +189,7 @@ describe("Custom component", () => {
       expect(pin).toHaveProperty('name', 'string-output');
       expect(pin).toHaveProperty('kind', 'output-pin-type');
       expect(pin).toHaveProperty('path');
-      expect(pin.path).deep.equals(['runtime', 'components', 'my-custom-component-01', 'output-pins', 'string-output']);
+      expect(pin.path).deep.equals(['runtime', 'my-custom-component-01', 'output-pins', 'string-output']);
       pinValue = pin.value;
       expect(pinValue).to.be.instanceOf(StringData);
       expect(pinValue).toHaveProperty('value');
@@ -266,7 +266,7 @@ describe("Custom component", () => {
       expect(myCustomComponent).to.be.instanceOf(Object);
       expect(myCustomComponent).to.have.property('name', 'my-other-custom-component-01');
       expect(myCustomComponent).to.have.property('kind', 'component-type');
-      expect(myCustomComponent.path).deep.equals(['runtime', 'components', 'my-other-custom-component-01']);
+      expect(myCustomComponent.path).deep.equals(['runtime', 'my-other-custom-component-01']);
       expect(myCustomComponentType).toHaveProperty('factory');
 
       const myCustomComponentFactory = myCustomComponentType.factory;
@@ -276,7 +276,7 @@ describe("Custom component", () => {
       const inputPinContainer = myCustomComponent.inputPins;
       expect(inputPinContainer).toHaveProperty('name', 'input-pins');
       expect(inputPinContainer).toHaveProperty('kind', 'input-pin-container');
-      expect(inputPinContainer.path).deep.equals(['runtime', 'components', 'my-other-custom-component-01', 'input-pins']);
+      expect(inputPinContainer.path).deep.equals(['runtime', 'my-other-custom-component-01', 'input-pins']);
       expect(inputPinContainer).toHaveProperty('pins');
       const inputPinArray = inputPinContainer.pins;
       expect(inputPinArray).toBeInstanceOf(Array);
@@ -288,7 +288,7 @@ describe("Custom component", () => {
       expect(pin).toHaveProperty('name', 'boolean-input');
       expect(pin).toHaveProperty('kind', 'input-pin-type');
       expect(pin).toHaveProperty('path');
-      expect(pin.path).deep.equals(['runtime', 'components', 'my-other-custom-component-01', 'input-pins', 'boolean-input']);
+      expect(pin.path).deep.equals(['runtime', 'my-other-custom-component-01', 'input-pins', 'boolean-input']);
       expect(pin).toHaveProperty('value');
       let pinValue = pin.value;
       expect(pinValue).to.be.instanceOf(BooleanData);

@@ -56,13 +56,13 @@ describe("Engine customComponent", () => {
     expect(component).to.have.property('name', 'my-component-01');
     expect(component).to.have.property('kind', 'component-type');
     expect(component).to.have.property('path');
-    expect(component.path).to.deep.equal([ 'runtime', 'components', 'my-component-01' ]);
+    expect(component.path).to.deep.equal([ 'runtime', 'my-component-01' ]);
 
   });
 
   it("should find the new custom component", () => {
     const component = engine.getRootElement().findElementByPath(
-      [ 'runtime', 'components', 'my-component-01' ] as ElementPath
+      [ 'runtime', 'my-component-01' ] as ElementPath
     );
     expect(component).to.have.property('name', 'my-component-01');
     expect(component).to.have.property('kind', 'component-type');

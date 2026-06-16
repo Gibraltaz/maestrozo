@@ -2,19 +2,9 @@ import { IContainer } from '@/interfaces/IContainer';
 import { IPinConnection, IPinConnectionFactory } from '@/interfaces/IPinConnection';
 import { IComponent } from '@/interfaces/IComponent';
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
-import { ComponentName, ElementName, InputPinName, OutputPinName } from '@/global/types';
-
-interface IComponentContainer extends IContainer {
-};
-
-interface IPinConnectionContainer extends IContainer {
-};
-
+import { ComponentName, ComponentPath, ElementName, InputPinName, OutputPinName } from '@/global/types';
 
 interface IRuntimeContainer extends IContainer {
-
-  readonly components: IComponentContainer;
-  readonly pinConnections : IPinConnectionContainer;
 
   createComponent(
     componentName: ElementName,
@@ -28,10 +18,9 @@ interface IRuntimeContainer extends IContainer {
     pinConnectionFactory: IPinConnectionFactory
   ): IPinConnection;
 
+  getComponentByName(componentName: ComponentName): IComponent;
+  getComponentByPath(componentPath: ComponentPath): IComponent | undefined;
+
 };
 
-export {
-  IRuntimeContainer,
-  IComponentContainer,
-  IPinConnectionContainer
-};
+export { IRuntimeContainer };
