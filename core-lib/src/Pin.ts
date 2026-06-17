@@ -5,7 +5,7 @@ import { ITypeFactory } from '@/interfaces/ITypeFactory';
 import { ITypeElement } from '@/interfaces/ITypeElement';
 import { IDataFactory } from '@/interfaces/IDataFactory';
 import { ElementKind, ElementName, ElementPath } from './global/types';
-import { inputPinTypeKind, outputPinTypeKind, PinTypeElementKind } from './global/kinds';
+import { inputPinKind, outputPinKind, PinTypeElementKind } from './global/kinds';
 
 class PinTypeElement extends AbstractContainer implements ITypeElement {
 
@@ -41,7 +41,7 @@ abstract class AbstractPin implements IPin {
 
 class InputPin extends AbstractPin {
   constructor(pinName: ElementName, pinContainerPath: ElementPath, dataFactory:IDataFactory) {
-    super(pinName, inputPinTypeKind, pinContainerPath, dataFactory);
+    super(pinName, inputPinKind, pinContainerPath, dataFactory);
   }
 }
 
@@ -54,7 +54,7 @@ class InputPinFactory implements IPinFactory {
 
 class OutputPin extends AbstractPin {
   constructor(pinName: ElementName, pinContainerPath: ElementPath, dataFactory:IDataFactory) {
-    super(pinName, outputPinTypeKind, pinContainerPath, dataFactory );
+    super(pinName, outputPinKind, pinContainerPath, dataFactory );
   }
 }
 

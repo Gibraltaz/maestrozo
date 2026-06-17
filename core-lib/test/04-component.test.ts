@@ -90,28 +90,17 @@ describe("Component manager", () => {
     );
     expect(fakeComponent).toBeInstanceOf(Object);
     expect(fakeComponent).toHaveProperty('name', 'fake-component-01');
-    expect(fakeComponent).toHaveProperty('kind', 'fake-component');
+    expect(fakeComponent).toHaveProperty('kind', 'component');
     expect(fakeComponent.path).deep.equals(['runtime', 'fake-component-01']);
     expect(fakeComponent).toHaveProperty('factory');
     expect(fakeComponent.factory).toBeInstanceOf(Object);
 
-    expect(fakeComponent).toHaveProperty('inputPins');
-    expect(fakeComponent.factory).toBeInstanceOf(Object);
-    const inputPins = fakeComponent.inputPins;
-    expect(inputPins).toHaveProperty('name', 'input-pins');
-    expect(inputPins).toHaveProperty('kind', 'input-pin-container');
-    expect(inputPins.path).deep.equals(['runtime', 'fake-component-01', 'input-pins']);
-
-    expect(fakeComponent).toHaveProperty('outputPins');
-    expect(fakeComponent.factory).toBeInstanceOf(Object);
-    const outputPins = fakeComponent.outputPins;
-    expect(outputPins).toHaveProperty('name', 'output-pins');
-    expect(outputPins).toHaveProperty('kind', 'output-pin-container');
-    expect(outputPins.path).deep.equals(['runtime', 'fake-component-01', 'output-pins']);
-
     const newComponent = runtimeContainer.getComponentByName('fake-component-01' as ComponentName);
     expect(newComponent).deep.equal(fakeComponent);
 
+    expect(fakeComponent.pins.length).to.equal(0);
+    expect(fakeComponent.inputPins.length).to.equal(0);
+    expect(fakeComponent.outputPins.length).to.equal(0);
   });
 
 });

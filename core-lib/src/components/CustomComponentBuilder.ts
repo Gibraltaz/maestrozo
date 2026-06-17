@@ -4,7 +4,7 @@ import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
 import { ITypeContainer } from '@/interfaces/ITypeContainer';
 import { DataTypeElement } from "@/DataTypeElement";
 import { ComponentTypeElementKind } from '@/ComponentTypeElement';
-import { ElementName, ElementPath } from "@/global/types";
+import { ComponentName, ElementName, ElementPath } from "@/global/types";
 import { Message } from "@/global/messages";
 
 type PinDeclaration = {
@@ -36,8 +36,8 @@ class CustomComponentBuilder implements IComponentFactory {
     this.evaluateMessageFunction = evaluateMessageFunction;
   }
 
-  createInstance(componentName: ElementName, parentElementPath: ElementPath, params: Record<string, unknown>) : IComponent {
-    const newComponent = new CustomComponent(componentName, ComponentTypeElementKind , parentElementPath, this);
+  createInstance(componentName: ComponentName, parentElementPath: ElementPath, params: Record<string, unknown>) : IComponent {
+    const newComponent = new CustomComponent(componentName, parentElementPath, this);
 
     const inputPinsParamName = 'inputPins';
     const inputPinParams = params[inputPinsParamName] as Record<string, unknown>;
@@ -52,7 +52,7 @@ class CustomComponentBuilder implements IComponentFactory {
       const pinParameters = inputPinParams[pinDeclaration.name] as Record<string, unknown>;
       if (! pinParameters)
         throw new Error(`Parameter section «${pinDeclaration.name}» is not defined in component «${this.typeName} factory»`);
-      newComponent.inputPins.declareInputPin(pinDeclaration.name, pinDeclaration.dataType, pinParameters );
+      newComponent.declareInputPin(pinDeclaration.name, pinDeclaration.dataType, pinParameters );
     }
 
     const outputPinsParamName = 'outputPins';
@@ -66,7 +66,7 @@ class CustomComponentBuilder implements IComponentFactory {
       const pinParameters = outputPinParams[pinDeclaration.name] as Record<string, unknown>;
       if (! pinParameters)
         throw new Error(`Parameter section «${pinDeclaration.name}» is not defined in component «${this.typeName} factory»`);
-      newComponent.outputPins.declareOutputPin(pinDeclaration.name, pinDeclaration.dataType, pinParameters );
+      newComponent.declareOutputPin(pinDeclaration.name, pinDeclaration.dataType, pinParameters );
     }
 
     return newComponent;

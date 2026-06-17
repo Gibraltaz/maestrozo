@@ -1,26 +1,13 @@
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
 import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
-import { InputPinContainer, OutputPinContainer } from '@/PinContainer';
-import { ElementKind, ElementName, ElementPath } from '@/global/types';
+import { ComponentName, ElementName, ElementPath } from '@/global/types';
 import { Message } from '@/global/messages';
+import { AbstractComponent } from './AbstractComponent';
 
-const fakeElementKind: ElementKind = 'fake-component' as ElementKind;
+class FakeComponent extends AbstractComponent {
 
-class FakeComponent implements IComponent {
-  name: ElementName;
-  kind: ElementKind;
-  path: ElementPath;
-  factory : IComponentFactory;
-  inputPins : InputPinContainer;
-  outputPins: OutputPinContainer;
-
-  constructor (componentName: ElementName, parentElementPath: ElementPath, factory : IComponentFactory ) {
-    this.name = componentName;
-    this.kind = fakeElementKind;
-    this.path = [ ...parentElementPath, componentName ];
-    this.factory = factory;
-    this.inputPins  = new InputPinContainer(this.path);
-    this.outputPins = new OutputPinContainer(this.path);
+  constructor (componentName: ComponentName, parentElementPath: ElementPath, factory : IComponentFactory ) {
+    super(componentName, parentElementPath, factory);
   }
 
   evaluate(_message: Message): EvaluationResult {
@@ -32,7 +19,7 @@ class FakeComponent implements IComponent {
 class FakeComponentFactory implements IComponentFactory {
   typeName = 'fake-component' as ElementName;
 
-  createInstance(componentName: ElementName, parentElementPath: ElementPath, _params: Record<string, unknown>): IComponent {
+  createInstance(componentName: ComponentName, parentElementPath: ElementPath, _params: Record<string, unknown>): IComponent {
     const fakeComponent = new FakeComponent(componentName, parentElementPath, this);
     return fakeComponent;
   }

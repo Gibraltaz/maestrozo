@@ -1,8 +1,6 @@
 import { ElementName } from "./types";
 
 const PinConnectionTypeElementName: ElementName = 'pin-connection' as ElementName;
-const inputPinContainerName : ElementName = 'input-pins' as ElementName;
-const outputPinContainerName : ElementName = 'output-pins' as ElementName;
 const inputPinTypeName  : ElementName = 'input-pin' as ElementName;
 const outputPinTypeName : ElementName = 'output-pin' as ElementName;
 const componentContainerName : ElementName = 'components' as ElementName;
@@ -30,8 +28,6 @@ const componentName : ElementName = 'component' as ElementName;
 export {
   ElementName,
   PinConnectionTypeElementName,
-  inputPinContainerName,
-  outputPinContainerName,
   inputPinTypeName,
   outputPinTypeName,
   componentContainerName,
@@ -43,7 +39,4 @@ export {
   pinTypeContainerName,
   componentName,
   pinConnectionTypeContainerName,
-
-
-
 };

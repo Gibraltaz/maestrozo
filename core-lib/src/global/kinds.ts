@@ -16,12 +16,18 @@ const DataTypeElementKind : ElementKind = 'data-type' as ElementKind;
 const ComponentTypeElementKind : ElementKind = 'component-type' as ElementKind;
 
 // les différents sortes d'éléments dans /runtime
+const componentKind: ElementKind = 'component' as ElementKind;
 const PinConnectionTypeElementKind: ElementKind = 'pin-connection-type' as ElementKind;
-const inputPinContainerType : ElementKind = 'input-pin-container' as ElementKind;
-const outputPinContainerType : ElementKind = 'output-pin-container' as ElementKind;
+
 const PinTypeElementKind : ElementKind = 'pin-type' as ElementKind;
+
+// FIXME vérifier si utilisé
 const inputPinTypeKind : ElementKind = 'input-pin-type' as ElementKind;
 const outputPinTypeKind : ElementKind = 'output-pin-type' as ElementKind;
+
+const inputPinKind : ElementKind = 'input-pin' as ElementKind;
+const outputPinKind : ElementKind = 'output-pin' as ElementKind;
+
 const runtimeElementKind : ElementKind = 'runtime-container' as ElementKind;
 const componentContainerKind : ElementKind = 'component-container' as ElementKind;
 const pinConnectionContainerKind : ElementKind = 'pin-connection-container' as ElementKind;
@@ -30,14 +36,15 @@ export {
   PinConnectionTypeElementKind,
   ComponentTypeElementKind,
   DataTypeElementKind,
-  inputPinContainerType,
-  outputPinContainerType,
   PinTypeElementKind,
   inputPinTypeKind,
   outputPinTypeKind,
+  inputPinKind,
+  outputPinKind,
   runtimeElementKind,
   componentContainerKind,
   pinConnectionContainerKind,
   typeElementKind,
   typesRootKind,
+  componentKind
 };
