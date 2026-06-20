@@ -33,6 +33,10 @@ abstract class AbstractPin implements IPin {
     this.path = [ ...pinContainerPath, pinName ];
   }
 
+  get isContainer(): boolean {
+    return false;
+  }
+
   get children() : readonly IElement[] {
     return Object.values(this._children);
   }

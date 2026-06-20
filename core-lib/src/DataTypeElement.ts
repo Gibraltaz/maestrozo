@@ -6,7 +6,6 @@ import { AbstractContainer } from './AbstractContainer';
 import { ElementPath } from './global/types';
 import { DataTypeElementKind } from './global/kinds';
 
-
 class DataTypeElement extends AbstractContainer implements ITypeElement {
 
   factory : ITypeFactory;
@@ -29,4 +28,4 @@ class DataTypeElement extends AbstractContainer implements ITypeElement {
 
 }
 
-export { DataTypeElement, DataTypeElementKind };
+export { DataTypeElement };

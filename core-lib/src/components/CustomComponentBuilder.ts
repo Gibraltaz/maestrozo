@@ -3,7 +3,6 @@ import { IComponentFactory } from "@/interfaces/IComponentFactory";
 import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
 import { ITypeContainer } from '@/interfaces/ITypeContainer';
 import { DataTypeElement } from "@/DataTypeElement";
-import { ComponentTypeElementKind } from '@/ComponentTypeElement';
 import { ComponentName, ElementName, ElementPath } from "@/global/types";
 import { Message } from "@/global/messages";
 

@@ -45,6 +45,10 @@ class PinConnection implements IPinConnection {
     this.targetPinName = targetPinName;
   }
 
+  get isContainer(): boolean {
+    return false;
+  }
+
 }
 
 class PinConnectionFactory implements IPinConnectionFactory {

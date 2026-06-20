@@ -57,8 +57,8 @@ class Engine {
     const typeContainer = this._rootElement.findElementByPath(typeContainerPath) as ITypeContainer;
     if (typeContainer === undefined)
       throw new Error(`Can't find type container «${typeContainerPath}»`)
-
-    // TODO vérifier que componentTypeContainer est bien un conteneur
+    if (! typeContainer.isContainer)
+      throw new Error(`Element «${typeContainerPath}» is not a container`)
 
     const componentBuilder = new CustomComponentBuilder(
         componentTypeName,

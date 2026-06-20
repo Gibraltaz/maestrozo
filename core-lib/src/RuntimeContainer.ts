@@ -5,7 +5,7 @@ import { IComponent } from '@/interfaces/IComponent';
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
 import { parentElementPath, pathToString } from '@/utils/path';
 import { ComponentName, ComponentPath, ElementName, ElementPath, InputPinName, OutputPinName } from '@/global/types';
-import {  inputPinKind, outputPinKind, runtimeElementKind } from '@/global/kinds';
+import { runtimeElementKind } from '@/global/kinds';
 
 class RuntimeContainer extends AbstractContainer implements IRuntimeContainer {
   readonly kind = runtimeElementKind;

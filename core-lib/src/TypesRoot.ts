@@ -55,7 +55,6 @@ class TypesRoot extends AbstractContainer {
     pinConnectionTypeContainer.declarePinConnectionType(new PinConnectionFactory());
 
   }
-
 }
 
 export { TypesRoot };

@@ -19,6 +19,10 @@ abstract class AbstractContainer implements IContainer {
     this._children = {};
   }
 
+  get isContainer(): boolean {
+    return true;
+  }
+
   get children() : readonly IElement[] {
     return Object.values(this._children);
   }
@@ -45,8 +49,11 @@ abstract class AbstractContainer implements IContainer {
       throw new Error(`Element «${elementName}» not found in container «${this.name}»`);
     if (elementPathRest.length === 0 )
       return element;
-    else // FIXME comment savoir si l'élément a une méthode findElementByPath ?
-      return element.findElementByPath(elementPathRest);
+    if (! element.isContainer )
+      throw new Error(`Element «${elementName}» in container «${this.name}» is not a container`);
+    
+    const container: IContainer = element as IContainer;
+    return container.findElementByPath(elementPathRest);
   }
 }
 
