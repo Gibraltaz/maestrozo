@@ -8,7 +8,10 @@ import { ComponentTypeElement } from './ComponentTypeElement';
 import { IRuntimeContainer } from './interfaces/IRuntimeContainer';
 import { ITypeElement } from './interfaces/ITypeElement';
 import { IComponentFactory } from './interfaces/IComponentFactory';
-import { ComponentName, ElementName, ElementPath, MessageTime } from './global/types';
+import { ComponentName, ComponentPath, ElementName, ElementPath, InputPinName, MessageTime, OutputPinName } from './global/types';
+import { COMPONENT_MESSAGE_SCOPE, MESSAGE_CREATION } from "@/global/messages";
+import { ComponentMessage } from './interfaces/MessageQueue';
+import { PinConnectionTypeElementName, IPinConnectionFactory, IPinConnection } from '@/interfaces/IPinConnection';
 
 type TimeFunction = () => MessageTime;
 
@@ -78,8 +81,8 @@ class Engine {
     parentContainerPath: ElementPath,
     typePath: ElementPath,
     params: Record<string, any>
-  ): IComponent {
-
+  ): IComponent 
+  {
     const runtimeContainer = this._rootElement.findElementByPath(parentContainerPath) as IRuntimeContainer;
     if (runtimeContainer === undefined) // FIXME utile si exception générée
       throw new Error(`Can't find parent container «${parentContainerPath}»`)
@@ -96,8 +99,48 @@ class Engine {
       params
     );
 
+    const message: ComponentMessage  = {
+      at: this._timeFunction() as MessageTime,
+      scope: COMPONENT_MESSAGE_SCOPE,
+      event: MESSAGE_CREATION,
+      componentPath: component.path as ComponentPath
+    };
+    this.messageQueue.pushMessage(message);
+
     return component;
   }
+
+  createPinConnection(
+    containerPath: ElementPath ,
+    sourceComponentName: ComponentName,
+    sourcePinName: OutputPinName,
+    targetComponentName: ComponentName,
+    targetPinName: InputPinName,
+  ): IPinConnection 
+  {
+    const runtimeContainer = this._rootElement.findElementByPath(containerPath) as IRuntimeContainer;
+    if (runtimeContainer === undefined) // FIXME utile si exception générée
+      throw new Error(`Can't find parent container «${containerPath}»`)
+
+    const sourceComponent = runtimeContainer.getComponentByName(sourceComponentName);
+    const sourcePin = sourceComponent.getOutputPinByName(sourcePinName);
+
+    const targetComponent = runtimeContainer.getComponentByName(targetComponentName);
+    const targetPin = targetComponent.getInputPinByName(targetPinName);
+
+    const pinConnectionType = this._rootElement
+      .typesContainer.pinConnectionTypeContainer
+      .getElementByName(PinConnectionTypeElementName) as ITypeElement;
+
+    const pinConnection = runtimeContainer.createPinConnection(
+      sourceComponent, sourcePin,
+      targetComponent, targetPin,
+      pinConnectionType.factory as IPinConnectionFactory
+    );
+
+    return pinConnection;
+  }
+
 
 }
 

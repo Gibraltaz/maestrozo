@@ -1,9 +1,9 @@
 import { AbstractContainer } from '@/AbstractContainer';
 import { Message } from '@/global/messages';
-import { ComponentName, ElementKind, ElementName, ElementPath, PinName } from '@/global/types';
+import { ComponentName, ElementName, ElementPath, PinName } from '@/global/types';
 import { EvaluationResult, IComponent } from '@/interfaces/IComponent';
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
-import { IPin } from '@/interfaces/IPin';
+import { IInputPin, IOutputPin, IPin } from '@/interfaces/IPin';
 import { componentKind, inputPinKind, outputPinKind } from '@/global/kinds';
 import { IElement } from '@/interfaces/IElement';
 import { IDataFactory } from '@/interfaces/IDataFactory';
@@ -25,18 +25,18 @@ class AbstractComponent extends AbstractContainer implements IComponent {
     return pinElement as IPin;
   }
 
-  getInputPinByName(pinName: PinName) : IPin {
+  getInputPinByName(pinName: PinName) : IInputPin {
     const pinElement = this.getElementByName(pinName);
     if (pinElement.kind !== inputPinKind)
       throw new Error(`Source «${pinName}» is not an input pin`);
-    return pinElement as IPin;
+    return pinElement as IInputPin;
   }
 
-  getOutputPinByName(pinName: PinName) : IPin {
+  getOutputPinByName(pinName: PinName) : IOutputPin {
     const pinElement = this.getElementByName(pinName);
     if (pinElement.kind !== outputPinKind)
       throw new Error(`Source «${pinName}» is not an output pin`);
-    return pinElement as IPin;
+    return pinElement as IOutputPin;
   }
 
   get pins() : IPin[] {
@@ -45,16 +45,16 @@ class AbstractComponent extends AbstractContainer implements IComponent {
     ) as IPin[];
   }
 
-  get inputPins() : IPin[] {
+  get inputPins() : IInputPin[] {
     return (Object.values(this._children).filter(
       (pin: IElement) => pin.kind === inputPinKind)
-    ) as IPin[];
+    ) as IInputPin[];
   }
 
-  get outputPins() : IPin[] {
+  get outputPins() : IOutputPin[] {
     return (Object.values(this._children).filter(
       (pin: IElement) => pin.kind === outputPinKind)
-    ) as IPin[];
+    ) as IOutputPin[];
   }
 
   protected declarePin(newPin: IPin, dataFactory: IDataFactory, params: Record<string, unknown>) : IPin {
@@ -65,16 +65,16 @@ class AbstractComponent extends AbstractContainer implements IComponent {
     return newPin;
   }
 
-  declareInputPin(pinName: ElementName, dataType: DataTypeElement, params: Record<string, unknown>) : IPin {
+  declareInputPin(pinName: ElementName, dataType: DataTypeElement, params: Record<string, unknown>) : IInputPin {
     const dataFactory = dataType.factory as IDataFactory;
     const newPin = new InputPin(pinName, this.path, dataFactory);
-    return this.declarePin(newPin, dataFactory, params);
+    return this.declarePin(newPin, dataFactory, params) as IInputPin;
   }
 
-  declareOutputPin(pinName: ElementName, dataType: DataTypeElement, params: Record<string, unknown>) : IPin {
+  declareOutputPin(pinName: ElementName, dataType: DataTypeElement, params: Record<string, unknown>) : IOutputPin {
     const dataFactory = dataType.factory as IDataFactory;
     const newPin = new OutputPin(pinName, this.path, dataFactory);
-    return this.declarePin(newPin, dataFactory, params);
+    return this.declarePin(newPin, dataFactory, params) as IOutputPin;
   }
 
   evaluate(_message: Message): EvaluationResult {

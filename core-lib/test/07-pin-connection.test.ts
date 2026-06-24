@@ -93,10 +93,22 @@ describe("Custom component", () => {
   it("should create a connexion between components", () => {
     const pinConnectionType = root.typesContainer.pinConnectionTypeContainer.getElementByName(PinConnectionTypeElementName) as ITypeElement;
 
-    // TODO problème ici car pinConnections ne peut pas tester l'existence des composants
+    const sourceComponentName:ElementName = 'my-component-A-1' as ElementName;
+    const sourcePinName:ElementName = 'integer-output' as ElementName;
+
+    const targetComponentName:ElementName = 'my-component-B-1' as ElementName;
+    const targetPinName:ElementName = 'integer-input' as ElementName;
+
+
+    const sourceComponent = runtimeContainer.getElementByName(sourceComponentName) as IComponent;
+    const sourcePin = sourceComponent.getOutputPinByName(sourcePinName);
+
+    const targetComponent = runtimeContainer.getElementByName(targetComponentName) as IComponent;
+    const targetPin = targetComponent.getInputPinByName(targetPinName);
+
     const connection = runtimeContainer.createPinConnection(
-      'my-component-A-1' as ComponentName, 'integer-output' as OutputPinName,
-      'my-component-B-1' as ComponentName, 'integer-input' as InputPinName,
+      sourceComponent, sourcePin,
+      targetComponent, targetPin,
       pinConnectionType.factory as IPinConnectionFactory
     );
 
@@ -112,13 +124,26 @@ describe("Custom component", () => {
     expect(connection).to.have.property('targetPinName', 'integer-input');
   });
 
+
   it("should not create the same connection", () => {
     const pinConnectionType = root.typesContainer.pinConnectionTypeContainer.getElementByName(PinConnectionTypeElementName) as ITypeElement;
 
+    const sourceComponentName:ElementName = 'my-component-A-1' as ElementName;
+    const sourcePinName:ElementName = 'integer-output' as ElementName;
+
+    const targetComponentName:ElementName = 'my-component-B-1' as ElementName;
+    const targetPinName:ElementName = 'integer-input' as ElementName;
+
+    const sourceComponent = runtimeContainer.getElementByName(sourceComponentName) as IComponent;
+    const sourcePin = sourceComponent.getOutputPinByName(sourcePinName);
+
+    const targetComponent = runtimeContainer.getElementByName(targetComponentName) as IComponent;
+    const targetPin = targetComponent.getInputPinByName(targetPinName);
+
     expect( () => {
       runtimeContainer.createPinConnection(
-        'my-component-A-1' as ComponentName, 'integer-output' as OutputPinName,
-        'my-component-B-1' as ComponentName, 'integer-input' as InputPinName,
+        sourceComponent, sourcePin,
+        targetComponent, targetPin,
         pinConnectionType.factory as IPinConnectionFactory
       );
     }).toThrow("Pin connection «my-component-A-1:integer-output-my-component-B-1:integer-input» already exists in container «/runtime»");

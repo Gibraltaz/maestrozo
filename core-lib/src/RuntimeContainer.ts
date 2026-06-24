@@ -4,8 +4,9 @@ import { IPinConnection, IPinConnectionFactory } from '@/interfaces/IPinConnecti
 import { IComponent } from '@/interfaces/IComponent';
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
 import { parentElementPath, pathToString } from '@/utils/path';
-import { ComponentName, ComponentPath, ElementName, ElementPath, InputPinName, OutputPinName } from '@/global/types';
+import { ComponentName, ComponentPath, ElementName, ElementPath } from '@/global/types';
 import { runtimeElementKind } from '@/global/kinds';
+import { InputPin, OutputPin } from './Pin';
 
 class RuntimeContainer extends AbstractContainer implements IRuntimeContainer {
   readonly kind = runtimeElementKind;
@@ -30,22 +31,14 @@ class RuntimeContainer extends AbstractContainer implements IRuntimeContainer {
   }
 
   createPinConnection(
-    sourceComponentName: ComponentName, sourcePinName: OutputPinName,
-    targetComponentName: ComponentName, targetPinName: InputPinName,
+    sourceComponent: IComponent, sourcePin: OutputPin,
+    targetComponent: IComponent, targetPin: InputPin,
     pinConnectionFactory: IPinConnectionFactory
   ): IPinConnection {
 
-    // check existence of source component and source output pin
-    const sourceComponent = this.getElementByName(sourceComponentName) as IComponent;
-    sourceComponent.getOutputPinByName(sourcePinName);
-
-    // check existence of target component and source input pin
-    const targetComponent = this.getElementByName(targetComponentName) as IComponent;
-    targetComponent.getInputPinByName(targetPinName);
-
     const pinConnection = pinConnectionFactory.createInstance(
-      sourceComponentName, sourcePinName,
-      targetComponentName, targetPinName,
+      sourceComponent, sourcePin,
+      targetComponent, targetPin,
       this.path
     );
 

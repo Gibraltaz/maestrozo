@@ -2,7 +2,8 @@ import { IContainer } from '@/interfaces/IContainer';
 import { IPinConnection, IPinConnectionFactory } from '@/interfaces/IPinConnection';
 import { IComponent } from '@/interfaces/IComponent';
 import { IComponentFactory } from '@/interfaces/IComponentFactory';
-import { ComponentName, ComponentPath, ElementName, InputPinName, OutputPinName } from '@/global/types';
+import { ComponentName, ComponentPath, ElementName } from '@/global/types';
+import { IInputPin, IOutputPin } from './IPin';
 
 interface IRuntimeContainer extends IContainer {
 
@@ -13,8 +14,8 @@ interface IRuntimeContainer extends IContainer {
   ): IComponent;
 
   createPinConnection(
-    sourceComponentName: ComponentName, sourcePinName: OutputPinName,
-    targetComponentName: ComponentName, targetPinName: InputPinName,
+    sourceComponent: IComponent, sourcePin: IOutputPin,
+    targetComponent: IComponent, targetPin: IInputPin,
     pinConnectionFactory: IPinConnectionFactory
   ): IPinConnection;
 

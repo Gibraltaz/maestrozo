@@ -3,6 +3,8 @@ import { ITypeFactory } from '@/interfaces/ITypeFactory';
 import { ITypeElement } from '@/interfaces/ITypeElement';
 import { AbstractContainer } from "./AbstractContainer";
 import { ComponentName, ElementKind, ElementName, ElementPath, InputPinName, OutputPinName } from "./global/types";
+import { IComponent } from "./interfaces/IComponent";
+import { IInputPin, IOutputPin } from "./interfaces/IPin";
 
 const PinConnectionName: ElementName = 'pin-connection' as ElementName;
 const PinConnectionKind: ElementKind = 'pin-connection' as ElementKind;
@@ -55,13 +57,13 @@ class PinConnectionFactory implements IPinConnectionFactory {
   typeName = PinConnectionName;
 
   createInstance(
-    sourceComponentName: ComponentName, sourcePinName: OutputPinName,
-    targetComponentName: ComponentName, targetPinName: InputPinName,
+    sourceComponent: IComponent, sourcePin: IOutputPin,
+    targetComponent: IComponent, targetPin: IInputPin,
     containerPath: ElementPath
   ): IPinConnection {
     const pinConnection = new PinConnection(
-      sourceComponentName, sourcePinName,
-      targetComponentName, targetPinName,
+      sourceComponent.name as ComponentName, sourcePin.name as OutputPinName,
+      targetComponent.name as ComponentName, targetPin.name as InputPinName,
       containerPath
     );
     return pinConnection;

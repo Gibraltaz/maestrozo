@@ -39,32 +39,20 @@ class CustomComponentBuilder implements IComponentFactory {
     const newComponent = new CustomComponent(componentName, parentElementPath, this);
 
     const inputPinsParamName = 'inputPins';
-    const inputPinParams = params[inputPinsParamName] as Record<string, unknown>;
-    // TODO ne pas générer d'erreurs si la section inputPins n'est pas fournie quand le composant n'a pas d'entrées
-    if (inputPinParams === undefined)
-      throw new Error(`The «${inputPinsParamName}» section is missing from params to create «${componentName}» component`);
-    // TODO ne pas générer d'erreurs si la section inputPins n'est pas fournie quand le composant n'a pas de sorties
-    if (inputPinParams === null || typeof(inputPinParams) != 'object')
-      throw new Error(`The «${inputPinsParamName}» section must be a key-value object while creating "${componentName}" component`);
+    const inputPinParams : Record<string, any> | undefined = params?.[inputPinsParamName] ?? {};
 
     for (const pinDeclaration of this.inputPinDeclarations) {
-      const pinParameters = inputPinParams[pinDeclaration.name] as Record<string, unknown>;
-      if (! pinParameters)
-        throw new Error(`Parameter section «${pinDeclaration.name}» is not defined in component «${this.typeName} factory»`);
+      const pinParameters: Record<string, unknown> = inputPinParams?.[pinDeclaration.name] ?? {}; 
       newComponent.declareInputPin(pinDeclaration.name, pinDeclaration.dataType, pinParameters );
     }
 
     const outputPinsParamName = 'outputPins';
-    const outputPinParams = params[outputPinsParamName] as Record<string, unknown>;
-    if (outputPinParams === undefined)
-      throw new Error(`The «${outputPinsParamName}» section is missing from params to create «${componentName}» component`);
+    const outputPinParams : Record<string, any> | undefined = params?.[inputPinsParamName] ?? {};
     if (outputPinParams === null || typeof(outputPinParams) != 'object')
       throw new Error(`The «${outputPinsParamName}» section must be a key-value object while creating "${componentName}" component`);
 
     for (const pinDeclaration of this.outputPinDeclarations) {
-      const pinParameters = outputPinParams[pinDeclaration.name] as Record<string, unknown>;
-      if (! pinParameters)
-        throw new Error(`Parameter section «${pinDeclaration.name}» is not defined in component «${this.typeName} factory»`);
+      const pinParameters: Record<string, unknown> = outputPinParams?.[pinDeclaration.name] ?? {}; 
       newComponent.declareOutputPin(pinDeclaration.name, pinDeclaration.dataType, pinParameters );
     }
 
