@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
+
 import { AbstractContainer } from '@/AbstractContainer';
 import { IRuntimeContainer } from '@/interfaces/IRuntimeContainer';
 import { IPinConnection, IPinConnectionFactory } from '@/interfaces/IPinConnection';

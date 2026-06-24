@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
+
 import { MessageQueue } from '@/interfaces/MessageQueue';
 import { Message } from './global/messages';
 import { MessageTime } from './global/types';

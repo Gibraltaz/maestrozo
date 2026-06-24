@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
+
 import { IPinConnection, IPinConnectionFactory, PinConnectionTypeElementKind } from "./interfaces/IPinConnection";
 import { ITypeFactory } from '@/interfaces/ITypeFactory';
 import { ITypeElement } from '@/interfaces/ITypeElement';

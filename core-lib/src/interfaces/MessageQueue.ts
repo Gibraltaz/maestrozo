@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
+
 import { ComponentMessageScope, Message, MessageEvent, MessageScope, PinMessageScope } from '@/global/messages';
 import { ComponentPath, MessageTime } from '@/global/types';
 import { InputPinName } from '@/interfaces/IPin';

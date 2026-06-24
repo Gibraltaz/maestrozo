@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
+
 type ElementName = string & { __brand: 'ElementName' };
 
 type ElementKind = string & { __brand: 'ElementKind' };

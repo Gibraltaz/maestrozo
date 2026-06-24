@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
+
 import { ITypeFactory } from '@/interfaces/ITypeFactory';
 import { ElementName, ElementPath } from '@/global/types';
 import { EvaluationResult, IComponent } from '@/interfaces/IComponent';

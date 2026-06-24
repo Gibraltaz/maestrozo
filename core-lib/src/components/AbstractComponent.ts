@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
+
 import { AbstractContainer } from '@/AbstractContainer';
 import { Message } from '@/global/messages';
 import { ComponentName, ElementName, ElementPath, PinName } from '@/global/types';
