@@ -30,6 +30,13 @@ class BooleanDataFactory implements IDataFactory {
     return booleanData;
   }
 
+  controlValue(value: any): void {
+    if (value === undefined)
+      throw new Error("Boolean data value is not defined");
+    if (typeof(value) !== 'boolean')
+      throw new Error(`Value «${value}» is not a boolean`);
+  }
+
 }
 
 export { BooleanDataFactory, BooleanData };

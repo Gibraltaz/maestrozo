@@ -19,8 +19,15 @@ describe("Engine", () => {
     const dataTypeContainer = engine.getRootElement().typesContainer.dataTypeContainer;
 
     const componentEvaluateFunction1 : EvaluateMessageFunction = (_component: IComponent, message: Message) => {
-      const evalResult: EvaluationResult  = {} as EvaluationResult;
       globalMessage = message;
+      const evalResult: EvaluationResult  = {
+        setOutputs: [
+          {
+            pin: 'integer-output',
+            value: 123
+          }
+        ]
+      } as EvaluationResult;
       return evalResult;
     } ;
 
@@ -88,6 +95,13 @@ describe("Engine", () => {
     expect(engine.messageQueue.messageCount).equal(2); // component creation messages
   });
 
+  it("should process waiting messages", () => {
+    engine.runOnce();
+    expect(engine.messageQueue.messageCount).equal(1);
+    engine.runOnce();
+    expect(engine.messageQueue.messageCount).equal(0);
+
+  });
 
   it("should create pin connection", () => {
     const pinConnection = engine.createPinConnection(
@@ -110,17 +124,21 @@ describe("Engine", () => {
 
   });
 
+  it("should find the pin connection message", () => {
+    expect(engine.messageQueue.messageCount).equal(1);
+  });
 
-  //it("should evaluate the message created", () => {
-  //  expect(engine.messageQueue.messageCount).equal(1);
-  //  engine.runOnce();
-  //  expect(globalMessage).to.not.equal(null);
-  //  expect(globalMessage).to.have.property('at');
-  //  expect(globalMessage).to.have.property('scope', 'component');
-  //  expect(globalMessage).to.have.property('event', 'created');
-  //  expect(globalMessage).to.have.property('componentPath');
-  //  expect(globalMessage?.componentPath).to.deep.equal(['runtime', 'my-component-01']);
-  //});
+  it("should evaluate the message created", () => {
+    engine.runOnce();
+    expect(engine.messageQueue.messageCount).equal(0);
+    expect(globalMessage).to.not.equal(null);
+    expect(globalMessage).to.have.property('at');
+    expect(globalMessage).to.have.property('scope', 'pin');
+    expect(globalMessage).to.have.property('event', 'changed');
+    expect(globalMessage).to.have.property('componentPath');
+    expect(globalMessage?.componentPath).to.deep.equal(['runtime', 'my-component-2']);
+    expect(globalMessage).to.have.property('value', 123);
+  });
 });
 
 

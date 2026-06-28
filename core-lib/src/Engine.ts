@@ -5,7 +5,7 @@
 
 import { RootElement } from '@/RootElement';
 import { MessageQueueImpl } from '@/MessageQueueImpl';
-import { pathToString } from '@/utils/path';
+import { parentElementPath, pathToString } from '@/utils/path';
 import { IComponent } from './interfaces/IComponent';
 import { CustomComponentBuilder, EvaluateMessageFunction, PinDeclaration } from './components/CustomComponentBuilder';
 import { ITypeContainer } from './interfaces/ITypeContainer';
@@ -14,9 +14,10 @@ import { IRuntimeContainer } from './interfaces/IRuntimeContainer';
 import { ITypeElement } from './interfaces/ITypeElement';
 import { IComponentFactory } from './interfaces/IComponentFactory';
 import { ComponentName, ComponentPath, ElementName, ElementPath, InputPinName, MessageTime, OutputPinName } from './global/types';
-import { COMPONENT_MESSAGE_SCOPE, MESSAGE_CREATION } from "@/global/messages";
-import { ComponentMessage } from './interfaces/MessageQueue';
+import { COMPONENT_MESSAGE_SCOPE, MESSAGE_CHANGE, MESSAGE_CREATION, PIN_MESSAGE_SCOPE } from "@/global/messages";
+import { ComponentMessage, PinMessage } from './interfaces/MessageQueue';
 import { PinConnectionTypeElementName, IPinConnectionFactory, IPinConnection } from '@/interfaces/IPinConnection';
+import { IContainer } from './interfaces/IContainer';
 
 type TimeFunction = () => MessageTime;
 
@@ -48,10 +49,47 @@ class Engine {
     const message = this.messageQueue.popMessage(now);
     if (message === undefined)
       return;
+
     const component = this._rootElement.findElementByPath(message.componentPath) as IComponent;
     if (component === undefined)
       throw new Error(`Can not find element with path «${pathToString(message.componentPath)}»`);
-    component.evaluate(message);
+
+    const parentPath = parentElementPath(message.componentPath);
+    const componentContainer = this._rootElement.findElementByPath(parentPath) as IContainer;
+
+    const result = component.evaluate(message);
+    if (result.setOutputs !== undefined) {
+      if (! Array.isArray(result.setOutputs))
+        throw new Error(`Evaluation of component «${pathToString(message.componentPath)}» does not return an array in «setOutputs»`);
+      for (const setOutput of result.setOutputs) {
+
+        const outputPinName = setOutput.pin;
+        if (outputPinName === undefined)
+          throw new Error(`Value of «setOutputs.pin» is not set in evaluation result of component «${pathToString(message.componentPath)}»`);
+        if (typeof(outputPinName) !== 'string')
+          throw new Error(`Value of «setOutputs.pin» is not a string in evaluation result of component «${pathToString(message.componentPath)}»`);
+        const outputPin = component.getOutputPinByName(outputPinName);
+        if (outputPin === null)
+          throw new Error(
+                `Pin «${outputPinName}» referenced in «setOutputs.pin» ` +
+                `of the evaluation result for component «${pathToString(message.componentPath)}» does not exist.`
+          );
+
+        const newValue = setOutput.value;
+        if (newValue === undefined)
+          throw new Error(`Value of «${outputPinName}» is not set in evaluation result of component «${pathToString(message.componentPath)}»`);
+        outputPin.dataFactory.controlValue(newValue);
+        outputPin.value = newValue;
+
+        for (const element of componentContainer.children) {
+
+          // TODO implémenter la propagation aux entrées connectées
+          if (element.kind === 'pin-connection')
+            throw new Error("Propagation non implémentée");
+
+        }
+      }
+    }
   }
 
   declareCustomComponent(
@@ -143,9 +181,34 @@ class Engine {
       pinConnectionType.factory as IPinConnectionFactory
     );
 
+    // si la valeur de la sortie est déterminée, la propager à la sortie connectée
+    if (sourcePin.value !== null) {
+
+      for (const element of runtimeContainer.children) {
+
+        if (element.kind !== 'pin-connection')
+          continue;
+        const pinConnection = element as IPinConnection;
+
+        if (pinConnection.targetComponentName !== targetComponentName)
+          continue;
+        if (pinConnection.targetPinName !== targetPinName)
+          continue;
+
+        const message: PinMessage  = {
+          at: this._timeFunction() as MessageTime,
+          scope: PIN_MESSAGE_SCOPE,
+          event: MESSAGE_CHANGE,
+          componentPath: targetComponent.path as ComponentPath,
+          inputPinName: targetPin.name,
+          value: sourcePin.value
+        };
+        this.messageQueue.pushMessage(message);
+      }
+    }
+
     return pinConnection;
   }
-
 
 }
 

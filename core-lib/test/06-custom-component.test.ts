@@ -150,11 +150,7 @@ describe("Custom component", () => {
       expect(pin).toHaveProperty('kind', 'input-pin');
       expect(pin).toHaveProperty('path');
       expect(pin.path).deep.equals(['runtime', 'my-custom-component-01', 'boolean-input']);
-      expect(pin).toHaveProperty('value');
-      let pinValue = pin.value;
-      expect(pinValue).to.be.instanceOf(BooleanData);
-      expect(pinValue).toHaveProperty('value');
-      expect(pinValue.value).to.equal(true);
+      expect(pin).toHaveProperty('value', true);
 
       expect(myCustomComponent).toHaveProperty('outputPins');
       expect(myCustomComponent.factory).toBeInstanceOf(Object);
@@ -168,21 +164,14 @@ describe("Custom component", () => {
       expect(pin).toHaveProperty('kind', 'output-pin');
       expect(pin).toHaveProperty('path');
       expect(pin.path).deep.equals(['runtime', 'my-custom-component-01', 'integer-output']);
-      expect(pin).toHaveProperty('value');
-      pinValue = pin.value;
-      expect(pinValue).to.be.instanceOf(IntegerData);
-      expect(pinValue).toHaveProperty('value');
-      expect(pinValue.value).to.equal(5);
+      expect(pin).toHaveProperty('value', 5);
 
       pin = outputPinArray[1];
       expect(pin).toBeInstanceOf(Object);
       expect(pin).toHaveProperty('name', 'string-output');
       expect(pin).toHaveProperty('path');
       expect(pin.path).deep.equals(['runtime', 'my-custom-component-01', 'string-output']);
-      pinValue = pin.value;
-      expect(pinValue).to.be.instanceOf(StringData);
-      expect(pinValue).toHaveProperty('value');
-      expect(pinValue.value).to.equal('abc');
+      expect(pin).toHaveProperty('value', 'abc');
     });
   });
 
@@ -271,11 +260,7 @@ describe("Custom component", () => {
       expect(pin).toHaveProperty('kind', 'input-pin');
       expect(pin).toHaveProperty('path');
       expect(pin.path).deep.equals(['runtime', 'my-other-custom-component-01', 'boolean-input']);
-      expect(pin).toHaveProperty('value');
-      let pinValue = pin.value;
-      expect(pinValue).to.be.instanceOf(BooleanData);
-      expect(pinValue).toHaveProperty('value');
-      expect(pinValue.value).to.equal(true);
+      expect(pin).toHaveProperty('value', true);
 
     });
 

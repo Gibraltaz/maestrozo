@@ -30,6 +30,13 @@ class IntegerDataFactory implements IDataFactory {
     return integerData;
   }
 
+  controlValue(value: any): void {
+    if (value === undefined)
+      throw new Error("Integer data value is not defined");
+    if (typeof(value) !== 'number')
+      throw new Error(`Value «${value}» is not an integer`);
+  }
+
 }
 
 export { IntegerDataFactory, IntegerData };

@@ -65,7 +65,12 @@ class AbstractComponent extends AbstractContainer implements IComponent {
   protected declarePin(newPin: IPin, dataFactory: IDataFactory, params: Record<string, unknown>) : IPin {
     if (this._children[newPin.name] !== undefined)
       throw new Error(`Pin «${newPin.name} already exists in component`);
-    newPin.value = dataFactory.createInstance(params);
+
+    // FIXME createInstance ne devrait-elle pas retourner directement la valeur
+    const dataInstance = dataFactory.createInstance(params);
+    // FIXME newPin.value pointe sur un IData !!! donc ça devrait être newPin.data 
+    newPin.value = dataInstance.value;
+
     this._children[newPin.name] = newPin;
     return newPin;
   }

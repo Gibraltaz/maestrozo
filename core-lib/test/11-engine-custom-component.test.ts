@@ -22,24 +22,23 @@ describe("Engine customComponent", () => {
       return evalResult;
     } ;
 
-    const typeContainer = engine.declareCustomComponent(
+    const customComponentType = engine.declareCustomComponent(
       'my-custom-component' as ElementName,
       [ 'types', 'components' ] as ElementPath,
       [] as PinDeclaration[],
       [] as PinDeclaration[],
       componentEvaluateFunction 
     );
-    expect(typeContainer).to.be.instanceOf(Object);
-    expect(typeContainer).to.have.property('name', 'my-custom-component');
-    expect(typeContainer).to.have.property('kind', 'component-type');
-    expect(typeContainer).to.have.property('path');
-    expect(typeContainer.path).to.deep.equal([ 'types', 'components', 'my-custom-component' ]);
-    expect(typeContainer).to.have.property('factory');
-    expect(typeContainer.factory).to.be.instanceOf(Object);
-    expect(typeContainer.factory).to.have.property('typeName', 'my-custom-component');
-
-    expect(typeContainer.factory).to.have.property('inputPinDeclarations');
-    expect(typeContainer.factory).to.have.property('outputPinDeclarations');
+    expect(customComponentType).to.be.instanceOf(Object);
+    expect(customComponentType).to.have.property('name', 'my-custom-component');
+    expect(customComponentType).to.have.property('kind', 'component-type');
+    expect(customComponentType).to.have.property('path');
+    expect(customComponentType.path).to.deep.equal([ 'types', 'components', 'my-custom-component' ]);
+    expect(customComponentType).to.have.property('factory');
+    expect(customComponentType.factory).to.be.instanceOf(Object);
+    expect(customComponentType.factory).to.have.property('typeName', 'my-custom-component');
+    expect(customComponentType.factory).to.have.property('inputPinDeclarations');
+    expect(customComponentType.factory).to.have.property('outputPinDeclarations');
 
   });
 

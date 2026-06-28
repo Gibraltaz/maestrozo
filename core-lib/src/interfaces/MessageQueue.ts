@@ -21,7 +21,8 @@ interface ComponentMessage extends BaseMessage {
 interface PinMessage extends BaseMessage {
   scope: PinMessageScope;
   componentPath: ComponentPath;
-  inputPinName: InputPinName
+  inputPinName: InputPinName;
+  value: any;
 }
 
 

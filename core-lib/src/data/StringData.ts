@@ -30,6 +30,14 @@ class StringDataFactory implements IDataFactory {
     return stringData;
   }
 
+  controlValue(value: any): void {
+    if (value === undefined)
+      throw new Error("String data value is not defined");
+    if (typeof(value) !== 'string')
+      throw new Error(`Value «${value}» is not a string`);
+  }
+
+
 }
 
 export { StringDataFactory, StringData };
