@@ -1,0 +1,22 @@
+{
+  "name": "maestrozo-core",
+  "version": "0.0.1",
+  "description": "",
+  "author": "Dominique Parisot <dominique@gibraltaz.fr>",
+  "license": "GPL-V3",
+  "type": "module",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "check": "tsc --noEmit --watch --pretty",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
+  }
+}
