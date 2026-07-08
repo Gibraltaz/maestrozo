@@ -1,10 +1,18 @@
 import { describe, it, expect } from "vitest";
 import { MaestrozoCore } from "@/MaestrozoCore";
 
-describe("Engine initialization", () => {
-    it("check engine version", () => {
-        const e = new MaestrozoCore();
-        expect(e.version).toBe('0.0.1');
-    });
+describe("Maestrozo core", () => {
+  let maestrozoCore: MaestrozoCore;
 
+  it("should instanciate MaestrozoCore", () => {
+    maestrozoCore = new MaestrozoCore();
+  });
+
+  it("should check engine version", () => {
+    expect(maestrozoCore.version).toBe('0.0.1');
+  });
+
+  it("should run once", () => {
+    maestrozoCore.runOnce();
+  });
 });
