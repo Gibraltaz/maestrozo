@@ -61,7 +61,7 @@ describe("Raw memory store", () => {
   it("should not write a value with an undefined value", () => {
     expect( () => {
       rawMemoryStore.setItem('abc' as StoreKey, undefined as StoreValue);
-    }).to.throw("Store key must be defined");
+    }).to.throw("Store value must be defined");
   });
 
 
