@@ -75,6 +75,46 @@ describe("Maestrozo core", () => {
     expect(element.elementType).to.deep.equal([ 'element', 'container']);
   });
 
+  it("should find /types/components", () => {
+    const element = engine.getElement([ 'types', 'components' ] as ElementPath);
+    expect(element).to.be.instanceof(Object);
+    expect(element).to.have.property('elementName', 'components');
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal(['types']);
+    expect(element).to.have.property('elementType');
+    expect(element.elementType).to.deep.equal([ 'element', 'container']);
+  });
+
+  it("should find /types/components/constant", () => {
+    const element = engine.getElement([ 'types', 'components', 'constant' ] as ElementPath);
+    expect(element).to.be.instanceof(Object);
+    expect(element).to.have.property('elementName', 'constant');
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal(['types', 'components']);
+    expect(element).to.have.property('elementType');
+    expect(element.elementType).to.deep.equal([ 'element', 'container']);
+  });
+
+  it("should find /types/components/variable", () => {
+    const element = engine.getElement([ 'types', 'components', 'variable' ] as ElementPath);
+    expect(element).to.be.instanceof(Object);
+    expect(element).to.have.property('elementName', 'variable');
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal(['types', 'components']);
+    expect(element).to.have.property('elementType');
+    expect(element.elementType).to.deep.equal([ 'element', 'container']);
+  });
+
+  it("should find /types/runtime", () => {
+    const element = engine.getElement([ 'types', 'runtime' ] as ElementPath);
+    expect(element).to.be.instanceof(Object);
+    expect(element).to.have.property('elementName', 'runtime');
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal(['types']);
+    expect(element).to.have.property('elementType');
+    expect(element.elementType).to.deep.equal([ 'element', 'container']);
+  });
+
 
  
 });

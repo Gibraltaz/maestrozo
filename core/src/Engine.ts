@@ -22,6 +22,13 @@ const stringTypeName = 'string' as ElementName;
 const integerTypeName = 'integer' as ElementName;
 const booleanTypeName = 'boolean' as ElementName;
 
+const componentTypeContainerName = 'components' as ElementName;
+const constantComponentTypeName = 'constant' as ElementName;
+const variableComponentTypeName = 'variable' as ElementName;
+
+const runtimeContainerName = 'runtime' as ElementName;
+
+
 class Engine {
   // store brut pour pouvoir stocker les types qui ont des fonctions associées
   private rootStore: MaestrozoStore = new RawMemoryStore;
@@ -86,6 +93,39 @@ class Engine {
       elementType: [elementTypeName, containerTypeName] as ElementPath
     } as Element;
     this.rootStore.setItem(pathToString([...booleanTypeElement.parentPath, booleanTypeName]) as StoreKey, booleanTypeElement);
+
+    // mise en place de /types/components
+    const componentContainerTypeElement = {
+      elementName: componentTypeContainerName,
+      parentPath: [rootTypeContainerName ] as ElementPath,
+      elementType: [elementTypeName, containerTypeName] as ElementPath
+    } as Element;
+    this.rootStore.setItem(pathToString([rootTypeContainerName, componentTypeContainerName]) as StoreKey, componentContainerTypeElement);
+
+    // mise en place de /types/components/constant
+    const constantTypeElement = {
+      elementName: constantComponentTypeName,
+      parentPath: [rootTypeContainerName, componentTypeContainerName] as ElementPath,
+      elementType: [elementTypeName, containerTypeName] as ElementPath
+    } as Element;
+    this.rootStore.setItem(pathToString([...constantTypeElement.parentPath, constantComponentTypeName]) as StoreKey, constantTypeElement);
+
+    // mise en place de /types/components/variable
+    const variableTypeElement = {
+      elementName: variableComponentTypeName,
+      parentPath: [rootTypeContainerName, componentTypeContainerName] as ElementPath,
+      elementType: [elementTypeName, containerTypeName] as ElementPath
+    } as Element;
+    this.rootStore.setItem(pathToString([...variableTypeElement.parentPath, variableComponentTypeName]) as StoreKey, variableTypeElement);
+
+    // mise en place de /types/runtime
+    const runtimeContainerElement = {
+      elementName: runtimeContainerName,
+      parentPath: [rootTypeContainerName ] as ElementPath,
+      elementType: [elementTypeName, containerTypeName] as ElementPath
+    } as Element;
+    this.rootStore.setItem(pathToString([rootTypeContainerName, runtimeContainerName]) as StoreKey, runtimeContainerElement);
+
 
   }
 
