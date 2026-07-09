@@ -3,12 +3,16 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-type ElementName = string & { __brand: 'ElementName' };
-type ElementPath = Array<ElementName>;
+import { Element, ElementName, ElementPath } from '@/Element';
 
 const pathSeparator = '/';
 
 const invalidCharacters = [ pathSeparator ];
+
+
+function elementPath(element: Element) {
+  return [...element.parentPath, element.elementName];
+}
 
 function elementPathAreEquals ( pathA: ElementPath, pathB: ElementPath ) : boolean {
   if (pathA.length != pathB.length)
@@ -30,6 +34,12 @@ function parentElementPath(path : ElementPath) : ElementPath {
 
 function pathToString(path: ElementPath) : string {
   return pathSeparator + path.join(pathSeparator);
+}
+
+function pathStartsWith(path: ElementPath, prefix: ElementPath): boolean {
+  if (prefix.length > path.length)
+    return false;
+  return prefix.every((value, index) => path[index] === value);
 }
 
 function checkElementName(elementName: ElementName) {
@@ -64,9 +74,11 @@ function checkElementPath(elementPath: ElementPath)
 export {
   ElementName,
   ElementPath,
+  elementPath,
   elementPathAreEquals,
   parentElementPath,
   pathToString,
+  pathStartsWith,
   checkElementName,
   checkElementPath
 };

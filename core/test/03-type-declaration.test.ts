@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
+
 import { describe, it, expect } from "vitest";
 import { ElementPath, Engine } from "@/Engine";
 import { RawMemoryStore } from "@/store/RawMemoryStore";
@@ -106,11 +111,11 @@ describe("Maestrozo core", () => {
   });
 
   it("should find /types/runtime", () => {
-    const element = engine.getElement([ 'types', 'runtime' ] as ElementPath);
+    const element = engine.getElement([ 'runtime' ] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('elementName', 'runtime');
     expect(element).to.have.property('parentPath');
-    expect(element.parentPath).to.deep.equal(['types']);
+    expect(element.parentPath).to.deep.equal([]);
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal([ 'element', 'container']);
   });

@@ -5,13 +5,9 @@
 
 import { MaestrozoStore, StoreKey } from '@/store/MaestrozoStore';
 import { RawMemoryStore } from '@/store/RawMemoryStore';
-import { ElementName, ElementPath, pathToString } from '@/path';
+import { checkElementName, checkElementPath, elementPath, pathStartsWith, pathToString } from '@/path';
+import { Element, ElementName, ElementPath } from '@/Element';
 
-type Element = {
-  elementName: ElementName;
-  parentPath : ElementPath;
-  elementType: ElementPath;
-};
 
 const rootTypeContainerName = 'types' as ElementName;
 const containerTypeName = 'container' as ElementName;
@@ -121,11 +117,10 @@ class Engine {
     // mise en place de /types/runtime
     const runtimeContainerElement = {
       elementName: runtimeContainerName,
-      parentPath: [rootTypeContainerName ] as ElementPath,
+      parentPath: [] as ElementPath,
       elementType: [elementTypeName, containerTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([rootTypeContainerName, runtimeContainerName]) as StoreKey, runtimeContainerElement);
-
+    this.rootStore.setItem(pathToString([runtimeContainerName]) as StoreKey, runtimeContainerElement);
 
   }
 
@@ -137,6 +132,35 @@ class Engine {
     return this.rootStore.getItem(pathToString(elementPath) as StoreKey);
   }
 
+  public createElement(
+    elementName: ElementName,
+    parentPath: ElementPath,
+    typePath: ElementPath,
+    params: Record<string, any>
+  ): Element {
+    // FIXME à remonter dans MaestrozoCore ?
+    checkElementName(elementName);
+    checkElementPath(parentPath);
+    checkElementPath(typePath);
+
+    const typeElement = this.getElement(typePath);
+    if (typeElement === null)
+      throw new Error(`Can not find parent «${pathToString(typePath)}»`);
+
+    if (! pathStartsWith(typeElement.parentPath, [rootTypeContainerName, componentTypeContainerName] ))
+        throw new Error(`Path «${pathToString(typePath)} is not a component type path`);
+
+    const parentElement = this.getElement(parentPath);
+    if (parentElement === null)
+      throw new Error(`Can not find parent «${pathToString(parentPath)}»`);
+
+    //if (! pathStartsWith(parentElement.parentPath, [runtimeContainerName] ))
+        //throw new Error(`Path «${pathToString(parentPath)} is not a runtime path`);
+
+    console.log("dOm parent", parentElement);
+    //console.log("dOm params", params);
+    return {} as Element
+  }
 }
 
 export { Engine, ElementName, ElementPath };
