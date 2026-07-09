@@ -8,6 +8,8 @@ type ElementPath = Array<ElementName>;
 
 const pathSeparator = '/';
 
+const invalidCharacters = [ pathSeparator ];
+
 function elementPathAreEquals ( pathA: ElementPath, pathB: ElementPath ) : boolean {
   if (pathA.length != pathB.length)
     return false;
@@ -30,10 +32,41 @@ function pathToString(path: ElementPath) : string {
   return pathSeparator + path.join(pathSeparator);
 }
 
+function checkElementName(elementName: ElementName) {
+  if (elementName === undefined)
+    throw new Error("Element name is not defined");
+  if (typeof(elementName) !== 'string')
+    throw new Error("Element name is not a string");
+  if (elementName.length === 0)
+    throw new Error("Element name can not be an empty string");
+  for (const invalidCharacter of invalidCharacters) {
+    if (elementName.includes(invalidCharacter))
+      throw new Error(`Element name «${elementName}» containts invalid characters`);
+  }
+}
+
+function checkElementPath(elementPath: ElementPath)
+{
+  if (elementPath === undefined)
+    throw new Error("Element path is not defined");
+  if (! Array.isArray(elementPath))
+    throw new Error("Element path is not an array");
+  for (const elementName of elementPath) {
+    try {
+      checkElementName(elementName);
+    }
+    catch(error: any) {
+      throw new Error(`${error.message} in path «${pathToString(elementPath)}»`);
+    }
+  }
+}
+
 export {
   ElementName,
   ElementPath,
   elementPathAreEquals,
   parentElementPath,
-  pathToString
+  pathToString,
+  checkElementName,
+  checkElementPath
 };
