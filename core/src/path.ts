@@ -1,0 +1,39 @@
+/*
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
+
+type ElementName = string & { __brand: 'ElementName' };
+type ElementPath = Array<ElementName>;
+
+const pathSeparator = '/';
+
+function elementPathAreEquals ( pathA: ElementPath, pathB: ElementPath ) : boolean {
+  if (pathA.length != pathB.length)
+    return false;
+  for (let i = 0; i < pathA.length; i++) {
+    if (pathA[i] !== pathB[i])
+      return false;
+  }
+  return true;
+}
+
+function parentElementPath(path : ElementPath) : ElementPath {
+  return path.slice(0, -1);
+}
+
+//function elementSegment(path : ElementPath) : ElementName | null {
+//  return path.at(-1) ?? null;
+//}
+
+function pathToString(path: ElementPath) : string {
+  return pathSeparator + path.join(pathSeparator);
+}
+
+export {
+  ElementName,
+  ElementPath,
+  elementPathAreEquals,
+  parentElementPath,
+  pathToString
+};

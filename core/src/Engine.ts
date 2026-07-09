@@ -17,6 +17,11 @@ const rootTypeContainerName = 'types' as ElementName;
 const containerTypeName = 'container' as ElementName;
 const elementTypeName = 'element' as ElementName;
 
+const dataTypeName = 'data' as ElementName;
+const stringTypeName = 'string' as ElementName;
+const integerTypeName = 'integer' as ElementName;
+const booleanTypeName = 'boolean' as ElementName;
+
 class Engine {
   // store brut pour pouvoir stocker les types qui ont des fonctions associées
   private rootStore: MaestrozoStore = new RawMemoryStore;
@@ -50,6 +55,37 @@ class Engine {
     } as Element;
     this.rootStore.setItem(pathToString([rootTypeContainerName, containerTypeName]) as StoreKey, containerTypeElement);
 
+    // mise en place de /types/data
+    const dataTypeElement = {
+      elementName: dataTypeName,
+      parentPath: [rootTypeContainerName ] as ElementPath,
+      elementType: [elementTypeName, containerTypeName] as ElementPath
+    } as Element;
+    this.rootStore.setItem(pathToString([rootTypeContainerName, dataTypeName]) as StoreKey, dataTypeElement);
+
+    // mise en place de /types/data/integer
+    const integerTypeElement = {
+      elementName: integerTypeName,
+      parentPath: [rootTypeContainerName, dataTypeName ] as ElementPath,
+      elementType: [elementTypeName, containerTypeName] as ElementPath
+    } as Element;
+    this.rootStore.setItem(pathToString([...integerTypeElement.parentPath, integerTypeName]) as StoreKey, integerTypeElement);
+
+    // mise en place de /types/data/string
+    const stringTypeElement = {
+      elementName: stringTypeName,
+      parentPath: [rootTypeContainerName, dataTypeName ] as ElementPath,
+      elementType: [elementTypeName, containerTypeName] as ElementPath
+    } as Element;
+    this.rootStore.setItem(pathToString([...stringTypeElement.parentPath, stringTypeName]) as StoreKey, stringTypeElement);
+
+    // mise en place de /types/data/boolean
+    const booleanTypeElement = {
+      elementName: booleanTypeName,
+      parentPath: [rootTypeContainerName, dataTypeName ] as ElementPath,
+      elementType: [elementTypeName, containerTypeName] as ElementPath
+    } as Element;
+    this.rootStore.setItem(pathToString([...booleanTypeElement.parentPath, booleanTypeName]) as StoreKey, booleanTypeElement);
 
   }
 
