@@ -13,10 +13,10 @@ describe("Maestrozo core", () => {
   it("should create a constant component in runtime", () => {
     const component = engine.createElement(
       'constantA' as ElementName,
-      [ 'runtime' ] as ElementPath,
-      [ 'types', 'components', 'constant' ] as ElementPath,
+      [ '#', 'runtime' ] as ElementPath,
+      [ '#', 'types', 'components', 'constant' ] as ElementPath,
       {
-        'dataType': [ 'types', 'data', 'integer' ],
+        'dataType': [ '#', 'types', 'data', 'integer' ],
         'value': 123
       }
     );

@@ -6,12 +6,12 @@
 import { Element, ElementName, ElementPath } from '@/Element';
 
 const pathSeparator = '/';
-const rootName = '#';
+const rootName = '#' as ElementName;
 
 const invalidCharacters = [ pathSeparator, rootName ];
 
 
-function elementPath(element: Element) {
+function getElementPath(element: Element): ElementPath {
   return [...element.parentPath, element.elementName];
 }
 
@@ -59,7 +59,7 @@ function checkElementName(elementName: ElementName, acceptRoot:boolean = false) 
   }
 }
 
-function checkElementPath(elementPath: ElementPath, absolutePath = false)
+function checkElementPath(elementPath: ElementPath, absolutePath = true)
 {
   if (elementPath === undefined)
     throw new Error("Element path is not defined");
@@ -68,11 +68,11 @@ function checkElementPath(elementPath: ElementPath, absolutePath = false)
 
   if (absolutePath) {
     if (elementPath.length === 0 || elementPath[0] != rootName)
-      throw new Error(`Absolute path must start start with «${rootName}»`);
+      throw new Error(`Absolute path must start with «${rootName}»`);
   }
   else {
     if (elementPath[0] == rootName)
-      throw new Error(`Relative path must start start with «${rootName}»`);
+      throw new Error(`Relative path must start with «${rootName}»`);
   }
 
   let i = 1;
@@ -118,7 +118,8 @@ function isRootName(elementName: ElementName): boolean {
 export {
   ElementName,
   ElementPath,
-  elementPath,
+  rootName,
+  getElementPath,
   elementPathAreEquals,
   parentElementPath,
   pathToString,

@@ -5,7 +5,14 @@
 
 import { MaestrozoStore, StoreKey } from '@/store/MaestrozoStore';
 import { RawMemoryStore } from '@/store/RawMemoryStore';
-import { checkElementName, checkElementPath, elementPath, pathStartsWith, pathToString } from '@/path';
+import { 
+  checkElementName,
+  checkElementPath,
+  rootName,
+  pathStartsWith,
+  pathToString,
+  getElementPath
+} from '@/path';
 import { Element, ElementName, ElementPath } from '@/Element';
 
 
@@ -31,96 +38,118 @@ class Engine {
   private runtimeStore: MaestrozoStore;
 
   constructor (runtimeStore: MaestrozoStore) {
+    let storeKey;
+
     this.rootStore = new RawMemoryStore();
     this.runtimeStore = runtimeStore;
 
-    // mise en place de /types
+    // mise en place de root «/»
+    const rootElement = {
+      elementName: rootName,
+      parentPath: [] as ElementPath, // empty path exception because root as no parent
+      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
+    } as Element;
+    this.rootStore.setItem(pathToString([rootName]) as StoreKey, rootElement);
+
+
+    // mise en place de «/types»
     const rootTypeElement = {
       elementName: rootTypeContainerName,
-      parentPath: [] as ElementPath,
-      elementType: [elementTypeName, containerTypeName] as ElementPath
+      parentPath: getElementPath(rootElement),
+      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([rootTypeContainerName]) as StoreKey, rootTypeElement);
+    storeKey = pathToString(getElementPath(rootTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, rootTypeElement);
 
-    // mise en place de /types/element
+    // mise en place de «/types/element»
     const elementTypeElement = {
       elementName: elementTypeName,
-      parentPath: [rootTypeContainerName] as ElementPath,
-      elementType: [elementTypeName, elementTypeName] as ElementPath
+      parentPath: getElementPath(rootTypeElement),
+      elementType: [rootName, elementTypeName, elementTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([rootTypeContainerName, elementTypeName]) as StoreKey, elementTypeElement);
+    storeKey = pathToString(getElementPath(elementTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, elementTypeElement);
 
-    // mise en place de /types/container
+    // mise en place de «/types/container»
     const containerTypeElement = {
       elementName: containerTypeName,
-      parentPath: [rootTypeContainerName] as ElementPath,
-      elementType: [elementTypeName, elementTypeName] as ElementPath
+      parentPath: [rootName, rootTypeContainerName] as ElementPath,
+      elementType: [rootName, elementTypeName, elementTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([rootTypeContainerName, containerTypeName]) as StoreKey, containerTypeElement);
+    storeKey = pathToString(getElementPath(containerTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, containerTypeElement);
 
-    // mise en place de /types/data
+    // mise en place de «/types/data»
     const dataTypeElement = {
       elementName: dataTypeName,
-      parentPath: [rootTypeContainerName ] as ElementPath,
-      elementType: [elementTypeName, containerTypeName] as ElementPath
+      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
+      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([rootTypeContainerName, dataTypeName]) as StoreKey, dataTypeElement);
+    storeKey = pathToString(getElementPath(dataTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, dataTypeElement);
 
-    // mise en place de /types/data/integer
+    // mise en place de «/types/data/integer»
     const integerTypeElement = {
       elementName: integerTypeName,
-      parentPath: [rootTypeContainerName, dataTypeName ] as ElementPath,
-      elementType: [elementTypeName, containerTypeName] as ElementPath
+      parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
+      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([...integerTypeElement.parentPath, integerTypeName]) as StoreKey, integerTypeElement);
+    storeKey = pathToString(getElementPath(integerTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, integerTypeElement);
 
-    // mise en place de /types/data/string
+    // mise en place de «/types/data/string»
     const stringTypeElement = {
       elementName: stringTypeName,
-      parentPath: [rootTypeContainerName, dataTypeName ] as ElementPath,
-      elementType: [elementTypeName, containerTypeName] as ElementPath
+      parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
+      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([...stringTypeElement.parentPath, stringTypeName]) as StoreKey, stringTypeElement);
+    storeKey = pathToString(getElementPath(stringTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, stringTypeElement);
 
-    // mise en place de /types/data/boolean
+    // mise en place de «/types/data/boolean»
     const booleanTypeElement = {
       elementName: booleanTypeName,
-      parentPath: [rootTypeContainerName, dataTypeName ] as ElementPath,
-      elementType: [elementTypeName, containerTypeName] as ElementPath
+      parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
+      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([...booleanTypeElement.parentPath, booleanTypeName]) as StoreKey, booleanTypeElement);
+    storeKey = pathToString(getElementPath(booleanTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, booleanTypeElement);
 
-    // mise en place de /types/components
+    // mise en place de «/types/components»
     const componentContainerTypeElement = {
       elementName: componentTypeContainerName,
-      parentPath: [rootTypeContainerName ] as ElementPath,
-      elementType: [elementTypeName, containerTypeName] as ElementPath
+      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
+      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([rootTypeContainerName, componentTypeContainerName]) as StoreKey, componentContainerTypeElement);
+    storeKey = pathToString(getElementPath(componentContainerTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, componentContainerTypeElement);
 
-    // mise en place de /types/components/constant
+    // mise en place de «/types/components/constant»
     const constantTypeElement = {
       elementName: constantComponentTypeName,
-      parentPath: [rootTypeContainerName, componentTypeContainerName] as ElementPath,
-      elementType: [elementTypeName, containerTypeName] as ElementPath
+      parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
+      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([...constantTypeElement.parentPath, constantComponentTypeName]) as StoreKey, constantTypeElement);
+    storeKey = pathToString(getElementPath(constantTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, constantTypeElement);
 
-    // mise en place de /types/components/variable
+    // mise en place de «/types/components/variable»
     const variableTypeElement = {
       elementName: variableComponentTypeName,
-      parentPath: [rootTypeContainerName, componentTypeContainerName] as ElementPath,
-      elementType: [elementTypeName, containerTypeName] as ElementPath
+      parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
+      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([...variableTypeElement.parentPath, variableComponentTypeName]) as StoreKey, variableTypeElement);
+    storeKey = pathToString(getElementPath(variableTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, variableTypeElement);
 
-    // mise en place de /types/runtime
+    // mise en place de «/types/runtime»
     const runtimeContainerElement = {
       elementName: runtimeContainerName,
-      parentPath: [] as ElementPath,
-      elementType: [elementTypeName, containerTypeName] as ElementPath
+      parentPath: [rootName] as ElementPath,
+      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
     } as Element;
-    this.rootStore.setItem(pathToString([runtimeContainerName]) as StoreKey, runtimeContainerElement);
+    storeKey = pathToString(getElementPath(runtimeContainerElement)) as StoreKey
+    this.rootStore.setItem(storeKey, runtimeContainerElement);
 
   }
 
@@ -147,17 +176,16 @@ class Engine {
     if (typeElement === null)
       throw new Error(`Can not find parent «${pathToString(typePath)}»`);
 
-    if (! pathStartsWith(typeElement.parentPath, [rootTypeContainerName, componentTypeContainerName] ))
+    if (! pathStartsWith(typeElement.parentPath, [rootName, rootTypeContainerName, componentTypeContainerName] ))
         throw new Error(`Path «${pathToString(typePath)} is not a component type path`);
 
     const parentElement = this.getElement(parentPath);
     if (parentElement === null)
       throw new Error(`Can not find parent «${pathToString(parentPath)}»`);
 
-    //if (! pathStartsWith(parentElement.parentPath, [runtimeContainerName] ))
-        //throw new Error(`Path «${pathToString(parentPath)} is not a runtime path`);
+    if (! pathStartsWith(getElementPath(parentElement), [rootName, runtimeContainerName] ))
+        throw new Error(`Path «${pathToString(parentPath)} is not a runtime path`);
 
-    console.log("dOm parent", parentElement);
     //console.log("dOm params", params);
     return {} as Element
   }
