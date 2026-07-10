@@ -4,7 +4,7 @@
  */
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
-import { rootName, rootTypeContainerName, elementTypeName, containerTypeName, componentTypeContainerName } from '@/global';
+import { rootName, rootTypeContainerName, componentTypeContainerName, typeElementName } from '@/global';
 import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 const constantComponentTypeName = 'constant' as ElementName;
@@ -26,7 +26,7 @@ const constantComponentTypeHandler: TypeHandler = {
 const constantComponentTypeElement = {
   elementName: constantComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
-  elementType: [rootName, elementTypeName, containerTypeName] as ElementPath,
+  elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   data: {
     typeHandler: constantComponentTypeHandler
   }

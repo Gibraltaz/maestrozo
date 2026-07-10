@@ -3,6 +3,9 @@ import { ElementName, rootName, } from '@/path';
 // name of element «/types»
 const rootTypeContainerName = 'types' as ElementName;
 
+// name of element «/types/type»
+const typeElementName = 'type' as ElementName;
+
 // name of element «/types/data»
 const dataTypeName = 'data' as ElementName;
 
@@ -17,5 +20,11 @@ const containerTypeName = 'container' as ElementName;
 const componentTypeContainerName = 'components' as ElementName;
 
 export {
-  rootName, rootTypeContainerName, dataTypeName, elementTypeName, containerTypeName, componentTypeContainerName 
+  rootName,
+  typeElementName,
+  rootTypeContainerName,
+  dataTypeName,
+  elementTypeName,
+  containerTypeName,
+  componentTypeContainerName ,
 }

@@ -17,7 +17,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal([]);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
   });
 
   it("should find /types element", () => {
@@ -27,8 +27,19 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
   });
+
+  it("should find /types/type", () => {
+    const element = engine.getElement(['#', 'types', 'type'] as ElementPath);
+    expect(element).to.be.instanceof(Object);
+    expect(element).to.have.property('elementName', 'type');
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal(['#', 'types']);
+    expect(element).to.have.property('elementType');
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
+  });
+
 
   it("should find /types/element", () => {
     const element = engine.getElement(['#', 'types', 'element'] as ElementPath);
@@ -37,7 +48,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'types']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'element']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
   });
 
   it("should find /types/container", () => {
@@ -47,7 +58,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'types']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'element']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
   });
 
   it("should find /types/data", () => {
@@ -57,7 +68,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'types']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
   });
 
   it("should find /types/data/integer", () => {
@@ -67,7 +78,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'types', 'data']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
   });
 
   it("should find /types/data/string", () => {
@@ -77,7 +88,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'types', 'data']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
   });
 
   it("should find /types/data/boolean", () => {
@@ -87,7 +98,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'types', 'data']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
   });
 
   it("should find /types/components", () => {
@@ -97,7 +108,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'types']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
   });
 
   it("should find /types/components/constant", () => {
@@ -107,7 +118,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'types', 'components']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
   });
 
   it("should find /types/components/variable", () => {
@@ -117,7 +128,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'types', 'components']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
   });
 
   it("should find /types/runtime", () => {
@@ -127,7 +138,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'element', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
   });
 
 

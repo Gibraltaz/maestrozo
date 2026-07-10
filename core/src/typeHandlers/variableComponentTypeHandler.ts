@@ -4,7 +4,7 @@
  */
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
-import { rootName, rootTypeContainerName, elementTypeName, containerTypeName, componentTypeContainerName } from '@/global';
+import { rootName, rootTypeContainerName, typeElementName, componentTypeContainerName } from '@/global';
 import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 const variableComponentTypeName = 'variable' as ElementName;
@@ -27,7 +27,7 @@ const variableComponentTypeHandler: TypeHandler = {
 const variableComponentTypeElement = {
   elementName: variableComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
-  elementType: [rootName, elementTypeName, containerTypeName] as ElementPath,
+  elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   data: {
     typeHandler: variableComponentTypeHandler
   }

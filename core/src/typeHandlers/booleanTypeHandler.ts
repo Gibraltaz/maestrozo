@@ -4,7 +4,7 @@
  */
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
-import { rootName, rootTypeContainerName, dataTypeName, elementTypeName, containerTypeName } from '@/global';
+import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
 import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
 
@@ -35,7 +35,7 @@ const booleanTypeHandler: TypeHandler = {
 const booleanTypeElement = {
   elementName: booleanTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
-  elementType: [rootName, elementTypeName, containerTypeName] as ElementPath,
+  elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   data: {
     typeHandler: booleanTypeHandler
   }

@@ -14,14 +14,17 @@ import {
   getElementPath
 } from '@/path';
 import { Element, ElementName, ElementPath } from '@/Element';
-import { elementTypeName, containerTypeName, rootTypeContainerName, dataTypeName, componentTypeContainerName } from './global';
+import { containerTypeName, rootTypeContainerName, dataTypeName, componentTypeContainerName, typeElementName } from './global';
 
 import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
+
+import { elementTypeElement } from './typeHandlers/elementTypeHandler';
+import { containerTypeElement } from './typeHandlers/containerTypeHandler';
 import { integerTypeElement } from './typeHandlers/integerTypeHandler';
 import { stringTypeElement } from './typeHandlers/stringTypeHandler';
 import { booleanTypeElement } from './typeHandlers/booleanTypeHandler';
-import { constantComponentTypeElement } from './typeHandlers/ConstantComponentTypeHandler';
-import { variableComponentTypeElement } from './typeHandlers/VariableComponentTypeHandler';
+import { constantComponentTypeElement } from './typeHandlers/constantComponentTypeHandler';
+import { variableComponentTypeElement } from './typeHandlers/variableComponentTypeHandler';
 
 const runtimeContainerName = 'runtime' as ElementName;
 
@@ -37,85 +40,86 @@ class Engine {
     this.rootStore = new RawMemoryStore();
     this.runtimeStore = runtimeStore;
 
-    // mise en place de root «/»
+    // mise en place de root «#/»
     const rootElement = {
       elementName: rootName,
       parentPath: [] as ElementPath, // empty path exception because root as no parent
-      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
     } as Element;
     this.rootStore.setItem(pathToString([rootName]) as StoreKey, rootElement);
 
 
-    // mise en place de «/types»
+    // mise en place de «#/types»
     const rootTypeElement = {
       elementName: rootTypeContainerName,
       parentPath: getElementPath(rootElement),
-      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
     } as Element;
     storeKey = pathToString(getElementPath(rootTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, rootTypeElement);
 
-    // mise en place de «/types/element»
-    const elementTypeElement = {
-      elementName: elementTypeName,
+    // mise en place de «#/types/type»
+    // (type spécial qui représente le type de tous les éléments de type dans «/types»)
+    const typeTypeElement = {
+      elementName: typeElementName,
       parentPath: getElementPath(rootTypeElement),
-      elementType: [rootName, elementTypeName, elementTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, typeElementName]
     } as Element;
+    storeKey = pathToString(getElementPath(typeTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, typeTypeElement);
+
+
+    // mise en place de «#/types/element»
     storeKey = pathToString(getElementPath(elementTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, elementTypeElement);
 
-    // mise en place de «/types/container»
-    const containerTypeElement = {
-      elementName: containerTypeName,
-      parentPath: [rootName, rootTypeContainerName] as ElementPath,
-      elementType: [rootName, elementTypeName, elementTypeName] as ElementPath
-    } as Element;
+    // mise en place de «#/types/container»
     storeKey = pathToString(getElementPath(containerTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, containerTypeElement);
 
-    // mise en place de «/types/data»
+    // mise en place de «#/types/data»
     const dataTypeElement = {
       elementName: dataTypeName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
     } as Element;
     storeKey = pathToString(getElementPath(dataTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, dataTypeElement);
 
-    // mise en place de «/types/data/integer»
+    // mise en place de «#/types/data/integer»
     storeKey = pathToString(getElementPath(integerTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, integerTypeElement);
 
-    // mise en place de «/types/data/string»
+    // mise en place de «#/types/data/string»
     storeKey = pathToString(getElementPath(stringTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, stringTypeElement);
 
-    // mise en place de «/types/data/boolean»
+    // mise en place de «#/types/data/boolean»
     storeKey = pathToString(getElementPath(booleanTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, booleanTypeElement);
 
-    // mise en place de «/types/components»
+    // mise en place de «#/types/components»
     const componentContainerTypeElement = {
       elementName: componentTypeContainerName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
     } as Element;
     storeKey = pathToString(getElementPath(componentContainerTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, componentContainerTypeElement);
 
-    // mise en place de «/types/components/constant»
+    // mise en place de «#/types/components/constant»
     storeKey = pathToString(getElementPath(constantComponentTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, constantComponentTypeElement);
 
-    // mise en place de «/types/components/variable»
+    // mise en place de «#/types/components/variable»
     storeKey = pathToString(getElementPath(variableComponentTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, variableComponentTypeElement);
 
-    // mise en place de «/types/runtime»
+    // mise en place de «#/types/runtime»
     const runtimeContainerElement = {
       elementName: runtimeContainerName,
       parentPath: [rootName] as ElementPath,
-      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
     } as Element;
     storeKey = pathToString(getElementPath(runtimeContainerElement)) as StoreKey
     this.rootStore.setItem(storeKey, runtimeContainerElement);
