@@ -6,10 +6,18 @@
 type ElementName = string & { __brand: 'ElementName' };
 type ElementPath = Array<ElementName>;
 
+type ElementData = Record<string, any>;
+
 type Element = {
   elementName: ElementName;
   parentPath : ElementPath;
   elementType: ElementPath;
+  data: ElementData;
 };
 
-export { Element, ElementName, ElementPath }
+export {
+  Element,
+  ElementName,
+  ElementPath,
+  ElementData
+}

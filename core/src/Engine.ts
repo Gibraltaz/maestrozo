@@ -14,20 +14,14 @@ import {
   getElementPath
 } from '@/path';
 import { Element, ElementName, ElementPath } from '@/Element';
+import { elementTypeName, containerTypeName, rootTypeContainerName, dataTypeName, componentTypeContainerName } from './global';
 
-
-const rootTypeContainerName = 'types' as ElementName;
-const containerTypeName = 'container' as ElementName;
-const elementTypeName = 'element' as ElementName;
-
-const dataTypeName = 'data' as ElementName;
-const stringTypeName = 'string' as ElementName;
-const integerTypeName = 'integer' as ElementName;
-const booleanTypeName = 'boolean' as ElementName;
-
-const componentTypeContainerName = 'components' as ElementName;
-const constantComponentTypeName = 'constant' as ElementName;
-const variableComponentTypeName = 'variable' as ElementName;
+import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { integerTypeElement } from './typeHandlers/integerTypeHandler';
+import { stringTypeElement } from './typeHandlers/stringTypeHandler';
+import { booleanTypeElement } from './typeHandlers/booleanTypeHandler';
+import { constantComponentTypeElement } from './typeHandlers/ConstantComponentTypeHandler';
+import { variableComponentTypeElement } from './typeHandlers/VariableComponentTypeHandler';
 
 const runtimeContainerName = 'runtime' as ElementName;
 
@@ -89,29 +83,14 @@ class Engine {
     this.rootStore.setItem(storeKey, dataTypeElement);
 
     // mise en place de «/types/data/integer»
-    const integerTypeElement = {
-      elementName: integerTypeName,
-      parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
-      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
-    } as Element;
     storeKey = pathToString(getElementPath(integerTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, integerTypeElement);
 
     // mise en place de «/types/data/string»
-    const stringTypeElement = {
-      elementName: stringTypeName,
-      parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
-      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
-    } as Element;
     storeKey = pathToString(getElementPath(stringTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, stringTypeElement);
 
     // mise en place de «/types/data/boolean»
-    const booleanTypeElement = {
-      elementName: booleanTypeName,
-      parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
-      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
-    } as Element;
     storeKey = pathToString(getElementPath(booleanTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, booleanTypeElement);
 
@@ -125,22 +104,12 @@ class Engine {
     this.rootStore.setItem(storeKey, componentContainerTypeElement);
 
     // mise en place de «/types/components/constant»
-    const constantTypeElement = {
-      elementName: constantComponentTypeName,
-      parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
-      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
-    } as Element;
-    storeKey = pathToString(getElementPath(constantTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, constantTypeElement);
+    storeKey = pathToString(getElementPath(constantComponentTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, constantComponentTypeElement);
 
     // mise en place de «/types/components/variable»
-    const variableTypeElement = {
-      elementName: variableComponentTypeName,
-      parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
-      elementType: [rootName, elementTypeName, containerTypeName] as ElementPath
-    } as Element;
-    storeKey = pathToString(getElementPath(variableTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, variableTypeElement);
+    storeKey = pathToString(getElementPath(variableComponentTypeElement)) as StoreKey
+    this.rootStore.setItem(storeKey, variableComponentTypeElement);
 
     // mise en place de «/types/runtime»
     const runtimeContainerElement = {
@@ -172,22 +141,34 @@ class Engine {
     checkElementPath(parentPath);
     checkElementPath(typePath);
 
+    const parentElement = this.getElement(parentPath);
+    if (parentElement === null)
+      throw new Error(`Can not find parent «${pathToString(parentPath)}»`);
+    // TODO vérifier que le parent existe
+    // TODO vérifier que le parent a sa proprité container à true
+    // TODO vérifier qu'un élément n'existe pas déjà
+
+
     const typeElement = this.getElement(typePath);
     if (typeElement === null)
       throw new Error(`Can not find parent «${pathToString(typePath)}»`);
 
     if (! pathStartsWith(typeElement.parentPath, [rootName, rootTypeContainerName, componentTypeContainerName] ))
-        throw new Error(`Path «${pathToString(typePath)} is not a component type path`);
+      throw new Error(`Path «${pathToString(typePath)} is not a component type path`);
 
-    const parentElement = this.getElement(parentPath);
-    if (parentElement === null)
-      throw new Error(`Can not find parent «${pathToString(parentPath)}»`);
+    const typeHandler: TypeHandler | null = typeElement?.data?.typeHandler as TypeHandler ?? null;
+    if ( typeHandler === null)
+      throw new Error(`Type handler not defined in type «${pathToString(getElementPath(typeElement))}»`);
 
-    if (! pathStartsWith(getElementPath(parentElement), [rootName, runtimeContainerName] ))
-        throw new Error(`Path «${pathToString(parentPath)} is not a runtime path`);
+    const factory: FactoryFunction | null = typeHandler?.factory ?? null;
+    if (factory === null)
+      throw new Error(`Factory not defined in type «${pathToString(getElementPath(typeElement))}»`);
+    if (typeof(factory) !== 'function')
+      throw new Error(`Factory not defined in type «${pathToString(getElementPath(typeElement))}»`);
 
-    //console.log("dOm params", params);
-    return {} as Element
+    const element = factory(elementName, parentPath, params);
+
+    return element as Element
   }
 }
 

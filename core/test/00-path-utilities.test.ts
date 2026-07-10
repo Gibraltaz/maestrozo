@@ -87,12 +87,12 @@ describe("Path utilities", () => {
 
     it("should detected empty path", () => {
       expect( () => checkAbsoluteElementPath([] as ElementPath) )
-        .to.throw("Absolute path must start start with «#»");
+        .to.throw("Absolute path must start with «#»");
     });
 
     it("should detected path not starting with «#»", () => {
       expect( () => checkAbsoluteElementPath(['abc'] as ElementPath) )
-        .to.throw("Absolute path must start start with «#»");
+        .to.throw("Absolute path must start with «#»");
     });
 
     it("should accept root path «#/»", () => {
@@ -132,11 +132,11 @@ describe("Path utilities", () => {
 
     it("should detect absolute path", () => {
       expect(() => checkRelativeElementPath(['#', 'abc'] as ElementPath))
-        .to.throw("Relative path must start start with «#»");
+        .to.throw("Relative path must start with «#»");
       expect(() => checkRelativeElementPath(['#', 'abc'] as ElementPath))
-        .to.throw("Relative path must start start with «#»");
+        .to.throw("Relative path must start with «#»");
       expect(() => checkRelativeElementPath(['#', 'abc', 'def'] as ElementPath))
-        .to.throw("Relative path must start start with «#»");
+        .to.throw("Relative path must start with «#»");
     });
 
   });
