@@ -5,7 +5,7 @@
 
 import { MaestrozoStore, StoreKey } from '@/store/MaestrozoStore';
 import { RawMemoryStore } from '@/store/RawMemoryStore';
-import { 
+import {
   checkElementName,
   checkElementPath,
   rootName,
@@ -13,18 +13,18 @@ import {
   pathToString,
   getElementPath
 } from '@/path';
-import { Element, ElementName, ElementPath } from '@/Element';
+import { Element as MtzElement, ElementName, ElementPath } from '@/Element';
 import { containerTypeName, rootTypeContainerName, dataTypeName, componentTypeContainerName, typeElementName } from './global';
 
-import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, FactoryHelpers, TypeHandler } from '@/typeHandlers/TypeHandler';
 
-import { elementTypeElement } from './typeHandlers/elementTypeHandler';
 import { containerTypeElement } from './typeHandlers/containerTypeHandler';
 import { integerTypeElement } from './typeHandlers/integerTypeHandler';
 import { stringTypeElement } from './typeHandlers/stringTypeHandler';
 import { booleanTypeElement } from './typeHandlers/booleanTypeHandler';
 import { constantComponentTypeElement } from './typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeElement } from './typeHandlers/variableComponentTypeHandler';
+import { elementTypeElement } from './typeHandlers/elementTypeElement';
 
 const runtimeContainerName = 'runtime' as ElementName;
 
@@ -45,7 +45,7 @@ class Engine {
       elementName: rootName,
       parentPath: [] as ElementPath, // empty path exception because root as no parent
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
-    } as Element;
+    } as MtzElement;
     this.rootStore.setItem(pathToString([rootName]) as StoreKey, rootElement);
 
 
@@ -54,7 +54,7 @@ class Engine {
       elementName: rootTypeContainerName,
       parentPath: getElementPath(rootElement),
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
-    } as Element;
+    } as MtzElement;
     storeKey = pathToString(getElementPath(rootTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, rootTypeElement);
 
@@ -64,7 +64,7 @@ class Engine {
       elementName: typeElementName,
       parentPath: getElementPath(rootTypeElement),
       elementType: [rootName, rootTypeContainerName, typeElementName]
-    } as Element;
+    } as MtzElement;
     storeKey = pathToString(getElementPath(typeTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, typeTypeElement);
 
@@ -82,7 +82,7 @@ class Engine {
       elementName: dataTypeName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
-    } as Element;
+    } as MtzElement;
     storeKey = pathToString(getElementPath(dataTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, dataTypeElement);
 
@@ -103,7 +103,7 @@ class Engine {
       elementName: componentTypeContainerName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
-    } as Element;
+    } as MtzElement;
     storeKey = pathToString(getElementPath(componentContainerTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, componentContainerTypeElement);
 
@@ -120,7 +120,7 @@ class Engine {
       elementName: runtimeContainerName,
       parentPath: [rootName] as ElementPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
-    } as Element;
+    } as MtzElement;
     storeKey = pathToString(getElementPath(runtimeContainerElement)) as StoreKey
     this.rootStore.setItem(storeKey, runtimeContainerElement);
 
@@ -129,7 +129,7 @@ class Engine {
   public runOnce(): void {
   }
 
-  public getElement(elementPath: ElementPath): Element {
+  public getElement(elementPath: ElementPath): MtzElement {
     // TODO renvoyer les éléments du store de runtime
     return this.rootStore.getItem(pathToString(elementPath) as StoreKey);
   }
@@ -139,19 +139,25 @@ class Engine {
     parentPath: ElementPath,
     typePath: ElementPath,
     params: Record<string, any>
-  ): Element {
-    // FIXME à remonter dans MaestrozoCore ?
+  ): MtzElement {
+
+    // TODO à remonter dans MaestrozoCore
     checkElementName(elementName);
     checkElementPath(parentPath);
     checkElementPath(typePath);
 
+    if (this.rootStore.getItem(pathToString(parentPath) as StoreKey) === null)
+      throw new Error(`Parent element «${pathToString(parentPath)}» does not exist`);
+
+    // TODO vérifier que le parent a sa proprité container à true
+
+    const elementStoreKey = pathToString([...parentPath, elementName]) as StoreKey;
+    if (this.rootStore.getItem(elementStoreKey) !== null)
+      throw new Error(`Element «${elementStoreKey}» already exists`);
+
     const parentElement = this.getElement(parentPath);
     if (parentElement === null)
       throw new Error(`Can not find parent «${pathToString(parentPath)}»`);
-    // TODO vérifier que le parent existe
-    // TODO vérifier que le parent a sa proprité container à true
-    // TODO vérifier qu'un élément n'existe pas déjà
-
 
     const typeElement = this.getElement(typePath);
     if (typeElement === null)
@@ -170,9 +176,24 @@ class Engine {
     if (typeof(factory) !== 'function')
       throw new Error(`Factory not defined in type «${pathToString(getElementPath(typeElement))}»`);
 
-    const element = factory(elementName, parentPath, params);
+    const factoryHelpers: FactoryHelpers = {
+      getElement: (elementPath:ElementPath): MtzElement => {
+        return this.getElement(elementPath)
+      }
+    }
 
-    return element as Element
+    const elementData = factory(elementName, parentPath, params, factoryHelpers);
+
+    const element = {
+      elementName,
+      parentPath,
+      elementType: typePath,
+      data: elementData
+    } as MtzElement;
+
+    this.rootStore.setItem(elementStoreKey, element);
+
+    return element;
   }
 }
 

@@ -3,9 +3,21 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "@/Element";
+import { Element as MtzElement, ElementData, ElementName, ElementPath } from "@/Element";
 
-type FactoryFunction = (elementName: ElementName, parentPath: ElementPath, params:Record<string, any>) => ElementData;
+type GetElementFactoryHelper = (elementPath: ElementPath) => MtzElement | null;
+
+type FactoryHelpers = {
+  getElement: GetElementFactoryHelper
+};
+
+type FactoryFunction = (
+  elementName: ElementName,
+  parentPath: ElementPath,
+  params:Record<string, any>,
+  helpers: FactoryHelpers
+
+) => ElementData;
 
 type TypeHandler = {
   factory: FactoryFunction
@@ -13,5 +25,6 @@ type TypeHandler = {
 
 export {
   TypeHandler,
-  FactoryFunction
+  FactoryFunction,
+  FactoryHelpers
 };

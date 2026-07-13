@@ -4,7 +4,6 @@
  */
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
-import { rootName, rootTypeContainerName, elementTypeName, typeElementName } from '@/global';
 import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 const elementFactory: FactoryFunction = (
@@ -15,18 +14,9 @@ const elementFactory: FactoryFunction = (
   throw new Error("Element type can not be instanciate");
 };
 
-const elementTypeHandler: TypeHandler = {
+const ElementTypeHandler: TypeHandler = {
   factory: elementFactory 
 } as TypeHandler;
 
-const elementTypeElement = {
-  elementName: elementTypeName,
-  parentPath: [rootName, rootTypeContainerName] as ElementPath,
-  elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
-  data: {
-    typeHandler: elementTypeHandler
-  }
-}; // TODO  as Element;
 
-export { elementTypeElement, elementTypeName };
-
+export { ElementTypeHandler };

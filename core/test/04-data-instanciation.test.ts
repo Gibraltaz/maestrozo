@@ -20,14 +20,28 @@ describe("Maestrozo core", () => {
         'value': 123
       }
     );
-    //expect(component).to.be.instanceof(Object);
-    //expect(component).to.have.property('elementName', 'constantA');
-    //expect(component).to.have.property('parentPath');
-    //expect(component.parentPath).to.deep.equal(['runtime']);
-    //expect(component).to.have.property('elementType');
-    //expect(component.elementType).to.deep.equal([ 'types', 'data', 'integer']);
+    expect(component).to.be.instanceof(Object);
+    expect(component).to.have.property('elementName', 'constantA');
+    expect(component).to.have.property('parentPath');
+    expect(component.parentPath).to.deep.equal(['#', 'runtime']);
+    expect(component).to.have.property('elementType');
+    expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'constant']);
+    expect(component).to.have.property('data');
+    expect(component.data).to.be.instanceof(Object);
+    expect(component.data).to.have.property('value', 123);
   });
 
-
+  it("should find newly created component in runtime", () => {
+    const component = engine.getElement(['#' as ElementName, 'runtime' as ElementName, 'constantA' as ElementName]);
+    expect(component).to.be.instanceof(Object);
+    expect(component).to.have.property('elementName', 'constantA');
+    expect(component).to.have.property('parentPath');
+    expect(component.parentPath).to.deep.equal(['#', 'runtime']);
+    expect(component).to.have.property('elementType');
+    expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'constant']);
+    expect(component).to.have.property('data');
+    expect(component.data).to.be.instanceof(Object);
+    expect(component.data).to.have.property('value', 123);
+  });
  
 });

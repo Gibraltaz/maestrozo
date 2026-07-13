@@ -19,8 +19,8 @@ const integerFactory: FactoryFunction = (
   const value = params.value;
   if (value === undefined)
     throw new Error(`Param «value» is not defined to create element «${pathToString([...parentPath, elementName] )}»`);
-  if (typeof(value) !== 'string')
-    throw new Error(`Param «value» is not a integer to create element «${pathToString([...parentPath, elementName] )}»`);
+  if (typeof(value) !== 'number')
+    throw new Error(`Param «value» is not a number to create element «${pathToString([...parentPath, elementName] )}»`);
 
 
   return {
