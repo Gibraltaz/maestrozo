@@ -4,13 +4,13 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { MaestrozoCore } from "@/MaestrozoCore";
+import { MtzCore } from "@/Core";
 
 describe("Maestrozo core", () => {
-  let maestrozoCore: MaestrozoCore;
+  let maestrozoCore: MtzCore;
 
-  it("should instanciate MaestrozoCore", () => {
-    maestrozoCore = new MaestrozoCore();
+  it("should instanciate MtzCore", () => {
+    maestrozoCore = new MtzCore();
   });
 
   it("should check engine version", () => {

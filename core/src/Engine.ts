@@ -141,7 +141,7 @@ class Engine {
     params: Record<string, any>
   ): MtzElement {
 
-    // TODO à remonter dans MaestrozoCore
+    // TODO à remonter dans MtzCore
     checkElementName(elementName);
     checkElementPath(parentPath);
     checkElementPath(typePath);

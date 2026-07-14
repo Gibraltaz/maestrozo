@@ -7,7 +7,7 @@ import { Engine } from '@/Engine';
 import { MaestrozoStore } from '@/store/MaestrozoStore';
 import { RawMemoryStore } from '@/store/RawMemoryStore';
 
-class MaestrozoCore {
+class MtzCore {
   public readonly version = '0.0.1';
   private engine : Engine;
 
@@ -23,4 +23,4 @@ class MaestrozoCore {
 
 };
 
-export { MaestrozoCore };
+export { MtzCore };
