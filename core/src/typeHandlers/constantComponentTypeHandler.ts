@@ -59,6 +59,7 @@ const constantComponentTypeElement = {
   elementName: constantComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
+  container: false,
   data: {
     typeHandler: constantComponentTypeHandler
   }

@@ -27,6 +27,7 @@ const containerTypeElement = {
   elementName: containerTypeName,
   parentPath: [rootName, rootTypeContainerName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
+  container: true,
   data: {
     typeHandler: containerTypeHandler
   }

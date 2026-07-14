@@ -44,7 +44,8 @@ class Engine {
     const rootElement = {
       elementName: rootName,
       parentPath: [] as ElementPath, // empty path exception because root as no parent
-      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
+      container: true
     } as MtzElement;
     this.rootStore.setItem(pathToString([rootName]) as StoreKey, rootElement);
 
@@ -53,7 +54,8 @@ class Engine {
     const rootTypeElement = {
       elementName: rootTypeContainerName,
       parentPath: getElementPath(rootElement),
-      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
+      container: true
     } as MtzElement;
     storeKey = pathToString(getElementPath(rootTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, rootTypeElement);
@@ -63,7 +65,8 @@ class Engine {
     const typeTypeElement = {
       elementName: typeElementName,
       parentPath: getElementPath(rootTypeElement),
-      elementType: [rootName, rootTypeContainerName, typeElementName]
+      elementType: [rootName, rootTypeContainerName, typeElementName],
+      container: false
     } as MtzElement;
     storeKey = pathToString(getElementPath(typeTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, typeTypeElement);
@@ -81,7 +84,8 @@ class Engine {
     const dataTypeElement = {
       elementName: dataTypeName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
+      container: true
     } as MtzElement;
     storeKey = pathToString(getElementPath(dataTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, dataTypeElement);
@@ -102,7 +106,8 @@ class Engine {
     const componentContainerTypeElement = {
       elementName: componentTypeContainerName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
+      container: true,
     } as MtzElement;
     storeKey = pathToString(getElementPath(componentContainerTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, componentContainerTypeElement);
@@ -119,7 +124,8 @@ class Engine {
     const runtimeContainerElement = {
       elementName: runtimeContainerName,
       parentPath: [rootName] as ElementPath,
-      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath
+      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
+      container: true,
     } as MtzElement;
     storeKey = pathToString(getElementPath(runtimeContainerElement)) as StoreKey
     this.rootStore.setItem(storeKey, runtimeContainerElement);
@@ -146,18 +152,16 @@ class Engine {
     checkElementPath(parentPath);
     checkElementPath(typePath);
 
-    if (this.rootStore.getItem(pathToString(parentPath) as StoreKey) === null)
+    const parentElement = this.getElement(parentPath);
+    if (parentElement === null)
       throw new Error(`Parent element «${pathToString(parentPath)}» does not exist`);
 
-    // TODO vérifier que le parent a sa proprité container à true
+    if (! parentElement.container)
+      throw new Error(`Parent element «${pathToString(parentPath)}» is not a container`);
 
     const elementStoreKey = pathToString([...parentPath, elementName]) as StoreKey;
     if (this.rootStore.getItem(elementStoreKey) !== null)
       throw new Error(`Element «${elementStoreKey}» already exists`);
-
-    const parentElement = this.getElement(parentPath);
-    if (parentElement === null)
-      throw new Error(`Can not find parent «${pathToString(parentPath)}»`);
 
     const typeElement = this.getElement(typePath);
     if (typeElement === null)

@@ -36,6 +36,7 @@ const integerTypeElement = {
   elementName: integerTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
+  container: false,
   data: {
     typeHandler: integerTypeHandler
   }

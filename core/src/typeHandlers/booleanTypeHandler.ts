@@ -36,6 +36,7 @@ const booleanTypeElement = {
   elementName: booleanTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
+  container: false,
   data: {
     typeHandler: booleanTypeHandler
   }

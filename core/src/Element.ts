@@ -13,6 +13,7 @@ type MtzElement = {
   parentPath : ElementPath;
   elementType: ElementPath;
   data: ElementData;
+  container: boolean;
 };
 
 export {
