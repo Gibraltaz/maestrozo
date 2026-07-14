@@ -45,7 +45,8 @@ class Engine {
       elementName: rootName,
       parentPath: [] as ElementPath, // empty path exception because root as no parent
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      isContainer: true
+      isContainer: true,
+      isVolatile: false
     } as MtzElement;
     this.rootStore.setItem(pathToString([rootName]) as StoreKey, rootElement);
 
@@ -55,7 +56,8 @@ class Engine {
       elementName: rootTypeContainerName,
       parentPath: getElementPath(rootElement),
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      isContainer: true
+      isContainer: true,
+      isVolatile: true
     } as MtzElement;
     storeKey = pathToString(getElementPath(rootTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, rootTypeElement);
@@ -66,7 +68,8 @@ class Engine {
       elementName: typeElementName,
       parentPath: getElementPath(rootTypeElement),
       elementType: [rootName, rootTypeContainerName, typeElementName],
-      isContainer: false
+      isContainer: false,
+      isVolatile: true
     } as MtzElement;
     storeKey = pathToString(getElementPath(typeTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, typeTypeElement);
@@ -85,7 +88,8 @@ class Engine {
       elementName: dataTypeName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      isContainer: true
+      isContainer: true,
+      isVolatile: true
     } as MtzElement;
     storeKey = pathToString(getElementPath(dataTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, dataTypeElement);
@@ -108,6 +112,7 @@ class Engine {
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
       isContainer: true,
+      isVolatile: true
     } as MtzElement;
     storeKey = pathToString(getElementPath(componentContainerTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, componentContainerTypeElement);
@@ -126,6 +131,7 @@ class Engine {
       parentPath: [rootName] as ElementPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
       isContainer: true,
+      isVolatile: false
     } as MtzElement;
     storeKey = pathToString(getElementPath(runtimeContainerElement)) as StoreKey
     this.rootStore.setItem(storeKey, runtimeContainerElement);
@@ -174,6 +180,19 @@ class Engine {
     if ( typeHandler === null)
       throw new Error(`Type handler not defined in type «${pathToString(getElementPath(typeElement))}»`);
 
+    const isContainer = typeHandler?.isContainer ?? null;
+    if (isContainer === null)
+      throw new Error(`Property «isContainer» not defined in type handler of type «${pathToString(getElementPath(typeElement))}»`);
+    if (typeof(isContainer) !== 'boolean')
+      throw new Error(`Property «isContainer» is not a boolean in type handler of type «${pathToString(getElementPath(typeElement))}»`);
+
+    const isVolatile = typeHandler?.isVolatile ?? null;
+    if (isVolatile === null)
+      throw new Error(`Property «isVolatile» not defined in type handler of type «${pathToString(getElementPath(typeElement))}»`);
+    if (typeof(isVolatile) !== 'boolean')
+      throw new Error(`Property «isVolatile» is not a boolean in type handler of type «${pathToString(getElementPath(typeElement))}»`);
+    if (parentElement.isVolatile && ! isVolatile)
+      throw new Error(`Non volatile element «${pathToString(getElementPath(typeElement))}» can not be store in a volatile container`);
 
     const factory: FactoryFunction | null = typeHandler?.factory ?? null;
     if (factory === null)
@@ -186,11 +205,6 @@ class Engine {
         return this.getElement(elementPath)
       }
     }
-    const isContainer = typeHandler?.isContainer ?? null;
-    if (isContainer === null)
-      throw new Error(`Property «isContainer» not defined in type handler of type «${pathToString(getElementPath(typeElement))}»`);
-    if (typeof(isContainer) !== 'boolean')
-      throw new Error(`Property «isContainer» is not a boolean in type handler of type «${pathToString(getElementPath(typeElement))}»`);
 
     const elementData = factory(elementName, parentPath, params, factoryHelpers);
 
@@ -199,6 +213,7 @@ class Engine {
       parentPath,
       elementType: typePath,
       isContainer,
+      isVolatile,
       data: elementData
     } as MtzElement;
 

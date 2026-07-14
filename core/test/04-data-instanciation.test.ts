@@ -28,6 +28,7 @@ describe("Maestrozo core", () => {
     expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'constant']);
     expect(component).to.have.property('data');
     expect(component).to.have.property('isContainer', false);
+    expect(component).to.have.property('isVolatile', false);
     expect(component.data).to.be.instanceof(Object);
     expect(component.data).to.have.property('value', 123);
   });
@@ -41,6 +42,7 @@ describe("Maestrozo core", () => {
     expect(component).to.have.property('elementType');
     expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'constant']);
     expect(component).to.have.property('isContainer', false);
+    expect(component).to.have.property('isVolatile', false);
     expect(component).to.have.property('data');
     expect(component.data).to.be.instanceof(Object);
     expect(component.data).to.have.property('value', 123);

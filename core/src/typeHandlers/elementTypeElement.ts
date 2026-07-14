@@ -18,6 +18,7 @@ const elementFactory: FactoryFunction = (
 
 const elementTypeHandler: TypeHandler = {
   isContainer: false,
+  isVolatile: true,
   factory: elementFactory 
 } as TypeHandler;
 
@@ -28,6 +29,7 @@ const elementTypeElement = {
   parentPath: [rootName, rootTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   isContainer: false,
+  isVolatile: true,
   data: {
     typeHandler: elementTypeHandler
   }

@@ -19,6 +19,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
     expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', false);
   });
 
   it("should find /types element", () => {
@@ -30,6 +31,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
     expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', true);
   });
 
   it("should find /types/type", () => {
@@ -41,6 +43,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', false);
+    expect(element).to.have.property('isVolatile', true);
   });
 
 
@@ -53,6 +56,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', false);
+    expect(element).to.have.property('isVolatile', true);
   });
 
   it("should find /types/container", () => {
@@ -64,6 +68,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', true);
   });
 
   it("should find /types/data", () => {
@@ -75,6 +80,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
     expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', true);
   });
 
   it("should find /types/data/integer", () => {
@@ -86,6 +92,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', false);
+    expect(element).to.have.property('isVolatile', true);
   });
 
   it("should find /types/data/string", () => {
@@ -97,6 +104,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', false);
+    expect(element).to.have.property('isVolatile', true);
   });
 
   it("should find /types/data/boolean", () => {
@@ -108,6 +116,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', false);
+    expect(element).to.have.property('isVolatile', true);
   });
 
   it("should find /types/components", () => {
@@ -119,6 +128,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
     expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', true);
   });
 
   it("should find /types/components/constant", () => {
@@ -130,6 +140,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', false);
+    expect(element).to.have.property('isVolatile', true);
   });
 
   it("should find /types/components/variable", () => {
@@ -141,6 +152,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', false);
+    expect(element).to.have.property('isVolatile', true);
   });
 
   it("should find /types/runtime", () => {
@@ -152,6 +164,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
     expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', false);
   });
  
 });

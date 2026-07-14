@@ -30,6 +30,7 @@ const booleanFactory: FactoryFunction = (
 
 const booleanTypeHandler: TypeHandler = {
   isContainer: false,
+  isVolatile: false,
   factory: booleanFactory 
 } as TypeHandler;
 
@@ -38,6 +39,7 @@ const booleanTypeElement = {
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   isContainer: false,
+  isVolatile: true,
   data: {
     typeHandler: booleanTypeHandler
   }

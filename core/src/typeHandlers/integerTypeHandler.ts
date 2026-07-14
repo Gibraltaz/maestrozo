@@ -30,6 +30,7 @@ const integerFactory: FactoryFunction = (
 
 const integerTypeHandler: TypeHandler = {
   isContainer: false,
+  isVolatile: false,
   factory: integerFactory 
 } as TypeHandler;
 
@@ -38,6 +39,7 @@ const integerTypeElement = {
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   isContainer: false,
+  isVolatile: true,
   data: {
     typeHandler: integerTypeHandler
   }

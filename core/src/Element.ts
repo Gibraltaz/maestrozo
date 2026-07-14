@@ -14,6 +14,7 @@ type MtzElement = {
   elementType: ElementPath;
   data: ElementData;
   isContainer: boolean;
+  isVolatile: boolean;
 };
 
 export {

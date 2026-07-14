@@ -21,7 +21,8 @@ type FactoryFunction = (
 
 type TypeHandler = {
   factory: FactoryFunction,
-  isContainer: boolean
+  isContainer: boolean,
+  isVolatile: boolean
 };
 
 export {

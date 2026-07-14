@@ -21,6 +21,7 @@ const containerFactory: FactoryFunction = (
 
 const containerTypeHandler: TypeHandler = {
   isContainer: true,
+  isVolatile: false, // FIXME un conteneur dans /types doit être volatile...
   factory: containerFactory 
 } as TypeHandler;
 
@@ -29,6 +30,7 @@ const containerTypeElement = {
   parentPath: [rootName, rootTypeContainerName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   isContainer: true,
+  isVolatile: true,
   data: {
     typeHandler: containerTypeHandler
   }
