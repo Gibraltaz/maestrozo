@@ -45,7 +45,7 @@ class Engine {
       elementName: rootName,
       parentPath: [] as ElementPath, // empty path exception because root as no parent
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      container: true
+      isContainer: true
     } as MtzElement;
     this.rootStore.setItem(pathToString([rootName]) as StoreKey, rootElement);
 
@@ -55,7 +55,7 @@ class Engine {
       elementName: rootTypeContainerName,
       parentPath: getElementPath(rootElement),
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      container: true
+      isContainer: true
     } as MtzElement;
     storeKey = pathToString(getElementPath(rootTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, rootTypeElement);
@@ -66,7 +66,7 @@ class Engine {
       elementName: typeElementName,
       parentPath: getElementPath(rootTypeElement),
       elementType: [rootName, rootTypeContainerName, typeElementName],
-      container: false
+      isContainer: false
     } as MtzElement;
     storeKey = pathToString(getElementPath(typeTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, typeTypeElement);
@@ -85,7 +85,7 @@ class Engine {
       elementName: dataTypeName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      container: true
+      isContainer: true
     } as MtzElement;
     storeKey = pathToString(getElementPath(dataTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, dataTypeElement);
@@ -107,7 +107,7 @@ class Engine {
       elementName: componentTypeContainerName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      container: true,
+      isContainer: true,
     } as MtzElement;
     storeKey = pathToString(getElementPath(componentContainerTypeElement)) as StoreKey
     this.rootStore.setItem(storeKey, componentContainerTypeElement);
@@ -125,7 +125,7 @@ class Engine {
       elementName: runtimeContainerName,
       parentPath: [rootName] as ElementPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      container: true,
+      isContainer: true,
     } as MtzElement;
     storeKey = pathToString(getElementPath(runtimeContainerElement)) as StoreKey
     this.rootStore.setItem(storeKey, runtimeContainerElement);
@@ -156,7 +156,7 @@ class Engine {
     if (parentElement === null)
       throw new Error(`Parent element «${pathToString(parentPath)}» does not exist`);
 
-    if (! parentElement.container)
+    if (! parentElement.isContainer)
       throw new Error(`Parent element «${pathToString(parentPath)}» is not a container`);
 
     const elementStoreKey = pathToString([...parentPath, elementName]) as StoreKey;
@@ -174,6 +174,7 @@ class Engine {
     if ( typeHandler === null)
       throw new Error(`Type handler not defined in type «${pathToString(getElementPath(typeElement))}»`);
 
+
     const factory: FactoryFunction | null = typeHandler?.factory ?? null;
     if (factory === null)
       throw new Error(`Factory not defined in type «${pathToString(getElementPath(typeElement))}»`);
@@ -185,6 +186,11 @@ class Engine {
         return this.getElement(elementPath)
       }
     }
+    const isContainer = typeHandler?.isContainer ?? null;
+    if (isContainer === null)
+      throw new Error(`Property «isContainer» not defined in type handler of type «${pathToString(getElementPath(typeElement))}»`);
+    if (typeof(isContainer) !== 'boolean')
+      throw new Error(`Property «isContainer» is not a boolean in type handler of type «${pathToString(getElementPath(typeElement))}»`);
 
     const elementData = factory(elementName, parentPath, params, factoryHelpers);
 
@@ -192,6 +198,7 @@ class Engine {
       elementName,
       parentPath,
       elementType: typePath,
+      isContainer,
       data: elementData
     } as MtzElement;
 

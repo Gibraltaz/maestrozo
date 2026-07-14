@@ -28,6 +28,7 @@ const stringFactory: FactoryFunction = (
 };
 
 const stringTypeHandler: TypeHandler = {
+  isContainer: false,
   factory: stringFactory 
 } as TypeHandler;
 
@@ -35,7 +36,7 @@ const stringTypeElement = {
   elementName: stringTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
-  container: false,
+  isContainer: false,
   data: {
     typeHandler: stringTypeHandler
   }

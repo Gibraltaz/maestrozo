@@ -20,6 +20,7 @@ const containerFactory: FactoryFunction = (
 };
 
 const containerTypeHandler: TypeHandler = {
+  isContainer: true,
   factory: containerFactory 
 } as TypeHandler;
 
@@ -27,7 +28,7 @@ const containerTypeElement = {
   elementName: containerTypeName,
   parentPath: [rootName, rootTypeContainerName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
-  container: true,
+  isContainer: true,
   data: {
     typeHandler: containerTypeHandler
   }

@@ -14,7 +14,10 @@ const elementFactory: FactoryFunction = (
   throw new Error("Element type can not be instanciate");
 };
 
+
+// TODO à renommer en elementTypeHandler
 const ElementTypeHandler: TypeHandler = {
+  isContainer: false,
   factory: elementFactory 
 } as TypeHandler;
 

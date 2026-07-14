@@ -20,7 +20,8 @@ type FactoryFunction = (
 ) => ElementData;
 
 type TypeHandler = {
-  factory: FactoryFunction
+  factory: FactoryFunction,
+  isContainer: boolean
 };
 
 export {

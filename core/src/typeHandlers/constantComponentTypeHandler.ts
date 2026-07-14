@@ -52,6 +52,7 @@ const constantComponentFactory: FactoryFunction = (
 };
 
 const constantComponentTypeHandler: TypeHandler = {
+  isContainer: false,
   factory: constantComponentFactory
 } as TypeHandler;
 
@@ -59,7 +60,7 @@ const constantComponentTypeElement = {
   elementName: constantComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
-  container: false,
+  isContainer: false,
   data: {
     typeHandler: constantComponentTypeHandler
   }

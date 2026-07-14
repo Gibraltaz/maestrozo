@@ -21,6 +21,7 @@ const variableComponentFactory: FactoryFunction = (
 };
 
 const variableComponentTypeHandler: TypeHandler = {
+  isContainer: false,
   factory: variableComponentFactory 
 } as TypeHandler;
 
@@ -28,7 +29,7 @@ const variableComponentTypeElement = {
   elementName: variableComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
-  container: false,
+  isContainer: false,
   data: {
     typeHandler: variableComponentTypeHandler
   }

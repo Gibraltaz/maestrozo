@@ -27,6 +27,7 @@ describe("Maestrozo core", () => {
     expect(component).to.have.property('elementType');
     expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'constant']);
     expect(component).to.have.property('data');
+    expect(component).to.have.property('isContainer', false);
     expect(component.data).to.be.instanceof(Object);
     expect(component.data).to.have.property('value', 123);
   });
@@ -39,9 +40,53 @@ describe("Maestrozo core", () => {
     expect(component.parentPath).to.deep.equal(['#', 'runtime']);
     expect(component).to.have.property('elementType');
     expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'constant']);
+    expect(component).to.have.property('isContainer', false);
     expect(component).to.have.property('data');
     expect(component.data).to.be.instanceof(Object);
     expect(component.data).to.have.property('value', 123);
   });
- 
+
+  it("should not create a component with the same name", () => {
+    expect( () => {
+      engine.createElement(
+        'constantA' as ElementName,
+        [ '#', 'runtime' ] as ElementPath,
+        [ '#', 'types', 'components', 'constant' ] as ElementPath,
+        {
+          'dataType': [ '#', 'types', 'data', 'integer' ],
+          'value': 123
+        }
+      );
+    }).to.throw("Element «/#/runtime/constantA» already exists");
+  });
+
+  it("should not create a component in a non-existent container", () => {
+    expect( () => {
+      engine.createElement(
+        'constantX' as ElementName,
+        [ '#', 'runtime', 'xxx' ] as ElementPath,
+        [ '#', 'types', 'components', 'constant' ] as ElementPath,
+        {
+          'dataType': [ '#', 'types', 'data', 'integer' ],
+          'value': 123
+        }
+      );
+    }).to.throw("Parent element «/#/runtime/xxx» does not exist");
+  });
+
+
+  it("should not create a component in non-container component", () => {
+    expect( () => {
+      engine.createElement(
+        'constantX' as ElementName,
+        [ '#', 'runtime', 'constantA' ] as ElementPath,
+        [ '#', 'types', 'components', 'constant' ] as ElementPath,
+        {
+          'dataType': [ '#', 'types', 'data', 'integer' ],
+          'value': 123
+        }
+      );
+    }).to.throw("Parent element «/#/runtime/constantA» is not a container");
+  });
+
 });
