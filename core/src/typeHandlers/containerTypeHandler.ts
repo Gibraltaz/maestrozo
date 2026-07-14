@@ -5,7 +5,7 @@
 
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName } from '@/global';
-import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 const containerTypeName = 'container' as ElementName;
 
@@ -25,7 +25,7 @@ const containerTypeHandler: TypeHandler = {
   factory: containerFactory 
 } as TypeHandler;
 
-const containerTypeElement = {
+const containerTypeDeclaration = {
   elementName: containerTypeName,
   parentPath: [rootName, rootTypeContainerName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -34,7 +34,7 @@ const containerTypeElement = {
   data: {
     typeHandler: containerTypeHandler
   }
-}  as MtzElement;
+} as TypeDeclaration;
 
-export { containerTypeElement, containerTypeName };
+export { containerTypeDeclaration, containerTypeName };
 

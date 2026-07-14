@@ -5,7 +5,7 @@
 
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName, componentTypeContainerName } from '@/global';
-import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 const variableComponentTypeName = 'variable' as ElementName;
 
@@ -26,7 +26,7 @@ const variableComponentTypeHandler: TypeHandler = {
   factory: variableComponentFactory 
 } as TypeHandler;
 
-const variableComponentTypeElement = {
+const variableComponentTypeDeclaration = {
   elementName: variableComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -35,7 +35,7 @@ const variableComponentTypeElement = {
   data: {
     typeHandler: variableComponentTypeHandler
   }
-} as MtzElement;
+} as TypeDeclaration;
 
-export { variableComponentTypeElement, variableComponentTypeName };
+export { variableComponentTypeDeclaration, variableComponentTypeName };
 

@@ -23,11 +23,11 @@ const elementTypeHandler: TypeHandler = {
 } as TypeHandler;
 
 
-// element «#/types/element»
-const elementTypeElement = {
+const elementTypeDeclaration = {
   elementName: elementTypeName,
   parentPath: [rootName, rootTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
+  childNames: null,
   isContainer: false,
   isVolatile: true,
   data: {
@@ -35,4 +35,4 @@ const elementTypeElement = {
   }
 };
 
-export {elementTypeElement};
+export { elementTypeDeclaration };

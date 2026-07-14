@@ -25,7 +25,17 @@ type TypeHandler = {
   isVolatile: boolean
 };
 
+type TypeDeclaration = {
+  elementName:ElementName,
+  parentPath: ElementPath,
+  elementType: ElementPath,
+  isContainer: boolean,
+  isVolatile: boolean,
+  data: ElementData | null
+};
+
 export {
+  TypeDeclaration,
   TypeHandler,
   FactoryFunction,
   FactoryHelpers

@@ -12,9 +12,11 @@ type MtzElement = {
   elementName: ElementName;
   parentPath : ElementPath;
   elementType: ElementPath;
-  data: ElementData;
   isContainer: boolean;
   isVolatile: boolean;
+  data: ElementData | null;
+  childNames: Array<ElementName> | null;
+  // TODO ajouter une propriété revision pour le storage
 };
 
 export {

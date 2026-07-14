@@ -1,140 +1,194 @@
 /*
- * SPDX-License-Identifier: LGPL-3.0-or-later
- * Copyright (C) 2026 Executive Gibraltaz
- */
+* SPDX-License-Identifier: LGPL-3.0-or-later
+* Copyright (C) 2026 Executive Gibraltaz
+*/
 
 import { MaestrozoStore, StoreKey } from '@/store/MaestrozoStore';
 import { RawMemoryStore } from '@/store/RawMemoryStore';
 import {
-  checkElementName,
-  checkElementPath,
-  rootName,
-  pathStartsWith,
-  pathToString,
-  getElementPath
+checkElementName,
+checkElementPath,
+rootName,
+pathStartsWith,
+pathToString,
+getElementPath
 } from '@/path';
-import { MtzElement, ElementName, ElementPath } from '@/Element';
+import { MtzElement, ElementName, ElementPath, ElementData } from '@/Element';
 import { containerTypeName, rootTypeContainerName, dataTypeName, componentTypeContainerName, typeElementName } from './global';
 
-import { FactoryFunction, FactoryHelpers, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, FactoryHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
-import { containerTypeElement } from './typeHandlers/containerTypeHandler';
-import { integerTypeElement } from './typeHandlers/integerTypeHandler';
-import { stringTypeElement } from './typeHandlers/stringTypeHandler';
-import { booleanTypeElement } from './typeHandlers/booleanTypeHandler';
-import { constantComponentTypeElement } from './typeHandlers/constantComponentTypeHandler';
-import { variableComponentTypeElement } from './typeHandlers/variableComponentTypeHandler';
-import { elementTypeElement } from './typeHandlers/elementTypeElement';
+import { containerTypeDeclaration} from './typeHandlers/containerTypeHandler';
+import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
+import { stringTypeDeclaration } from './typeHandlers/stringTypeHandler';
+import { booleanTypeDeclaration } from './typeHandlers/booleanTypeHandler';
+import { constantComponentTypeDeclaration } from './typeHandlers/constantComponentTypeHandler';
+import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler';
+import { elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
 
 const runtimeContainerName = 'runtime' as ElementName;
 
+type ContainerDeclaration = {
+  elementName: ElementName,
+  parentPath: ElementPath,
+  isVolatile: boolean
+};
 
 class Engine {
   // store brut pour pouvoir stocker les types qui ont des fonctions associées
   private rootStore: MaestrozoStore = new RawMemoryStore;
   private runtimeStore: MaestrozoStore;
 
+
+
+  private declareContainer(args: ContainerDeclaration): MtzElement {
+
+    const containerPath = [...args.parentPath, args.elementName] as ElementPath;
+
+    let containerElement = this.getElement(containerPath);
+    if (containerElement !== null) {
+      if (args.isVolatile)
+        throw new Error(`Container «${pathToString(containerPath)}» already exists`);
+      return containerElement;
+    }
+
+    containerElement = {
+      elementName: args.elementName,
+      parentPath: args.parentPath,
+      elementType: [rootName, rootTypeContainerName, containerTypeName],
+      isContainer: true,
+      isVolatile: args.isVolatile,
+      childNames: [],
+      data: null
+    } as MtzElement;
+
+    this.rootStore.setItem(pathToString(containerPath) as StoreKey, containerElement);
+    return containerElement;
+  }
+
+
+  private declareType(args: TypeDeclaration, force: boolean): MtzElement {
+
+    if (! force) {
+      if (this.getElement(args.parentPath) === null)
+        throw new Error(`Parent «${pathToString(args.parentPath)}» does not exist`);
+
+      if (this.getElement(args.elementType) === null)
+        throw new Error(`Type «${pathToString(args.elementType)}» does not exist`);
+
+      const isType = pathStartsWith(args.parentPath, [rootName, rootTypeContainerName]);
+      if (! isType)
+        throw new Error(`Type «${args.elementName}» should be declare in ${pathToString([rootName, rootTypeContainerName])}`);
+    }
+
+    // tous les types déclarés ne sont pas instanciables directement (comme /types/type)
+    const typeHandler = args?.data?.typeHandler ?? null;
+    if (typeHandler) {
+
+      const isContainer = typeHandler?.isContainer ?? null;
+      if (isContainer === null)
+        throw new Error(`Type «${pathToString(args.elementType)}» data has no «isContainer» property`);
+
+      const isVolatile = typeHandler?.isVolatile ?? null;
+      if (isVolatile === null)
+        throw new Error(`Type «${pathToString(args.elementType)}» data has no «isVolatile» property`);
+
+      const factory = typeHandler?.factory ?? null;
+      if (factory === null)
+        throw new Error(`Type «${pathToString(args.elementType)}» data has no factory function`);
+
+    }
+
+    const element = {
+      elementName: args.elementName,
+      parentPath: args.parentPath,
+      elementType: args.elementType,
+      childNames: [] as Array<ElementName>,
+      isContainer: args.isContainer,
+      isVolatile: args.isVolatile,
+      data: args.data
+    } as MtzElement;
+
+    this.rootStore.setItem(pathToString(getElementPath(element)) as StoreKey, element);
+    return element;
+  }
+
+
   constructor (runtimeStore: MaestrozoStore) {
-    let storeKey;
 
     this.rootStore = new RawMemoryStore();
     this.runtimeStore = runtimeStore;
 
     // mise en place de root «#/»
-    const rootElement = {
+    const rootElement = this.declareContainer({
       elementName: rootName,
       parentPath: [] as ElementPath, // empty path exception because root as no parent
-      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      isContainer: true,
       isVolatile: false
-    } as MtzElement;
-    this.rootStore.setItem(pathToString([rootName]) as StoreKey, rootElement);
-
+    });
 
     // mise en place de «#/types»
-    const rootTypeElement = {
+    const rootTypeElement = this.declareContainer({
       elementName: rootTypeContainerName,
       parentPath: getElementPath(rootElement),
-      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      isContainer: true,
       isVolatile: true
-    } as MtzElement;
-    storeKey = pathToString(getElementPath(rootTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, rootTypeElement);
+    });
+
+    // mise en place de «#/types/data»
+    this.declareContainer({
+      elementName: dataTypeName,
+      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
+      isVolatile: true
+    });
+    // mise en place de «#/types/components»
+    this.declareContainer({
+      elementName: componentTypeContainerName,
+      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
+      isVolatile: true
+    });
+
+    // mise en place de «#/runtime»
+    this.declareContainer({
+        elementName: runtimeContainerName,
+        parentPath: [rootName] as ElementPath,
+        isVolatile: false
+      }
+    );
 
     // mise en place de «#/types/type»
     // (type spécial qui représente le type de tous les éléments de type dans «/types»)
-    const typeTypeElement = {
-      elementName: typeElementName,
-      parentPath: getElementPath(rootTypeElement),
-      elementType: [rootName, rootTypeContainerName, typeElementName],
-      isContainer: false,
-      isVolatile: true
-    } as MtzElement;
-    storeKey = pathToString(getElementPath(typeTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, typeTypeElement);
-
+    this.declareType(
+      {
+        elementName: typeElementName,
+        parentPath: getElementPath(rootTypeElement),
+        elementType: [rootName, rootTypeContainerName, typeElementName],
+        isContainer: false,
+        isVolatile: true,
+        data: null 
+      },
+      true
+    );
 
     // mise en place de «#/types/element»
-    storeKey = pathToString(getElementPath(elementTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, elementTypeElement);
+    this.declareType(elementTypeDeclaration, false);
 
     // mise en place de «#/types/container»
-    storeKey = pathToString(getElementPath(containerTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, containerTypeElement);
-
-    // mise en place de «#/types/data»
-    const dataTypeElement = {
-      elementName: dataTypeName,
-      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      isContainer: true,
-      isVolatile: true
-    } as MtzElement;
-    storeKey = pathToString(getElementPath(dataTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, dataTypeElement);
+    this.declareType(containerTypeDeclaration, false);
 
     // mise en place de «#/types/data/integer»
-    storeKey = pathToString(getElementPath(integerTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, integerTypeElement);
+    this.declareType(integerTypeDeclaration, false);
 
     // mise en place de «#/types/data/string»
-    storeKey = pathToString(getElementPath(stringTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, stringTypeElement);
+    this.declareType(stringTypeDeclaration, false);
+
 
     // mise en place de «#/types/data/boolean»
-    storeKey = pathToString(getElementPath(booleanTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, booleanTypeElement);
-
-    // mise en place de «#/types/components»
-    const componentContainerTypeElement = {
-      elementName: componentTypeContainerName,
-      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      isContainer: true,
-      isVolatile: true
-    } as MtzElement;
-    storeKey = pathToString(getElementPath(componentContainerTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, componentContainerTypeElement);
+    this.declareType(booleanTypeDeclaration, false);
 
     // mise en place de «#/types/components/constant»
-    storeKey = pathToString(getElementPath(constantComponentTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, constantComponentTypeElement);
+    this.declareType(constantComponentTypeDeclaration, false);
 
     // mise en place de «#/types/components/variable»
-    storeKey = pathToString(getElementPath(variableComponentTypeElement)) as StoreKey
-    this.rootStore.setItem(storeKey, variableComponentTypeElement);
-
-    // mise en place de «#/types/runtime»
-    const runtimeContainerElement = {
-      elementName: runtimeContainerName,
-      parentPath: [rootName] as ElementPath,
-      elementType: [rootName, rootTypeContainerName, containerTypeName] as ElementPath,
-      isContainer: true,
-      isVolatile: false
-    } as MtzElement;
-    storeKey = pathToString(getElementPath(runtimeContainerElement)) as StoreKey
-    this.rootStore.setItem(storeKey, runtimeContainerElement);
+    this.declareType(variableComponentTypeDeclaration, false);
 
   }
 

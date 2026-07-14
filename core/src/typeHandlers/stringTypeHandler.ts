@@ -6,7 +6,7 @@
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
-import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 const stringTypeName = 'string' as ElementName;
 
@@ -33,7 +33,7 @@ const stringTypeHandler: TypeHandler = {
   factory: stringFactory 
 } as TypeHandler;
 
-const stringTypeElement = {
+const stringTypeDeclaration = {
   elementName: stringTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -42,7 +42,7 @@ const stringTypeElement = {
   data: {
     typeHandler: stringTypeHandler
   }
-};
+} as TypeDeclaration;
 
-export { stringTypeElement };
+export { stringTypeDeclaration };
 

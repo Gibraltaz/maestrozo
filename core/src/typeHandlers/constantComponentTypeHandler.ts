@@ -6,7 +6,7 @@
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { rootName, rootTypeContainerName, componentTypeContainerName, typeElementName } from '@/global';
 import { checkElementPath, getElementPath, pathStartsWith, pathToString } from "@/path";
-import { FactoryFunction, FactoryHelpers, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, FactoryHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 const constantComponentTypeName = 'constant' as ElementName;
 
@@ -57,7 +57,7 @@ const constantComponentTypeHandler: TypeHandler = {
   factory: constantComponentFactory
 } as TypeHandler;
 
-const constantComponentTypeElement = {
+const constantComponentTypeDeclaration = {
   elementName: constantComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -66,7 +66,7 @@ const constantComponentTypeElement = {
   data: {
     typeHandler: constantComponentTypeHandler
   }
-} as MtzElement;
+} as TypeDeclaration;
 
-export { constantComponentTypeElement, constantComponentTypeName };
+export { constantComponentTypeDeclaration, constantComponentTypeName };
 

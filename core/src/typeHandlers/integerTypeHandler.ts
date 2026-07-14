@@ -6,7 +6,7 @@
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
-import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 const integerTypeName = 'integer' as ElementName;
 
@@ -34,7 +34,7 @@ const integerTypeHandler: TypeHandler = {
   factory: integerFactory 
 } as TypeHandler;
 
-const integerTypeElement = {
+const integerTypeDeclaration = {
   elementName: integerTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -43,7 +43,6 @@ const integerTypeElement = {
   data: {
     typeHandler: integerTypeHandler
   }
-};
+} as TypeDeclaration;
 
-export { integerTypeElement };
-
+export { integerTypeDeclaration };
