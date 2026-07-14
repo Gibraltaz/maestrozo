@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "@/Element";
+import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName, componentTypeContainerName } from '@/global';
 import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
 
@@ -31,7 +31,7 @@ const variableComponentTypeElement = {
   data: {
     typeHandler: variableComponentTypeHandler
   }
-}; // TODO  as Element;
+} as MtzElement;
 
 export { variableComponentTypeElement, variableComponentTypeName };
 

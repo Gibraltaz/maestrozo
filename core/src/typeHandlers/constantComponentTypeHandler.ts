@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "@/Element";
+import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { rootName, rootTypeContainerName, componentTypeContainerName, typeElementName } from '@/global';
 import { checkElementPath, getElementPath, pathStartsWith, pathToString } from "@/path";
 import { FactoryFunction, FactoryHelpers, TypeHandler } from '@/typeHandlers/TypeHandler';
@@ -62,7 +62,7 @@ const constantComponentTypeElement = {
   data: {
     typeHandler: constantComponentTypeHandler
   }
-}; // TODO  as Element;
+} as MtzElement;
 
 export { constantComponentTypeElement, constantComponentTypeName };
 

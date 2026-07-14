@@ -13,7 +13,7 @@ import {
   pathToString,
   getElementPath
 } from '@/path';
-import { Element as MtzElement, ElementName, ElementPath } from '@/Element';
+import { MtzElement, ElementName, ElementPath } from '@/Element';
 import { containerTypeName, rootTypeContainerName, dataTypeName, componentTypeContainerName, typeElementName } from './global';
 
 import { FactoryFunction, FactoryHelpers, TypeHandler } from '@/typeHandlers/TypeHandler';

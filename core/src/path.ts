@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { Element, ElementName, ElementPath } from '@/Element';
+import { MtzElement, ElementName, ElementPath } from '@/Element';
 
 const pathSeparator = '/';
 const rootName = '#' as ElementName;
@@ -11,7 +11,7 @@ const rootName = '#' as ElementName;
 const invalidCharacters = [ pathSeparator, rootName ];
 
 
-function getElementPath(element: Element): ElementPath {
+function getElementPath(element: MtzElement): ElementPath {
   return [...element.parentPath, element.elementName];
 }
 

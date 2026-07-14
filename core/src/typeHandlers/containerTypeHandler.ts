@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "@/Element";
+import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName } from '@/global';
 import { FactoryFunction, TypeHandler } from '@/typeHandlers/TypeHandler';
 
@@ -30,7 +30,7 @@ const containerTypeElement = {
   data: {
     typeHandler: containerTypeHandler
   }
-}; // TODO  as Element;
+}  as MtzElement;
 
 export { containerTypeElement, containerTypeName };
 

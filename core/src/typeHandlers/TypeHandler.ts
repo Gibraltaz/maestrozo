@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { Element as MtzElement, ElementData, ElementName, ElementPath } from "@/Element";
+import { MtzElement, ElementData, ElementName, ElementPath } from "@/Element";
 
 type GetElementFactoryHelper = (elementPath: ElementPath) => MtzElement | null;
 

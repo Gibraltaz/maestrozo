@@ -8,7 +8,7 @@ type ElementPath = Array<ElementName>;
 
 type ElementData = Record<string, any>;
 
-type Element = {
+type MtzElement = {
   elementName: ElementName;
   parentPath : ElementPath;
   elementType: ElementPath;
@@ -16,7 +16,7 @@ type Element = {
 };
 
 export {
-  Element,
+  MtzElement,
   ElementName,
   ElementPath,
   ElementData
