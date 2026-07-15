@@ -3,9 +3,9 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
+import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName } from '@/global';
-import { FactoryFunction, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const containerTypeName = 'container' as ElementName;
 
@@ -15,25 +15,16 @@ const containerFactory: FactoryFunction = (
   _params:Record<string, any>
 ): ElementData => {
   throw new Error("Container factory not yet implemented");
-  //return {
-  //} as ElementData;
 };
-
-const containerTypeHandler: TypeHandler = {
-  isContainer: true,
-  isVolatile: false, // FIXME un conteneur dans /types doit être volatile...
-  factory: containerFactory 
-} as TypeHandler;
 
 const containerTypeDeclaration = {
   elementName: containerTypeName,
   parentPath: [rootName, rootTypeContainerName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
+  isDerivable: true,
   isContainer: true,
   isVolatile: true,
-  data: {
-    typeHandler: containerTypeHandler
-  }
+  factory: containerFactory
 } as TypeDeclaration;
 
 export { containerTypeDeclaration, containerTypeName };

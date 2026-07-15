@@ -3,9 +3,9 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
+import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName, componentTypeContainerName } from '@/global';
-import { FactoryFunction, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const variableComponentTypeName = 'variable' as ElementName;
 
@@ -20,21 +20,14 @@ const variableComponentFactory: FactoryFunction = (
   //} as ElementData;
 };
 
-const variableComponentTypeHandler: TypeHandler = {
-  isContainer: false,
-  isVolatile: false,
-  factory: variableComponentFactory 
-} as TypeHandler;
-
 const variableComponentTypeDeclaration = {
   elementName: variableComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
+  isDerivable: false,
   isContainer: false,
-  isVolatile: true,
-  data: {
-    typeHandler: variableComponentTypeHandler
-  }
+  isVolatile: false,
+  factory: variableComponentFactory
 } as TypeDeclaration;
 
 export { variableComponentTypeDeclaration, variableComponentTypeName };

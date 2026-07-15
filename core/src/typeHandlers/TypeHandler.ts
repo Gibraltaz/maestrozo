@@ -20,18 +20,19 @@ type FactoryFunction = (
 ) => ElementData;
 
 type TypeHandler = {
-  factory: FactoryFunction,
   isContainer: boolean,
   isVolatile: boolean
+  factory: FactoryFunction,
 };
 
 type TypeDeclaration = {
   elementName:ElementName,
   parentPath: ElementPath,
   elementType: ElementPath,
-  isContainer: boolean,
-  isVolatile: boolean,
-  data: ElementData | null
+  isDerivable: boolean, // le type peut-il être dérivé en sous-type
+  isContainer: boolean, // un élément de ce type peut-il en contenir d'autres
+  isVolatile: boolean, // est-il sauvegardé ou recréé à chaque fois
+  factory: FactoryFunction,
 };
 
 export {

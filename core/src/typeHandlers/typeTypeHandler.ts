@@ -4,27 +4,27 @@
  */
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
-import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "@/global";
+import { rootName, rootTypeContainerName, typeElementName } from "@/global";
 import { FactoryFunction } from "./TypeHandler";
 
-const elementFactory: FactoryFunction = (
+const typeFactory: FactoryFunction = (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
 ): ElementData => {
-  throw new Error("Element type can not be instanciate");
+  throw new Error("Type type can not be instanciated");
 };
 
 
-const elementTypeDeclaration = {
-  elementName: elementTypeName,
+const typeTypeDeclaration = {
+  elementName: typeElementName,
   parentPath: [rootName, rootTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   childNames: null,
   isDerivable: false,
   isContainer: false,
   isVolatile: true,
-  factory: elementFactory
+  factory: typeFactory 
 };
 
-export { elementTypeDeclaration };
+export { typeTypeDeclaration };

@@ -16,7 +16,7 @@ getElementPath
 import { MtzElement, ElementName, ElementPath, ElementData } from '@/Element';
 import { containerTypeName, rootTypeContainerName, dataTypeName, componentTypeContainerName, typeElementName } from './global';
 
-import { FactoryFunction, FactoryHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, FactoryHelpers, nonImplementableFactoryFunction, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 import { containerTypeDeclaration} from './typeHandlers/containerTypeHandler';
 import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
@@ -25,6 +25,7 @@ import { booleanTypeDeclaration } from './typeHandlers/booleanTypeHandler';
 import { constantComponentTypeDeclaration } from './typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler';
 import { elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
+import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
 
 const runtimeContainerName = 'runtime' as ElementName;
 
@@ -81,32 +82,38 @@ class Engine {
         throw new Error(`Type «${args.elementName}» should be declare in ${pathToString([rootName, rootTypeContainerName])}`);
     }
 
-    // tous les types déclarés ne sont pas instanciables directement (comme /types/type)
-    const typeHandler = args?.data?.typeHandler ?? null;
-    if (typeHandler) {
+    const typePath = pathToString([...args.parentPath, args.elementName]);
 
-      const isContainer = typeHandler?.isContainer ?? null;
-      if (isContainer === null)
-        throw new Error(`Type «${pathToString(args.elementType)}» data has no «isContainer» property`);
+    const isDerivable = args?.isContainer ?? null;
+    if (isDerivable === null)
+      throw new Error(`Type «${typePath}» declaration has no «isDerivable» property`);
 
-      const isVolatile = typeHandler?.isVolatile ?? null;
-      if (isVolatile === null)
-        throw new Error(`Type «${pathToString(args.elementType)}» data has no «isVolatile» property`);
+    const isContainer = args?.isContainer ?? null;
+    if (isContainer === null)
+      throw new Error(`Type «${typePath}» declaration has no «isContainer» property`);
 
-      const factory = typeHandler?.factory ?? null;
-      if (factory === null)
-        throw new Error(`Type «${pathToString(args.elementType)}» data has no factory function`);
+    const isVolatile = args?.isVolatile ?? null;
+    if (isVolatile === null)
+      throw new Error(`Type «${typePath}» declaration has no «isVolatile» property`);
 
-    }
+    const factory = args?.factory ?? null;
+    if (factory === null)
+      throw new Error(`Type «${typePath}» declaration has no factory function`);
 
     const element = {
       elementName: args.elementName,
       parentPath: args.parentPath,
       elementType: args.elementType,
+      isContainer: isDerivable ? true : false,
+      isVolatile: true,
       childNames: [] as Array<ElementName>,
-      isContainer: args.isContainer,
-      isVolatile: args.isVolatile,
-      data: args.data
+      data: {
+        typeHandler: {
+          isContainer: args.isContainer,
+          isVolatile: args.isVolatile,
+          factory: args.factory
+        }
+      }
     } as MtzElement;
 
     this.rootStore.setItem(pathToString(getElementPath(element)) as StoreKey, element);
@@ -156,17 +163,7 @@ class Engine {
 
     // mise en place de «#/types/type»
     // (type spécial qui représente le type de tous les éléments de type dans «/types»)
-    this.declareType(
-      {
-        elementName: typeElementName,
-        parentPath: getElementPath(rootTypeElement),
-        elementType: [rootName, rootTypeContainerName, typeElementName],
-        isContainer: false,
-        isVolatile: true,
-        data: null 
-      },
-      true
-    );
+    this.declareType(typeTypeDeclaration, true);
 
     // mise en place de «#/types/element»
     this.declareType(elementTypeDeclaration, false);
@@ -179,7 +176,6 @@ class Engine {
 
     // mise en place de «#/types/data/string»
     this.declareType(stringTypeDeclaration, false);
-
 
     // mise en place de «#/types/data/boolean»
     this.declareType(booleanTypeDeclaration, false);

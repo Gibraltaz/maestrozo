@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
+import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, componentTypeContainerName, typeElementName } from '@/global';
 import { checkElementPath, getElementPath, pathStartsWith, pathToString } from "@/path";
 import { FactoryFunction, FactoryHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
@@ -51,21 +51,14 @@ const constantComponentFactory: FactoryFunction = (
   return data;
 };
 
-const constantComponentTypeHandler: TypeHandler = {
-  isContainer: false,
-  isVolatile: false,
-  factory: constantComponentFactory
-} as TypeHandler;
-
 const constantComponentTypeDeclaration = {
   elementName: constantComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
+  isDerivable: false,
   isContainer: false,
-  isVolatile: true,
-  data: {
-    typeHandler: constantComponentTypeHandler
-  }
+  isVolatile: false,
+  factory: constantComponentFactory
 } as TypeDeclaration;
 
 export { constantComponentTypeDeclaration, constantComponentTypeName };

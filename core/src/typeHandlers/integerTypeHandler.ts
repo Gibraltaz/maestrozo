@@ -6,7 +6,7 @@
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
-import { FactoryFunction, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const integerTypeName = 'integer' as ElementName;
 
@@ -28,21 +28,14 @@ const integerFactory: FactoryFunction = (
   } as ElementData;
 };
 
-const integerTypeHandler: TypeHandler = {
-  isContainer: false,
-  isVolatile: false,
-  factory: integerFactory 
-} as TypeHandler;
-
 const integerTypeDeclaration = {
   elementName: integerTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
+  isDerivable: false,
   isContainer: false,
   isVolatile: true,
-  data: {
-    typeHandler: integerTypeHandler
-  }
+  factory: integerFactory
 } as TypeDeclaration;
 
 export { integerTypeDeclaration };
