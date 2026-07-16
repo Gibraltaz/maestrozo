@@ -22,7 +22,6 @@ const integerFactory: FactoryFunction = (
   if (typeof(value) !== 'number')
     throw new Error(`Param «value» is not a number to create element «${pathToString([...parentPath, elementName] )}»`);
 
-
   return {
     value
   } as ElementData;

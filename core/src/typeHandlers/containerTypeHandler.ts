@@ -21,7 +21,7 @@ const containerTypeDeclaration = {
   elementName: containerTypeName,
   parentPath: [rootName, rootTypeContainerName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
-  isDerivable: true,
+  isDerivable: false,
   isContainer: true,
   isVolatile: true,
   factory: containerFactory

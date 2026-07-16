@@ -31,6 +31,7 @@ describe("Maestrozo core", () => {
     expect(component).to.have.property('isVolatile', false);
     expect(component.data).to.be.instanceof(Object);
     expect(component.data).to.have.property('value', 123);
+    expect(component).to.have.property('childNames', null);
   });
 
   it("should find newly created component in runtime", () => {
@@ -46,6 +47,13 @@ describe("Maestrozo core", () => {
     expect(component).to.have.property('data');
     expect(component.data).to.be.instanceof(Object);
     expect(component.data).to.have.property('value', 123);
+    expect(component).to.have.property('childNames', null);
+  });
+
+  it("should find newly created component as a child of runtime", () => {
+    const runtimeContainer = engine.getElement(['#' as ElementName, 'runtime' as ElementName]);
+    expect(runtimeContainer).to.have.property('childNames');
+    expect(runtimeContainer.childNames).to.deep.equal(['constantA']);
   });
 
   it("should not create a component with the same name", () => {

@@ -6,17 +6,17 @@
 import { MaestrozoStore, StoreKey } from '@/store/MaestrozoStore';
 import { RawMemoryStore } from '@/store/RawMemoryStore';
 import {
-checkElementName,
-checkElementPath,
-rootName,
-pathStartsWith,
-pathToString,
-getElementPath
+  checkElementName,
+  checkElementPath,
+  rootName,
+  pathStartsWith,
+  pathToString,
+  getElementPath
 } from '@/path';
-import { MtzElement, ElementName, ElementPath, ElementData } from '@/Element';
-import { containerTypeName, rootTypeContainerName, dataTypeName, componentTypeContainerName, typeElementName } from './global';
+import { MtzElement, ElementName, ElementPath, checkElement } from '@/Element';
+import { containerTypeName, rootTypeContainerName, dataTypeName, componentTypeContainerName } from './global';
 
-import { FactoryFunction, FactoryHelpers, nonImplementableFactoryFunction, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { FactoryFunction, FactoryHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 import { containerTypeDeclaration} from './typeHandlers/containerTypeHandler';
 import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
@@ -41,6 +41,48 @@ class Engine {
   private runtimeStore: MaestrozoStore;
 
 
+  
+  private storeNewElement(element: MtzElement):void {
+
+    checkElement(element);
+
+    const storeKey = pathToString(getElementPath(element)) as StoreKey;
+    if (this.rootStore.getItem(storeKey) !== null)
+      throw new Error(`Element «${storeKey}» already exists`);
+
+    let parentElement;
+    if (element.elementName === rootName && element.parentPath.length === 0) {
+      parentElement = null; // l'élément racine n'a pas de parent
+    }
+    else {
+      const parentStoreKey = pathToString(element.parentPath) as StoreKey;
+      parentElement = this.rootStore.getItem(parentStoreKey) as MtzElement;
+      if (parentElement === null)
+        throw new Error(`Parent of element «${storeKey}» does not exist`);
+      if (! parentElement.isContainer)
+        throw new Error(`Parent of element «${storeKey}» is not a container`);
+    }
+
+    if (element.isContainer) {
+      if (element.childNames === null)
+        throw new Error(`Child name list not initialized in container «${storeKey}»`);
+    }
+    else {
+      if (element.childNames !== null)
+        throw new Error(`Child name list initialized in non-container «${storeKey}»`);
+    }
+
+    this.rootStore.setItem(storeKey , element);
+
+    if (parentElement) {
+      const parentStoreKey = pathToString(element.parentPath) as StoreKey;
+      if (parentElement.childNames === null)
+        throw new Error(`Child name list not initialized in element «${parentStoreKey}»`);
+      parentElement.childNames.push(element.elementName);
+      this.rootStore.setItem(parentStoreKey , parentElement);
+    }
+  };
+
 
   private declareContainer(args: ContainerDeclaration): MtzElement {
 
@@ -63,10 +105,9 @@ class Engine {
       data: null
     } as MtzElement;
 
-    this.rootStore.setItem(pathToString(containerPath) as StoreKey, containerElement);
+    this.storeNewElement(containerElement);
     return containerElement;
   }
-
 
   private declareType(args: TypeDeclaration, force: boolean): MtzElement {
 
@@ -84,7 +125,7 @@ class Engine {
 
     const typePath = pathToString([...args.parentPath, args.elementName]);
 
-    const isDerivable = args?.isContainer ?? null;
+    const isDerivable = args?.isDerivable ?? null;
     if (isDerivable === null)
       throw new Error(`Type «${typePath}» declaration has no «isDerivable» property`);
 
@@ -106,7 +147,7 @@ class Engine {
       elementType: args.elementType,
       isContainer: isDerivable ? true : false,
       isVolatile: true,
-      childNames: [] as Array<ElementName>,
+      childNames: isDerivable ? [] as Array<ElementName> : null,
       data: {
         typeHandler: {
           isContainer: args.isContainer,
@@ -116,7 +157,7 @@ class Engine {
       }
     } as MtzElement;
 
-    this.rootStore.setItem(pathToString(getElementPath(element)) as StoreKey, element);
+    this.storeNewElement(element);
     return element;
   }
 
@@ -134,7 +175,7 @@ class Engine {
     });
 
     // mise en place de «#/types»
-    const rootTypeElement = this.declareContainer({
+    this.declareContainer({
       elementName: rootTypeContainerName,
       parentPath: getElementPath(rootElement),
       isVolatile: true
@@ -264,10 +305,11 @@ class Engine {
       elementType: typePath,
       isContainer,
       isVolatile,
+      childNames: isContainer ? [] : null,
       data: elementData
     } as MtzElement;
 
-    this.rootStore.setItem(elementStoreKey, element);
+    this.storeNewElement(element);
 
     return element;
   }
