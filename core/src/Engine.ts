@@ -37,53 +37,68 @@ type ContainerDeclaration = {
 
 class Engine {
   // store brut pour pouvoir stocker les types qui ont des fonctions associées
-  private rootStore: MaestrozoStore = new RawMemoryStore;
-  private runtimeStore: MaestrozoStore;
+  private volatileStore: MaestrozoStore = new RawMemoryStore;
+  private persistentStorage: MaestrozoStore;
   
   private storeNewElement(element: MtzElement):void {
 
     checkElement(element);
 
-    const storeKey = pathToString(getElementPath(element)) as StoreKey;
-    if (this.rootStore.getItem(storeKey) !== null)
-      throw new Error(`Element «${storeKey}» already exists`);
+    const elementPath = getElementPath(element);
+    if (this.getElement(elementPath))
+      throw new Error(`Element «${elementPath}» already exists`);
 
     let parentElement;
     if (element.elementName === rootName && element.parentPath.length === 0) {
       parentElement = null; // l'élément racine n'a pas de parent
     }
     else {
-      const parentStoreKey = pathToString(element.parentPath) as StoreKey;
-      parentElement = this.rootStore.getItem(parentStoreKey) as MtzElement;
+      const parentPath = element.parentPath;
+      parentElement = this.getElement(parentPath);
       if (parentElement === null)
-        throw new Error(`Parent of element «${storeKey}» does not exist`);
+        throw new Error(`Parent of element «${pathToString(parentPath)}» does not exist`);
       if (! parentElement.isContainer)
-        throw new Error(`Parent of element «${storeKey}» is not a container`);
+        throw new Error(`Parent of element «${pathToString(parentPath)}» is not a container`);
     }
 
     if (element.isContainer) {
       if (element.childNames === null)
-        throw new Error(`Child name list not initialized in container «${storeKey}»`);
+        throw new Error(`Child name list not initialized in container «${pathToString(elementPath)}»`);
     }
     else {
       if (element.childNames !== null)
-        throw new Error(`Child name list initialized in non-container «${storeKey}»`);
+        throw new Error(`Child name list initialized in non-container «${pathToString(elementPath)}»`);
     }
 
     if (element.revision !== 0)
-      throw new Error(`Revision of new element «${storeKey}» must be zero`);
+      throw new Error(`Revision of new element «${pathToString(elementPath)}» must be zero`);
     element.revision = 1;
 
-    this.rootStore.setItem(storeKey , element);
+    const storeKey = pathToString(elementPath) as StoreKey;
+    if (element.isVolatile)
+      this.volatileStore.setItem(storeKey , element);
+    else
+      this.persistentStorage.setItem(storeKey , element);
 
     if (parentElement) {
       const parentStoreKey = pathToString(element.parentPath) as StoreKey;
       if (parentElement.childNames === null)
         throw new Error(`Child name list not initialized in element «${parentStoreKey}»`);
       parentElement.childNames.push(element.elementName);
-      this.rootStore.setItem(parentStoreKey , parentElement);
+      if (parentElement.isVolatile)
+        this.volatileStore.setItem(parentStoreKey , parentElement);
+      else
+        this.persistentStorage.setItem(parentStoreKey , parentElement);
     }
   };
+
+  public getElement(elementPath: ElementPath): MtzElement {
+    const storeKey = pathToString(elementPath) as StoreKey;
+    let element = this.volatileStore.getItem(storeKey);
+    if (element === null)
+      element = this.persistentStorage.getItem(storeKey);
+    return element;
+  }
 
 
   private declareContainer(args: ContainerDeclaration): MtzElement {
@@ -166,10 +181,10 @@ class Engine {
   }
 
 
-  constructor (runtimeStore: MaestrozoStore) {
+  constructor (storage: MaestrozoStore) {
 
-    this.rootStore = new RawMemoryStore();
-    this.runtimeStore = runtimeStore;
+    this.volatileStore = new RawMemoryStore();
+    this.persistentStorage = storage;
 
     // mise en place de root «#/»
     const rootElement = this.declareContainer({
@@ -236,10 +251,6 @@ class Engine {
   public runOnce(): void {
   }
 
-  public getElement(elementPath: ElementPath): MtzElement {
-    // TODO renvoyer les éléments du store de runtime
-    return this.rootStore.getItem(pathToString(elementPath) as StoreKey);
-  }
 
   public createElement(
     elementName: ElementName,
@@ -260,8 +271,9 @@ class Engine {
     if (! parentElement.isContainer)
       throw new Error(`Parent element «${pathToString(parentPath)}» is not a container`);
 
+    const elementPath = [...parentPath, elementName];
     const elementStoreKey = pathToString([...parentPath, elementName]) as StoreKey;
-    if (this.rootStore.getItem(elementStoreKey) !== null)
+    if (this.getElement(elementPath) !== null)
       throw new Error(`Element «${elementStoreKey}» already exists`);
 
     const typeElement = this.getElement(typePath);
