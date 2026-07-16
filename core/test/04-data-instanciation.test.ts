@@ -21,6 +21,7 @@ describe("Maestrozo core", () => {
       }
     );
     expect(component).to.be.instanceof(Object);
+    expect(component).to.have.property('revision', 1);
     expect(component).to.have.property('elementName', 'constantA');
     expect(component).to.have.property('parentPath');
     expect(component.parentPath).to.deep.equal(['#', 'runtime']);
@@ -37,6 +38,7 @@ describe("Maestrozo core", () => {
   it("should find newly created component in runtime", () => {
     const component = engine.getElement(['#' as ElementName, 'runtime' as ElementName, 'constantA' as ElementName]);
     expect(component).to.be.instanceof(Object);
+    expect(component).to.have.property('revision', 1);
     expect(component).to.have.property('elementName', 'constantA');
     expect(component).to.have.property('parentPath');
     expect(component.parentPath).to.deep.equal(['#', 'runtime']);

@@ -9,6 +9,7 @@ type ElementPath = Array<ElementName>;
 type ElementData = Record<string, any>;
 
 type MtzElement = {
+  revision: number;
   elementName: ElementName;
   parentPath : ElementPath;
   elementType: ElementPath;
@@ -16,17 +17,17 @@ type MtzElement = {
   isVolatile: boolean;
   data: ElementData | null;
   childNames: Array<ElementName> | null;
-  // TODO ajouter une propriété revision pour le storage
 };
 
 const elementPropertyNames : Array<string> = [
-    'elementName',
-    'parentPath',
-    'elementType',
-    'isContainer',
-    'isVolatile',
-    'childNames',
-    'data'
+  'revision',
+  'elementName',
+  'parentPath',
+  'elementType',
+  'isContainer',
+  'isVolatile',
+  'childNames',
+  'data'
 ];
 
 const checkElement = (element: MtzElement) => {

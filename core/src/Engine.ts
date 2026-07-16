@@ -39,8 +39,6 @@ class Engine {
   // store brut pour pouvoir stocker les types qui ont des fonctions associées
   private rootStore: MaestrozoStore = new RawMemoryStore;
   private runtimeStore: MaestrozoStore;
-
-
   
   private storeNewElement(element: MtzElement):void {
 
@@ -72,6 +70,10 @@ class Engine {
         throw new Error(`Child name list initialized in non-container «${storeKey}»`);
     }
 
+    if (element.revision !== 0)
+      throw new Error(`Revision of new element «${storeKey}» must be zero`);
+    element.revision = 1;
+
     this.rootStore.setItem(storeKey , element);
 
     if (parentElement) {
@@ -96,6 +98,7 @@ class Engine {
     }
 
     containerElement = {
+      revision: 0,
       elementName: args.elementName,
       parentPath: args.parentPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName],
@@ -142,6 +145,7 @@ class Engine {
       throw new Error(`Type «${typePath}» declaration has no factory function`);
 
     const element = {
+      revision: 0,
       elementName: args.elementName,
       parentPath: args.parentPath,
       elementType: args.elementType,
@@ -300,6 +304,7 @@ class Engine {
     const elementData = factory(elementName, parentPath, params, factoryHelpers);
 
     const element = {
+      revision: 0,
       elementName,
       parentPath,
       elementType: typePath,
