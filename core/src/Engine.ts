@@ -89,7 +89,7 @@ class Engine {
 
     const storeKey = pathToString(elementPath) as StoreKey;
     if (element.isVolatile)
-      this.volatileStore.setItem(storeKey , element);
+      await this.volatileStore.setItem(storeKey , element);
     else {
       if (this.persistentStorage === null)
         throw new Error("Persistent storage is null");
@@ -102,7 +102,7 @@ class Engine {
         throw new Error(`Child name list not initialized in element «${parentStoreKey}»`);
       parentElement.childNames.push(element.elementName);
       if (parentElement.isVolatile) {
-        this.volatileStore.setItem(parentStoreKey , parentElement);
+        await this.volatileStore.setItem(parentStoreKey , parentElement);
       }
       else {
         if (this.persistentStorage === null)
@@ -199,6 +199,7 @@ class Engine {
     this.persistentStorage = storage;
 
     // mise en place de root «#/»
+
     const rootElement = await this.declareContainer({
       elementName: rootName,
       parentPath: [] as ElementPath, // empty path exception because root as no parent
@@ -218,6 +219,7 @@ class Engine {
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       isVolatile: true
     });
+
     // mise en place de «#/types/components»
     await this.declareContainer({
       elementName: componentTypeContainerName,

@@ -11,14 +11,24 @@ class MtzCore {
   public readonly version = '0.0.1';
   private engine : Engine;
 
-  constructor (runtimeStore?: MaestrozoStore) {
-    if (runtimeStore === undefined)
-      runtimeStore = new RawMemoryStore();
-    this.engine = new Engine(runtimeStore);
+  constructor () {
+    this.engine = new Engine();
   }
 
-  public runOnce(): void {
-    this.engine.runOnce();
+  public async initialize (runtimeStore?: MaestrozoStore) {
+    if (runtimeStore === undefined)
+      runtimeStore = new RawMemoryStore();
+    await this.engine.initialize(runtimeStore);
+  }
+
+  public async runOnce(): Promise<void> {
+    if (! this.engine.initialized)
+      throw new Error("Core not initialized");
+    await this.engine.runOnce();
+  }
+
+  public get initialized(): boolean {
+    return this.engine.initialized;
   }
 
 };
