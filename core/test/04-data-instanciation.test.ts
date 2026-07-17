@@ -5,13 +5,13 @@
 
 import { describe, it, expect } from "vitest";
 import { ElementName, ElementPath, Engine } from "@/Engine";
-import { RawMemoryStore } from "@/store/RawMemoryStore";
+import { MemoryStore } from "@/store/MemoryStore";
 
 describe("Maestrozo core", () => {
   let engine = new Engine();
 
   it("should be initialized", async() => {
-    await engine.initialize(new RawMemoryStore());
+    await engine.initialize(new MemoryStore());
   });
 
   it("should create a constant component in runtime", async () => {
