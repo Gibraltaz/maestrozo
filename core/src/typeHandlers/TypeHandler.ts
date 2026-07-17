@@ -5,7 +5,7 @@
 
 import { MtzElement, ElementData, ElementName, ElementPath } from "@/Element";
 
-type GetElementFactoryHelper = (elementPath: ElementPath) => MtzElement | null;
+type GetElementFactoryHelper = (elementPath: ElementPath) => Promise<MtzElement | null>;
 
 type FactoryHelpers = {
   getElement: GetElementFactoryHelper
@@ -16,8 +16,7 @@ type FactoryFunction = (
   parentPath: ElementPath,
   params:Record<string, any>,
   helpers: FactoryHelpers
-
-) => ElementData;
+) => Promise<ElementData>;
 
 type TypeHandler = {
   isContainer: boolean,

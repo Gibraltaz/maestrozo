@@ -10,11 +10,11 @@ import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const booleanTypeName = 'boolean' as ElementName;
 
-const booleanFactory: FactoryFunction = (
+const booleanFactory: FactoryFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>
-): ElementData => {
+): Promise<ElementData> => {
 
   const value = params.value;
   if (value === undefined)

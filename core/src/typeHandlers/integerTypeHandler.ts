@@ -10,11 +10,11 @@ import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const integerTypeName = 'integer' as ElementName;
 
-const integerFactory: FactoryFunction = (
+const integerFactory: FactoryFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>
-): ElementData => {
+): Promise<ElementData> => {
 
   const value = params.value;
   if (value === undefined)

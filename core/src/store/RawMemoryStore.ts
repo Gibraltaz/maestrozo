@@ -10,12 +10,12 @@ class RawMemoryStore implements MaestrozoStore{
 
   private map = new Map<StoreKey, StoreValue>();
 
-  getItem(key: StoreKey) : StoreValue | null {
+  async getItem(key: StoreKey) : Promise<StoreValue | null> {
     checkStoreKey(key);
     return this.map.get(key) ?? null;
   }
 
-  setItem(key: StoreKey, value:  StoreValue): void {
+  async setItem(key: StoreKey, value:  StoreValue): Promise<void> {
     checkStoreKey(key);
     checkStoreValue(value);
     this.map.set(key, value);

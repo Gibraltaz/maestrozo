@@ -17,7 +17,4 @@ describe("Maestrozo core", () => {
     expect(maestrozoCore.version).toBe('0.0.1');
   });
 
-  it("should run once", () => {
-    maestrozoCore.runOnce();
-  });
 });

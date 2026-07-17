@@ -36,16 +36,29 @@ type ContainerDeclaration = {
 };
 
 class Engine {
-  // store brut pour pouvoir stocker les types qui ont des fonctions associées
+  private _initialized = false;
+  private persistentStorage: MaestrozoStore| null = null;
   private volatileStore: MaestrozoStore = new RawMemoryStore;
-  private persistentStorage: MaestrozoStore;
-  
-  private storeNewElement(element: MtzElement):void {
+
+
+  private async getStoredElement(elementPath: ElementPath): Promise<MtzElement> {
+    const storeKey = pathToString(elementPath) as StoreKey;
+    let element = await this.volatileStore.getItem(storeKey);
+    if (element === null) {
+      if (this.persistentStorage === null)
+        throw new Error("Persistent storage is null");
+      element = await this.persistentStorage.getItem(storeKey);
+    }
+    return element;
+  }
+
+
+  private async storeNewElement(element: MtzElement): Promise<void> {
 
     checkElement(element);
 
     const elementPath = getElementPath(element);
-    if (this.getElement(elementPath))
+    if (await this.getStoredElement(elementPath))
       throw new Error(`Element «${elementPath}» already exists`);
 
     let parentElement;
@@ -54,7 +67,7 @@ class Engine {
     }
     else {
       const parentPath = element.parentPath;
-      parentElement = this.getElement(parentPath);
+      parentElement = await this.getStoredElement(parentPath);
       if (parentElement === null)
         throw new Error(`Parent of element «${pathToString(parentPath)}» does not exist`);
       if (! parentElement.isContainer)
@@ -77,35 +90,34 @@ class Engine {
     const storeKey = pathToString(elementPath) as StoreKey;
     if (element.isVolatile)
       this.volatileStore.setItem(storeKey , element);
-    else
-      this.persistentStorage.setItem(storeKey , element);
+    else {
+      if (this.persistentStorage === null)
+        throw new Error("Persistent storage is null");
+      await this.persistentStorage.setItem(storeKey , element);
+    }
 
     if (parentElement) {
       const parentStoreKey = pathToString(element.parentPath) as StoreKey;
       if (parentElement.childNames === null)
         throw new Error(`Child name list not initialized in element «${parentStoreKey}»`);
       parentElement.childNames.push(element.elementName);
-      if (parentElement.isVolatile)
+      if (parentElement.isVolatile) {
         this.volatileStore.setItem(parentStoreKey , parentElement);
-      else
-        this.persistentStorage.setItem(parentStoreKey , parentElement);
+      }
+      else {
+        if (this.persistentStorage === null)
+          throw new Error("Persistent storage is null");
+        await this.persistentStorage.setItem(parentStoreKey , parentElement);
+      }
     }
   };
 
-  public getElement(elementPath: ElementPath): MtzElement {
-    const storeKey = pathToString(elementPath) as StoreKey;
-    let element = this.volatileStore.getItem(storeKey);
-    if (element === null)
-      element = this.persistentStorage.getItem(storeKey);
-    return element;
-  }
 
-
-  private declareContainer(args: ContainerDeclaration): MtzElement {
+  private async declareContainer(args: ContainerDeclaration): Promise<MtzElement> {
 
     const containerPath = [...args.parentPath, args.elementName] as ElementPath;
 
-    let containerElement = this.getElement(containerPath);
+    let containerElement = await this.getStoredElement(containerPath);
     if (containerElement !== null) {
       if (args.isVolatile)
         throw new Error(`Container «${pathToString(containerPath)}» already exists`);
@@ -123,17 +135,17 @@ class Engine {
       data: null
     } as MtzElement;
 
-    this.storeNewElement(containerElement);
+    await this.storeNewElement(containerElement);
     return containerElement;
   }
 
-  private declareType(args: TypeDeclaration, force: boolean): MtzElement {
+  private async declareType(args: TypeDeclaration, force: boolean): Promise<MtzElement> {
 
     if (! force) {
-      if (this.getElement(args.parentPath) === null)
+      if (await this.getStoredElement(args.parentPath) === null)
         throw new Error(`Parent «${pathToString(args.parentPath)}» does not exist`);
 
-      if (this.getElement(args.elementType) === null)
+      if (await this.getStoredElement(args.elementType) === null)
         throw new Error(`Type «${pathToString(args.elementType)}» does not exist`);
 
       const isType = pathStartsWith(args.parentPath, [rootName, rootTypeContainerName]);
@@ -176,45 +188,45 @@ class Engine {
       }
     } as MtzElement;
 
-    this.storeNewElement(element);
+    await this.storeNewElement(element);
     return element;
   }
 
 
-  constructor (storage: MaestrozoStore) {
+  public async initialize (storage: MaestrozoStore) {
 
     this.volatileStore = new RawMemoryStore();
     this.persistentStorage = storage;
 
     // mise en place de root «#/»
-    const rootElement = this.declareContainer({
+    const rootElement = await this.declareContainer({
       elementName: rootName,
       parentPath: [] as ElementPath, // empty path exception because root as no parent
       isVolatile: false
     });
 
     // mise en place de «#/types»
-    this.declareContainer({
+    await this.declareContainer({
       elementName: rootTypeContainerName,
       parentPath: getElementPath(rootElement),
       isVolatile: true
     });
 
     // mise en place de «#/types/data»
-    this.declareContainer({
+    await this.declareContainer({
       elementName: dataTypeName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       isVolatile: true
     });
     // mise en place de «#/types/components»
-    this.declareContainer({
+    await this.declareContainer({
       elementName: componentTypeContainerName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       isVolatile: true
     });
 
     // mise en place de «#/runtime»
-    this.declareContainer({
+    await this.declareContainer({
         elementName: runtimeContainerName,
         parentPath: [rootName] as ElementPath,
         isVolatile: false
@@ -223,48 +235,61 @@ class Engine {
 
     // mise en place de «#/types/type»
     // (type spécial qui représente le type de tous les éléments de type dans «/types»)
-    this.declareType(typeTypeDeclaration, true);
+    await this.declareType(typeTypeDeclaration, true);
 
     // mise en place de «#/types/element»
-    this.declareType(elementTypeDeclaration, false);
+    await this.declareType(elementTypeDeclaration, false);
 
     // mise en place de «#/types/container»
-    this.declareType(containerTypeDeclaration, false);
+    await this.declareType(containerTypeDeclaration, false);
 
     // mise en place de «#/types/data/integer»
-    this.declareType(integerTypeDeclaration, false);
+    await this.declareType(integerTypeDeclaration, false);
 
     // mise en place de «#/types/data/string»
-    this.declareType(stringTypeDeclaration, false);
+    await this.declareType(stringTypeDeclaration, false);
 
     // mise en place de «#/types/data/boolean»
-    this.declareType(booleanTypeDeclaration, false);
+    await this.declareType(booleanTypeDeclaration, false);
 
     // mise en place de «#/types/components/constant»
-    this.declareType(constantComponentTypeDeclaration, false);
+    await this.declareType(constantComponentTypeDeclaration, false);
 
     // mise en place de «#/types/components/variable»
-    this.declareType(variableComponentTypeDeclaration, false);
+    await this.declareType(variableComponentTypeDeclaration, false);
 
+    this._initialized = true;
   }
 
-  public runOnce(): void {
+  public async runOnce(): Promise<void> {
+    if (! this._initialized)
+      throw new Error("Engine not initialized");
   }
 
 
-  public createElement(
+  public async getElement(elementPath: ElementPath): Promise<MtzElement> {
+    if (! this._initialized)
+      throw new Error("Engine not initialized");
+    return await this.getStoredElement(elementPath);
+  }
+
+
+  public async createElement(
     elementName: ElementName,
     parentPath: ElementPath,
     typePath: ElementPath,
     params: Record<string, any>
-  ): MtzElement {
+  ): Promise<MtzElement> {
+
+    if (! this._initialized)
+      throw new Error("Engine not initialized");
 
     // TODO à remonter dans MtzCore
     checkElementName(elementName);
     checkElementPath(parentPath);
     checkElementPath(typePath);
 
-    const parentElement = this.getElement(parentPath);
+    const parentElement = await this.getStoredElement(parentPath);
     if (parentElement === null)
       throw new Error(`Parent element «${pathToString(parentPath)}» does not exist`);
 
@@ -273,10 +298,10 @@ class Engine {
 
     const elementPath = [...parentPath, elementName];
     const elementStoreKey = pathToString([...parentPath, elementName]) as StoreKey;
-    if (this.getElement(elementPath) !== null)
+    if (await this.getStoredElement(elementPath) !== null)
       throw new Error(`Element «${elementStoreKey}» already exists`);
 
-    const typeElement = this.getElement(typePath);
+    const typeElement = await this.getStoredElement(typePath);
     if (typeElement === null)
       throw new Error(`Can not find parent «${pathToString(typePath)}»`);
 
@@ -308,12 +333,12 @@ class Engine {
       throw new Error(`Factory not defined in type «${pathToString(getElementPath(typeElement))}»`);
 
     const factoryHelpers: FactoryHelpers = {
-      getElement: (elementPath:ElementPath): MtzElement => {
-        return this.getElement(elementPath)
+      getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
+        return await this.getStoredElement(elementPath)
       }
     }
 
-    const elementData = factory(elementName, parentPath, params, factoryHelpers);
+    const elementData = await factory(elementName, parentPath, params, factoryHelpers);
 
     const element = {
       revision: 0,
@@ -326,9 +351,13 @@ class Engine {
       data: elementData
     } as MtzElement;
 
-    this.storeNewElement(element);
+    await this.storeNewElement(element);
 
     return element;
+  }
+
+  public get initialized() : boolean {
+    return this._initialized;
   }
 }
 

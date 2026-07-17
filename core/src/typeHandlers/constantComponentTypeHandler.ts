@@ -10,12 +10,12 @@ import { FactoryFunction, FactoryHelpers, TypeDeclaration, TypeHandler } from '@
 
 const constantComponentTypeName = 'constant' as ElementName;
 
-const constantComponentFactory: FactoryFunction = (
+const constantComponentFactory: FactoryFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>,
   helpers: FactoryHelpers
-): ElementData => {
+): Promise<ElementData> => {
 
   const dataTypePath = params?.dataType ?? null;
 
@@ -29,7 +29,7 @@ const constantComponentFactory: FactoryFunction = (
     throw new Error(`Invalid «dataType» param to build constant «${pathToString([...parentPath, elementName])} : ${error.message}`);
   }
 
-  const dataTypeElement = helpers.getElement(dataTypePath);
+  const dataTypeElement = await helpers.getElement(dataTypePath);
   if (dataTypeElement === null)
     throw new Error(`Data type «${pathToString(dataTypePath)}» does not exist `
                     + `to build constant «${pathToString([...parentPath, elementName])}`);
@@ -44,7 +44,7 @@ const constantComponentFactory: FactoryFunction = (
   if (typeof(dataFactory) !== 'function')
     throw new Error(`Factory not defined in type «${pathToString(getElementPath(dataTypeElement))}»`);
 
-  const data = dataFactory(elementName, parentPath, params, helpers);
+  const data = await dataFactory(elementName, parentPath, params, helpers);
   if (data.value === undefined)
     throw new Error(`Data factory of type «${pathToString(getElementPath(dataTypeElement))}» did not return a value`);
 

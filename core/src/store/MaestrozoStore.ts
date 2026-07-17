@@ -9,8 +9,8 @@ type StoreValue = any & { __brand: 'store-value' };
 
 interface MaestrozoStore {
 
-  getItem(key: StoreKey) : StoreValue | null;
-  setItem(key: StoreKey, item:  StoreValue): void;
+  getItem(key: StoreKey) : Promise<StoreValue | null>;
+  setItem(key: StoreKey, item:  StoreValue): Promise<void>;
 
 };
 

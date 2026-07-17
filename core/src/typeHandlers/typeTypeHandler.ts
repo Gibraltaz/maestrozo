@@ -7,11 +7,11 @@ import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName } from "@/global";
 import { FactoryFunction } from "./TypeHandler";
 
-const typeFactory: FactoryFunction = (
+const typeFactory: FactoryFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
-): ElementData => {
+): Promise<ElementData> => {
   throw new Error("Type type can not be instanciated");
 };
 

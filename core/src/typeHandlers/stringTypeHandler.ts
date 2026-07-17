@@ -10,11 +10,11 @@ import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const stringTypeName = 'string' as ElementName;
 
-const stringFactory: FactoryFunction = (
+const stringFactory: FactoryFunction = async(
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>
-): ElementData => {
+): Promise<ElementData> => {
 
   const value = params.value;
   if (value === undefined)

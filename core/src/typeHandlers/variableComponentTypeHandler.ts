@@ -10,11 +10,11 @@ import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 const variableComponentTypeName = 'variable' as ElementName;
 
 
-const variableComponentFactory: FactoryFunction = (
+const variableComponentFactory: FactoryFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
-): ElementData => {
+): Promise<ElementData> => {
   throw new Error("Variable component factory not yet implemented");
   //return {
   //} as ElementData;

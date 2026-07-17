@@ -9,11 +9,11 @@ import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const containerTypeName = 'container' as ElementName;
 
-const containerFactory: FactoryFunction = (
+const containerFactory: FactoryFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
-): ElementData => {
+): Promise<ElementData> => {
   throw new Error("Container factory not yet implemented");
 };
 

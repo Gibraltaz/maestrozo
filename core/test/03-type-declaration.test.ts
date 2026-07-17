@@ -8,10 +8,15 @@ import { ElementPath, Engine } from "@/Engine";
 import { RawMemoryStore } from "@/store/RawMemoryStore";
 
 describe("Maestrozo core", () => {
-  let engine = new Engine(new RawMemoryStore());
+  let engine = new Engine()
 
-  it("should find root «/» element", () => {
-    const element = engine.getElement(['#'] as ElementPath);
+  it("should be initialized", async () => {
+    await engine.initialize(new RawMemoryStore());
+    expect(engine).to.have.property('initialized', true)
+  });
+
+  it("should find root «/» element", async () => {
+    const element = await engine.getElement(['#'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', '#');
@@ -25,8 +30,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(['types', 'runtime']);
   });
 
-  it("should find /types element", () => {
-    const element = engine.getElement(['#', 'types'] as ElementPath);
+  it("should find /types element", async () => {
+    const element = await engine.getElement(['#', 'types'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'types');
@@ -40,8 +45,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(['data', 'components', 'type', 'element', 'container']);
   });
 
-  it("should find /types/type", () => {
-    const element = engine.getElement(['#', 'types', 'type'] as ElementPath);
+  it("should find /types/type", async () => {
+    const element = await engine.getElement(['#', 'types', 'type'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'type');
@@ -56,8 +61,8 @@ describe("Maestrozo core", () => {
   });
 
 
-  it("should find /types/element", () => {
-    const element = engine.getElement(['#', 'types', 'element'] as ElementPath);
+  it("should find /types/element", async () => {
+    const element = await engine.getElement(['#', 'types', 'element'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'element');
@@ -71,8 +76,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(null);
   });
 
-  it("should find /types/container", () => {
-    const element = engine.getElement(['#', 'types', 'container'] as ElementPath);
+  it("should find /types/container", async () => {
+    const element = await engine.getElement(['#', 'types', 'container'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'container');
@@ -86,8 +91,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(null);
   });
 
-  it("should find /types/data", () => {
-    const element = engine.getElement(['#', 'types', 'data'] as ElementPath);
+  it("should find /types/data", async () => {
+    const element = await engine.getElement(['#', 'types', 'data'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'data');
@@ -101,8 +106,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(['integer', 'string', 'boolean']);
   });
 
-  it("should find /types/data/integer", () => {
-    const element = engine.getElement(['#', 'types', 'data', 'integer'] as ElementPath);
+  it("should find /types/data/integer", async () => {
+    const element = await engine.getElement(['#', 'types', 'data', 'integer'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'integer');
@@ -116,8 +121,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(null);
   });
 
-  it("should find /types/data/string", () => {
-    const element = engine.getElement(['#', 'types', 'data', 'string'] as ElementPath);
+  it("should find /types/data/string", async () => {
+    const element = await engine.getElement(['#', 'types', 'data', 'string'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'string');
@@ -131,8 +136,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(null);
   });
 
-  it("should find /types/data/boolean", () => {
-    const element = engine.getElement(['#', 'types', 'data', 'boolean'] as ElementPath);
+  it("should find /types/data/boolean", async () => {
+    const element = await engine.getElement(['#', 'types', 'data', 'boolean'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'boolean');
@@ -146,8 +151,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(null);
   });
 
-  it("should find /types/components", () => {
-    const element = engine.getElement(['#', 'types', 'components'] as ElementPath);
+  it("should find /types/components", async () => {
+    const element = await engine.getElement(['#', 'types', 'components'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'components');
@@ -161,8 +166,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(['constant', 'variable']);
   });
 
-  it("should find /types/components/constant", () => {
-    const element = engine.getElement(['#', 'types', 'components', 'constant'] as ElementPath);
+  it("should find /types/components/constant", async () => {
+    const element = await engine.getElement(['#', 'types', 'components', 'constant'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'constant');
@@ -176,8 +181,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(null);
   });
 
-  it("should find /types/components/variable", () => {
-    const element = engine.getElement(['#', 'types', 'components', 'variable'] as ElementPath);
+  it("should find /types/components/variable", async () => {
+    const element = await engine.getElement(['#', 'types', 'components', 'variable'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'variable');
@@ -191,8 +196,8 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal(null);
   });
 
-  it("should find /types/runtime", () => {
-    const element = engine.getElement(['#', 'runtime'] as ElementPath);
+  it("should find /types/runtime", async () => {
+    const element = await engine.getElement(['#', 'runtime'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'runtime');
