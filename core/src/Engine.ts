@@ -35,7 +35,7 @@ type ContainerDeclaration = {
   isVolatile: boolean
 };
 
-class Engine {
+class MtzEngine {
   private _initialized = false;
   private persistentStorage: MaestrozoStore| null = null;
   private volatileStore: MaestrozoStore = new RawMemoryStore;
@@ -380,4 +380,4 @@ class Engine {
   }
 }
 
-export { Engine, ElementName, ElementPath };
+export { MtzEngine, ElementName, ElementPath };

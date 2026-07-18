@@ -4,11 +4,11 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { ElementName, ElementPath, Engine } from "@/Engine";
+import { ElementName, ElementPath, MtzEngine } from "@/Engine";
 import { MemoryStore } from "@/store/MemoryStore";
 
 describe("Maestrozo core", () => {
-  let engine = new Engine();
+  let engine = new MtzEngine();
 
   it("should be initialized", async() => {
     await engine.initialize(new MemoryStore());

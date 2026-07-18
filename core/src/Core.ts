@@ -3,16 +3,16 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { Engine } from '@/Engine';
+import { MtzEngine } from '@/Engine';
 import { MaestrozoStore } from '@/store/MaestrozoStore';
 import { RawMemoryStore } from '@/store/RawMemoryStore';
 
 class MtzCore {
   public readonly version = '0.0.1';
-  private engine : Engine;
+  private engine : MtzEngine;
 
   constructor () {
-    this.engine = new Engine();
+    this.engine = new MtzEngine();
   }
 
   public async initialize (runtimeStore?: MaestrozoStore) {
