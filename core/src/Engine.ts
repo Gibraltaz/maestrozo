@@ -52,6 +52,17 @@ class Engine {
     return element;
   }
 
+  private async storeElement(element: MtzElement): Promise<void> {
+    const elementPath = getElementPath(element);
+    const storeKey = pathToString(elementPath) as StoreKey;
+    if (element.isVolatile)
+      await this.volatileStore.setItem(storeKey , element);
+    else {
+      if (this.persistentStorage === null)
+        throw new Error("Persistent storage is null");
+      await this.persistentStorage.setItem(storeKey , element);
+    }
+  }
 
   private async storeNewElement(element: MtzElement): Promise<void> {
 
@@ -87,14 +98,8 @@ class Engine {
       throw new Error(`Revision of new element «${pathToString(elementPath)}» must be zero`);
     element.revision = 1;
 
-    const storeKey = pathToString(elementPath) as StoreKey;
-    if (element.isVolatile)
-      await this.volatileStore.setItem(storeKey , element);
-    else {
-      if (this.persistentStorage === null)
-        throw new Error("Persistent storage is null");
-      await this.persistentStorage.setItem(storeKey , element);
-    }
+
+    await this.storeElement(element);
 
     if (parentElement) {
       const parentStoreKey = pathToString(element.parentPath) as StoreKey;
@@ -356,6 +361,18 @@ class Engine {
     await this.storeNewElement(element);
 
     return element;
+  }
+
+  public async modifyElement(element: MtzElement): Promise<void> {
+    const originalElement = await this.getStoredElement(getElementPath(element));
+    if (originalElement === null)
+      throw new Error(`Element «${pathToString(getElementPath(element))}» does not exist`);
+
+    if (originalElement.revision !== element.revision)
+      throw new Error(`Conflict in edition of element «${pathToString(getElementPath(element))}»`);
+
+    element.revision++;
+    await this.storeElement(element);
   }
 
   public get initialized() : boolean {
