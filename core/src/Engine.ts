@@ -14,7 +14,13 @@ import {
   getElementPath
 } from '@/path';
 import { MtzElement, ElementName, ElementPath, checkElement } from '@/Element';
-import { containerTypeName, rootTypeContainerName, dataTypeName, componentTypeContainerName } from './global';
+import {
+  containerTypeName,
+  rootTypeContainerName,
+  dataTypeName,
+  componentTypeContainerName,
+  pinTypeContainerName
+} from './global';
 
 import { FactoryFunction, FactoryHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
@@ -22,6 +28,7 @@ import { containerTypeDeclaration} from './typeHandlers/containerTypeHandler';
 import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
 import { stringTypeDeclaration } from './typeHandlers/stringTypeHandler';
 import { booleanTypeDeclaration } from './typeHandlers/booleanTypeHandler';
+import { inputPinTypeDeclaration, outputPinTypeDeclaration } from './typeHandlers/pinTypeHandlers';
 import { constantComponentTypeDeclaration } from './typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler';
 import { elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
@@ -232,6 +239,13 @@ class MtzEngine {
       isVolatile: true
     });
 
+    // mise en place de «#/types/pins»
+    await this.declareContainer({
+      elementName: pinTypeContainerName,
+      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
+      isVolatile: true
+    });
+
     // mise en place de «#/runtime»
     await this.declareContainer({
         elementName: runtimeContainerName,
@@ -258,6 +272,12 @@ class MtzEngine {
 
     // mise en place de «#/types/data/boolean»
     await this.declareType(booleanTypeDeclaration, false);
+
+    // mise en place de «#/types/pins/input-pin»
+    await this.declareType(inputPinTypeDeclaration, false);
+
+    // mise en place de «#/types/pins/output-pin»
+    await this.declareType(outputPinTypeDeclaration, false);
 
     // mise en place de «#/types/components/constant»
     await this.declareType(constantComponentTypeDeclaration, false);
