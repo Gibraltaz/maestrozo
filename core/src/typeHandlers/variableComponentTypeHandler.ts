@@ -3,22 +3,29 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "@/Element";
+import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName, componentTypeContainerName } from '@/global';
-import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const variableComponentTypeName = 'variable' as ElementName;
 
 
-const variableComponentFactory: FactoryFunction = async (
+const buildDataFunction: BuildDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
 ): Promise<ElementData> => {
-  throw new Error("Variable component factory not yet implemented");
+  throw new Error("Variable component buildDataFunction not yet implemented");
   //return {
   //} as ElementData;
 };
+
+const buildElementFunction = async (
+  _element: MtzElement,
+  _params:Record<string, any>,
+  _helpers: BuildHelpers
+):Promise<void> => {
+}
 
 const variableComponentTypeDeclaration = {
   elementName: variableComponentTypeName,
@@ -27,7 +34,8 @@ const variableComponentTypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  factory: variableComponentFactory
+  buildDataFunction: buildDataFunction,
+  buildElementFunction: buildElementFunction
 } as TypeDeclaration;
 
 export { variableComponentTypeDeclaration, variableComponentTypeName };

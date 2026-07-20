@@ -5,23 +5,38 @@
 
 import { MtzElement, ElementData, ElementName, ElementPath } from "@/Element";
 
-type GetElementFactoryHelper = (elementPath: ElementPath) => Promise<MtzElement | null>;
+type GetElementHelper = (elementPath: ElementPath) => Promise<MtzElement | null>;
 
-type FactoryHelpers = {
-  getElement: GetElementFactoryHelper
+type CreateChildElementHelper = (
+  childElementName: ElementName,
+  childElementType: ElementPath,
+  childParams: Record<string, any>
+) => Promise<MtzElement>;
+
+type BuildHelpers = {
+  getElement: GetElementHelper,
+  createChildElement: CreateChildElementHelper
 };
 
-type FactoryFunction = (
+type BuildDataFunction = (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>,
-  helpers: FactoryHelpers
+  helpers: BuildHelpers
 ) => Promise<ElementData>;
+
+type BuildElementFunction = (
+  element: MtzElement,
+  params:Record<string, any>,
+  helpers: BuildHelpers
+) => Promise<void>;
+
 
 type TypeHandler = {
   isContainer: boolean,
   isVolatile: boolean
-  factory: FactoryFunction,
+  buildDataFunction: BuildDataFunction,
+  buildElementFunction: BuildElementFunction | null,
 };
 
 type TypeDeclaration = {
@@ -29,14 +44,16 @@ type TypeDeclaration = {
   parentPath: ElementPath,
   elementType: ElementPath,
   isDerivable: boolean, // le type peut-il être dérivé en sous-type
-  isContainer: boolean, // un élément de ce type peut-il en contenir d'autres
-  isVolatile: boolean, // est-il sauvegardé ou recréé à chaque fois
-  factory: FactoryFunction,
+  isContainer: boolean, // un élément de ce type peut-il contenir d'autres éléments
+  isVolatile: boolean, // un élément de ce type est-il recréé à chaque fois (ou sauvegardé)
+  buildDataFunction: BuildDataFunction,
+  buildElementFunction: BuildElementFunction | null,
 };
 
 export {
   TypeDeclaration,
   TypeHandler,
-  FactoryFunction,
-  FactoryHelpers
+  BuildDataFunction,
+  BuildElementFunction,
+  BuildHelpers
 };

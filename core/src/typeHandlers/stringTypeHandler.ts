@@ -6,11 +6,11 @@
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
-import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildElementFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const stringTypeName = 'string' as ElementName;
 
-const stringFactory: FactoryFunction = async(
+const buildDataFunction : BuildDataFunction = async(
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>
@@ -34,7 +34,8 @@ const stringTypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: true,
-  factory: stringFactory
+  buildDataFunction: buildDataFunction, 
+  buildElementFunction: null
 } as TypeDeclaration;
 
 export { stringTypeDeclaration };

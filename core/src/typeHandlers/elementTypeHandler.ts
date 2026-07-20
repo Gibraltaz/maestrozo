@@ -5,9 +5,9 @@
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "@/global";
-import { FactoryFunction } from "./TypeHandler";
+import { BuildDataFunction, BuildElementFunction, TypeDeclaration } from "./TypeHandler";
 
-const elementFactory: FactoryFunction = async (
+const buildDataFunction: BuildDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
@@ -24,7 +24,8 @@ const elementTypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: true,
-  factory: elementFactory
-};
+  buildDataFunction: buildDataFunction,
+  buildElementFunction: null
+} as TypeDeclaration;
 
 export { elementTypeDeclaration };

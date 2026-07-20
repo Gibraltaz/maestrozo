@@ -22,7 +22,7 @@ import {
   pinTypeContainerName
 } from './global';
 
-import { FactoryFunction, FactoryHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 import { containerTypeDeclaration} from './typeHandlers/containerTypeHandler';
 import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
@@ -179,9 +179,9 @@ class MtzEngine {
     if (isVolatile === null)
       throw new Error(`Type «${typePath}» declaration has no «isVolatile» property`);
 
-    const factory = args?.factory ?? null;
-    if (factory === null)
-      throw new Error(`Type «${typePath}» declaration has no factory function`);
+    const buildDataFunction = args?.buildDataFunction ?? null;
+    if (buildDataFunction === null)
+      throw new Error(`Type «${typePath}» declaration has no buildDataFunction function`);
 
     const element = {
       revision: 0,
@@ -195,7 +195,8 @@ class MtzEngine {
         typeHandler: {
           isContainer: args.isContainer,
           isVolatile: args.isVolatile,
-          factory: args.factory
+          buildDataFunction: args.buildDataFunction,
+          buildElementFunction: args.buildElementFunction
         }
       }
     } as MtzElement;
@@ -332,8 +333,9 @@ class MtzEngine {
     if (typeElement === null)
       throw new Error(`Can not find parent «${pathToString(typePath)}»`);
 
-    if (! pathStartsWith(typeElement.parentPath, [rootName, rootTypeContainerName, componentTypeContainerName] ))
-      throw new Error(`Path «${pathToString(typePath)} is not a component type path`);
+    // FIXME la fonction createElement est aussi appelée pour créer des pins
+    //if (! pathStartsWith(typeElement.parentPath, [rootName, rootTypeContainerName, componentTypeContainerName] ))
+    //  throw new Error(`Path «${pathToString(typePath)} is not a component type path`);
 
     const typeHandler: TypeHandler | null = typeElement?.data?.typeHandler as TypeHandler ?? null;
     if ( typeHandler === null)
@@ -353,21 +355,38 @@ class MtzEngine {
     if (parentElement.isVolatile && ! isVolatile)
       throw new Error(`Non volatile element «${pathToString(getElementPath(typeElement))}» can not be store in a volatile container`);
 
-    const factory: FactoryFunction | null = typeHandler?.factory ?? null;
-    if (factory === null)
-      throw new Error(`Factory not defined in type «${pathToString(getElementPath(typeElement))}»`);
-    if (typeof(factory) !== 'function')
-      throw new Error(`Factory not defined in type «${pathToString(getElementPath(typeElement))}»`);
+    const buildDataFunction: BuildDataFunction | null = typeHandler?.buildDataFunction ?? null;
+    if (buildDataFunction === null)
+      throw new Error(`Property «buildDataFunction» not defined in type «${pathToString(getElementPath(typeElement))}»`);
+    if (typeof(buildDataFunction) !== 'function')
+      throw new Error(`Property «buildDataFunction» not a function in type «${pathToString(getElementPath(typeElement))}»`);
 
-    const factoryHelpers: FactoryHelpers = {
+    const buildElementFunction: BuildElementFunction | null = typeHandler?.buildElementFunction ?? null;
+    if (buildElementFunction !== null && typeof(buildElementFunction) !== 'function')
+      throw new Error(`Property «buildElementFunction» not a function in type «${pathToString(getElementPath(typeElement))}»`);
+
+    const buildHelpers: BuildHelpers = {
       getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
         return await this.getStoredElement(elementPath)
+      },
+      createChildElement: async (
+        childElementName: ElementName,
+        childElementType: ElementPath,
+        childParams: Record<string, any>
+      ): Promise<MtzElement>  => {
+        const childElement = await this.createElement(
+          childElementName,
+          elementPath,
+          childElementType,
+          childParams,
+        );
+        return childElement;
       }
     }
 
-    const elementData = await factory(elementName, parentPath, params, factoryHelpers);
+    const elementData = await buildDataFunction(elementName, parentPath, params, buildHelpers);
 
-    const element = {
+    let element = {
       revision: 0,
       elementName,
       parentPath,
@@ -379,6 +398,13 @@ class MtzEngine {
     } as MtzElement;
 
     await this.storeNewElement(element);
+
+    if (buildElementFunction !== null) {
+      // FIXME doit-on appeler cette fonction si isContainer vaut false ?
+      await buildElementFunction(element, params, buildHelpers);
+      // relire l'élément car sa propriété childNames a changé si des éléments enfants ont été créés dans cet élément
+      element = await this.getStoredElement(elementPath);
+    }
 
     return element;
   }

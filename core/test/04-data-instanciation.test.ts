@@ -32,11 +32,12 @@ describe("Maestrozo core", () => {
     expect(component).to.have.property('elementType');
     expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'constant']);
     expect(component).to.have.property('data');
-    expect(component).to.have.property('isContainer', false);
+    expect(component).to.have.property('isContainer', true);
     expect(component).to.have.property('isVolatile', false);
     expect(component.data).to.be.instanceof(Object);
     expect(component.data).to.have.property('value', 123);
-    expect(component).to.have.property('childNames', null);
+    expect(component).to.have.property('childNames');
+    expect(component.childNames).to.deep.equal([ 'out:value']);
   });
 
   it("should find newly created component in runtime", async () => {
@@ -48,12 +49,12 @@ describe("Maestrozo core", () => {
     expect(component.parentPath).to.deep.equal(['#', 'runtime']);
     expect(component).to.have.property('elementType');
     expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'constant']);
-    expect(component).to.have.property('isContainer', false);
+    expect(component).to.have.property('isContainer', true);
     expect(component).to.have.property('isVolatile', false);
     expect(component).to.have.property('data');
     expect(component.data).to.be.instanceof(Object);
     expect(component.data).to.have.property('value', 123);
-    expect(component).to.have.property('childNames', null);
+    expect(component.childNames).to.deep.equal([ 'out:value']);
   });
 
   it("should find newly created component as a child of runtime", async () => {
@@ -95,14 +96,14 @@ describe("Maestrozo core", () => {
     await expect(
       engine.createElement(
         'constantX' as ElementName,
-        [ '#', 'runtime', 'constantA' ] as ElementPath,
+        [ '#', 'runtime', 'constantA', 'out:value' ] as ElementPath,
         [ '#', 'types', 'components', 'constant' ] as ElementPath,
         {
           'dataType': [ '#', 'types', 'data', 'integer' ],
           'value': 123
         }
       )
-    ).rejects.toThrow("Parent element «/#/runtime/constantA» is not a container");
+    ).rejects.toThrow("Parent element «/#/runtime/constantA/out:value» is not a container");
   });
 
 });

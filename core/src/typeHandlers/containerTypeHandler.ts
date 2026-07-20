@@ -5,16 +5,16 @@
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName } from '@/global';
-import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildElementFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const containerTypeName = 'container' as ElementName;
 
-const containerFactory: FactoryFunction = async (
+const buildDataFunction : BuildDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
 ): Promise<ElementData> => {
-  throw new Error("Container factory not yet implemented");
+  throw new Error("Container buildDataFunction not yet implemented");
 };
 
 const containerTypeDeclaration = {
@@ -24,7 +24,8 @@ const containerTypeDeclaration = {
   isDerivable: false,
   isContainer: true,
   isVolatile: true,
-  factory: containerFactory
+  buildDataFunction: buildDataFunction, 
+  buildElementFunction: null
 } as TypeDeclaration;
 
 export { containerTypeDeclaration, containerTypeName };

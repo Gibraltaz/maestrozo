@@ -6,11 +6,11 @@
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
-import { FactoryFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildElementFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const booleanTypeName = 'boolean' as ElementName;
 
-const booleanFactory: FactoryFunction = async (
+const buildDataFunction: BuildDataFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>
@@ -28,6 +28,7 @@ const booleanFactory: FactoryFunction = async (
 
 };
 
+
 const booleanTypeDeclaration = {
   elementName: booleanTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
@@ -35,7 +36,8 @@ const booleanTypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  factory: booleanFactory
+  buildDataFunction: buildDataFunction,
+  buildElementFunction: null
 } as TypeDeclaration;
 
 export { booleanTypeDeclaration };

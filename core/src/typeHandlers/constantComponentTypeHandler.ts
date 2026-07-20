@@ -3,18 +3,18 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "@/Element";
-import { rootName, rootTypeContainerName, componentTypeContainerName, typeElementName } from '@/global';
+import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
+import { rootName, rootTypeContainerName, componentTypeContainerName, typeElementName, outputPinTypePath } from '@/global';
 import { checkElementPath, getElementPath, pathStartsWith, pathToString } from "@/path";
-import { FactoryFunction, FactoryHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 const constantComponentTypeName = 'constant' as ElementName;
 
-const constantComponentFactory: FactoryFunction = async (
+const buildDataFunction: BuildDataFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>,
-  helpers: FactoryHelpers
+  helpers: BuildHelpers
 ): Promise<ElementData> => {
 
   const dataTypePath = params?.dataType ?? null;
@@ -38,27 +38,43 @@ const constantComponentFactory: FactoryFunction = async (
   if ( dataTypeHandler === null)
     throw new Error(`Type handler not defined in type «${pathToString(getElementPath(dataTypeElement))}»`);
 
-  const dataFactory: FactoryFunction | null = dataTypeHandler?.factory ?? null;
+  const dataFactory: BuildDataFunction | null = dataTypeHandler?.buildDataFunction ?? null;
   if (dataFactory === null)
     throw new Error(`Factory not defined in type «${pathToString(getElementPath(dataTypeElement))}»`);
   if (typeof(dataFactory) !== 'function')
     throw new Error(`Factory not defined in type «${pathToString(getElementPath(dataTypeElement))}»`);
 
+  // FIXME faut-il fixer la propriété «value» au niveau du data du composant ou au niveau du data du output pin ?
   const data = await dataFactory(elementName, parentPath, params, helpers);
   if (data.value === undefined)
-    throw new Error(`Data factory of type «${pathToString(getElementPath(dataTypeElement))}» did not return a value`);
+    throw new Error(`Data buildDataFunction of type «${pathToString(getElementPath(dataTypeElement))}» did not return a value`);
 
   return data;
 };
+
+const buildElementFunction: BuildElementFunction = async (
+  element: MtzElement,
+  _params:Record<string, any>,
+  helpers: BuildHelpers
+):Promise<void> => {
+  const value = element?.data?.value ?? null;
+
+  await helpers.createChildElement(
+    'out:value' as ElementName,
+    outputPinTypePath,
+    { value }
+  );
+}
 
 const constantComponentTypeDeclaration = {
   elementName: constantComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   isDerivable: false,
-  isContainer: false,
+  isContainer: true, // constant contains its output pin
   isVolatile: false,
-  factory: constantComponentFactory
+  buildDataFunction: buildDataFunction,
+  buildElementFunction: buildElementFunction
 } as TypeDeclaration;
 
 export { constantComponentTypeDeclaration, constantComponentTypeName };

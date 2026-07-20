@@ -1,17 +1,20 @@
-import { ElementName, ElementPath, rootName } from "@/path";
-import { FactoryFunction, FactoryHelpers, TypeDeclaration } from "./TypeHandler";
+import { ElementName, ElementPath, pathToString, rootName } from "@/path";
+import { BuildDataFunction, BuildHelpers, TypeDeclaration } from "./TypeHandler";
 import { inputPinTypeName, outputPinTypeName, pinTypeContainerPath, rootTypeContainerName, typeElementName } from "@/global";
 import { ElementData } from "@/Element";
 
-const pinFactory: FactoryFunction = async (
-  _elementName: ElementName,
-  _parentPath: ElementPath,
-  _params:Record<string, any>,
-  _helpers: FactoryHelpers
+const buildDataFunction: BuildDataFunction = async (
+  elementName: ElementName,
+  parentPath: ElementPath,
+  params:Record<string, any>,
+  _helpers: BuildHelpers
 ): Promise<ElementData> => {
-  const data = {
+  const value = params?.value ?? null;
+  if (value === null)
+    throw new Error(`Value of pin «${elementName}» of element «${pathToString(parentPath)}» is not defined`);
+  return {
+    value
   } as ElementData; 
-  return data;
 };
 
 const inputPinTypeDeclaration = {
@@ -21,7 +24,7 @@ const inputPinTypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  factory: pinFactory
+  buildDataFunction: buildDataFunction
 } as TypeDeclaration;
 
 const outputPinTypeDeclaration = {
@@ -31,7 +34,8 @@ const outputPinTypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  factory: pinFactory
+  buildDataFunction: buildDataFunction,
+  buildElementFunction: null
 } as TypeDeclaration;
 
 export {
