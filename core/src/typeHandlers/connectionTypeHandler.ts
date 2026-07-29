@@ -4,18 +4,21 @@
  */
 
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
-import { rootName, rootTypeContainerName, typeElementName, componentTypeContainerName } from '@/global';
+import { linkTypeContainerPath, rootName, rootTypeContainerName, typeElementName } from '@/global';
 import { BuildDataFunction, BuildHelpers, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { rootTypeContainerPath, linkTypeContainerName } from '@/global';
 
-const variableComponentTypeName = 'variable' as ElementName;
 
+// name of element «#/types/links/connection»
+const connectionTypeName = 'connection' as ElementName;
+const connectionTypePath = [...rootTypeContainerPath, linkTypeContainerName, connectionTypeName];
 
 const buildDataFunction: BuildDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
 ): Promise<ElementData> => {
-  throw new Error("Variable component buildDataFunction not yet implemented");
+  throw new Error("Connection buildDataFunction not yet implemented");
   //return {
   //} as ElementData;
 };
@@ -27,9 +30,9 @@ const buildElementFunction = async (
 ):Promise<void> => {
 }
 
-const variableComponentTypeDeclaration = {
-  elementName: variableComponentTypeName,
-  parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
+const connectionTypeDeclaration = {
+  elementName: connectionTypeName,
+  parentPath: linkTypeContainerPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   isDerivable: false,
   isContainer: false,
@@ -38,5 +41,5 @@ const variableComponentTypeDeclaration = {
   buildElementFunction: buildElementFunction
 } as TypeDeclaration;
 
-export { variableComponentTypeDeclaration, variableComponentTypeName };
+export { connectionTypeDeclaration, connectionTypeName, connectionTypePath };
 

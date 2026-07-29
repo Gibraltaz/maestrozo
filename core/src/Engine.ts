@@ -19,8 +19,9 @@ import {
   rootTypeContainerName,
   dataTypeName,
   componentTypeContainerName,
-  pinTypeContainerName
-} from './global';
+  pinTypeContainerName,
+  linkTypeContainerName
+} from '@/global';
 
 import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
@@ -33,6 +34,7 @@ import { constantComponentTypeDeclaration } from './typeHandlers/constantCompone
 import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler';
 import { elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
 import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
+import { connectionTypeDeclaration } from './typeHandlers/connectionTypeHandler';
 
 const runtimeContainerName = 'runtime' as ElementName;
 
@@ -247,6 +249,13 @@ class MtzEngine {
       isVolatile: true
     });
 
+    // mise en place de «#/types/links»
+    await this.declareContainer({
+      elementName: linkTypeContainerName,
+      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
+      isVolatile: true
+    });
+
     // mise en place de «#/runtime»
     await this.declareContainer({
         elementName: runtimeContainerName,
@@ -285,6 +294,9 @@ class MtzEngine {
 
     // mise en place de «#/types/components/variable»
     await this.declareType(variableComponentTypeDeclaration, false);
+
+    // mise en place de «#/types/links/connection»
+    await this.declareType(connectionTypeDeclaration, false);
 
     this._initialized = true;
   }

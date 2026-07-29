@@ -36,6 +36,11 @@ const outputPinTypePath = [...rootTypeContainerPath, pinTypeContainerName, outpu
 const componentTypeContainerName = 'components' as ElementName;
 const componentTypeContainerPath = [...rootTypeContainerPath, componentTypeContainerName];
 
+// name of element «#/types/links»
+const linkTypeContainerName = 'links' as ElementName;
+const linkTypeContainerPath = [...rootTypeContainerPath, linkTypeContainerName];
+
+
 export {
   rootName,
   typeElementName, typeElementPath,
@@ -46,5 +51,6 @@ export {
   componentTypeContainerName, componentTypeContainerPath,
   pinTypeContainerName, pinTypeContainerPath,
   inputPinTypeName, inputPinTypePath,
-  outputPinTypeName, outputPinTypePath
+  outputPinTypeName, outputPinTypePath,
+  linkTypeContainerName, linkTypeContainerPath
 }

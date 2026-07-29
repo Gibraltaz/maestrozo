@@ -42,7 +42,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('isContainer', true);
     expect(element).to.have.property('isVolatile', true);
     expect(element).to.have.property('childNames');
-    expect(element.childNames).to.deep.equal(['data', 'components', 'pins', 'type', 'element', 'container']);
+    expect(element.childNames).to.deep.equal(['data', 'components', 'pins', 'links', 'type', 'element', 'container']);
   });
 
   it("should find /types/type", async () => {
@@ -195,6 +195,37 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('childNames');
     expect(element.childNames).to.deep.equal(null);
   });
+
+  it("should find /types/links", async () => {
+    const element = await engine.getElement(['#', 'types', 'links'] as ElementPath);
+    expect(element).to.be.instanceof(Object);
+    expect(element).to.have.property('revision', 1);
+    expect(element).to.have.property('elementName', 'links');
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal(['#', 'types']);
+    expect(element).to.have.property('elementType');
+    expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
+    expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', true);
+    expect(element).to.have.property('childNames');
+    expect(element.childNames).to.deep.equal(['connection']);
+  });
+
+  it("should find /types/links/connection", async () => {
+    const element = await engine.getElement(['#', 'types', 'links', 'connection'] as ElementPath);
+    expect(element).to.be.instanceof(Object);
+    expect(element).to.have.property('revision', 1);
+    expect(element).to.have.property('elementName', 'connection');
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal(['#', 'types', 'links']);
+    expect(element).to.have.property('elementType');
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
+    expect(element).to.have.property('isContainer', false);
+    expect(element).to.have.property('isVolatile', true);
+    expect(element).to.have.property('childNames');
+    expect(element.childNames).to.deep.equal(null);
+  });
+
 
 
   it("should find /types/components", async () => {
