@@ -153,7 +153,7 @@ class MtzEngine {
     return containerElement;
   }
 
-  private async declareType(args: TypeDeclaration, force: boolean): Promise<MtzElement> {
+  private async declareTypeInternal(args: TypeDeclaration, force: boolean): Promise<MtzElement> {
 
     if (! force) {
       if (await this.getStoredElement(args.parentPath) === null)
@@ -207,6 +207,9 @@ class MtzEngine {
     return element;
   }
 
+  public async declareType(args: TypeDeclaration): Promise<MtzElement> {
+    return this.declareTypeInternal(args, false);
+  }
 
   public async initialize (storage: MaestrozoStore) {
 
@@ -266,37 +269,37 @@ class MtzEngine {
 
     // mise en place de «#/types/type»
     // (type spécial qui représente le type de tous les éléments de type dans «/types»)
-    await this.declareType(typeTypeDeclaration, true);
+    await this.declareTypeInternal(typeTypeDeclaration, true);
 
     // mise en place de «#/types/element»
-    await this.declareType(elementTypeDeclaration, false);
+    await this.declareTypeInternal(elementTypeDeclaration, false);
 
     // mise en place de «#/types/container»
-    await this.declareType(containerTypeDeclaration, false);
+    await this.declareTypeInternal(containerTypeDeclaration, false);
 
     // mise en place de «#/types/data/integer»
-    await this.declareType(integerTypeDeclaration, false);
+    await this.declareTypeInternal(integerTypeDeclaration, false);
 
     // mise en place de «#/types/data/string»
-    await this.declareType(stringTypeDeclaration, false);
+    await this.declareTypeInternal(stringTypeDeclaration, false);
 
     // mise en place de «#/types/data/boolean»
-    await this.declareType(booleanTypeDeclaration, false);
+    await this.declareTypeInternal(booleanTypeDeclaration, false);
 
     // mise en place de «#/types/pins/input-pin»
-    await this.declareType(inputPinTypeDeclaration, false);
+    await this.declareTypeInternal(inputPinTypeDeclaration, false);
 
     // mise en place de «#/types/pins/output-pin»
-    await this.declareType(outputPinTypeDeclaration, false);
+    await this.declareTypeInternal(outputPinTypeDeclaration, false);
 
     // mise en place de «#/types/components/constant»
-    await this.declareType(constantComponentTypeDeclaration, false);
+    await this.declareTypeInternal(constantComponentTypeDeclaration, false);
 
     // mise en place de «#/types/components/variable»
-    await this.declareType(variableComponentTypeDeclaration, false);
+    await this.declareTypeInternal(variableComponentTypeDeclaration, false);
 
     // mise en place de «#/types/links/connection»
-    await this.declareType(connectionTypeDeclaration, false);
+    await this.declareTypeInternal(connectionTypeDeclaration, false);
 
     this._initialized = true;
   }
