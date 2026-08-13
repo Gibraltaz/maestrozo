@@ -40,6 +40,13 @@ const componentTypeContainerPath = [...rootTypeContainerPath, componentTypeConta
 const linkTypeContainerName = 'links' as ElementName;
 const linkTypeContainerPath = [...rootTypeContainerPath, linkTypeContainerName];
 
+// name of element «#/types/message-queue»
+const messageQueueTypeName = 'message-queue';
+const messageQueueTypePath = [...rootTypeContainerPath, messageQueueTypeName ];
+
+// name of element «#/types/message»
+const messageTypeName = 'message';
+const messageTypePath = [...rootTypeContainerPath, messageTypeName ];
 
 export {
   rootName,
@@ -52,5 +59,7 @@ export {
   pinTypeContainerName, pinTypeContainerPath,
   inputPinTypeName, inputPinTypePath,
   outputPinTypeName, outputPinTypePath,
-  linkTypeContainerName, linkTypeContainerPath
+  linkTypeContainerName, linkTypeContainerPath,
+  messageQueueTypeName, messageQueueTypePath,
+  messageTypeName, messageTypePath 
 }

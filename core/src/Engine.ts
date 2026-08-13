@@ -36,6 +36,7 @@ import { variableComponentTypeDeclaration } from './typeHandlers/variableCompone
 import { elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
 import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
 import { connectionTypeDeclaration, connectionTypeName } from './typeHandlers/connectionTypeHandler';
+import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
 
 const runtimeContainerName = 'runtime' as ElementName;
 
@@ -301,6 +302,12 @@ class MtzEngine {
 
     // mise en place de «#/types/links/connection»
     await this.declareTypeInternal(connectionTypeDeclaration, false);
+
+    // mise en place de «#/types/message-queue»
+    await this.declareTypeInternal(messageQueueTypeDeclaration, false);
+
+    // mise en place de «#/types/message»
+    await this.declareTypeInternal(messageTypeDeclaration, false);
 
     this._initialized = true;
   }
