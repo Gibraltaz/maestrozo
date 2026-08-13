@@ -16,11 +16,31 @@ const connectionTypePath = [...rootTypeContainerPath, linkTypeContainerName, con
 const buildDataFunction: BuildDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
-  _params:Record<string, any>
+  params:Record<string, any>
 ): Promise<ElementData> => {
-  throw new Error("Connection buildDataFunction not yet implemented");
-  //return {
-  //} as ElementData;
+  
+  const sourceComponent = params['sourceComponent'];
+  if (sourceComponent === undefined)
+    throw new Error(`Param «sourceComponent" not defined`);
+
+  const sourcePin = params['sourcePin'];
+  if (sourcePin === undefined)
+    throw new Error(`Param «pinComponent" not defined`);
+
+  const targetComponent  = params['targetComponent'];
+  if (targetComponent === undefined)
+    throw new Error(`Param «targetComponent" not defined`);
+
+  const targetPin = params['targetPin'];
+  if (targetPin === undefined)
+    throw new Error(`Param «targetComponent" not defined`);
+
+  return {
+    sourceComponent,
+    sourcePin,
+    targetComponent,
+    targetPin
+  } as ElementData;
 };
 
 const buildElementFunction = async (

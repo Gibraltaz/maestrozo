@@ -20,7 +20,8 @@ import {
   dataTypeName,
   componentTypeContainerName,
   pinTypeContainerName,
-  linkTypeContainerName
+  linkTypeContainerName,
+  linkTypeContainerPath
 } from '@/global';
 
 import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
@@ -34,7 +35,7 @@ import { constantComponentTypeDeclaration } from './typeHandlers/constantCompone
 import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler';
 import { elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
 import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
-import { connectionTypeDeclaration } from './typeHandlers/connectionTypeHandler';
+import { connectionTypeDeclaration, connectionTypeName } from './typeHandlers/connectionTypeHandler';
 
 const runtimeContainerName = 'runtime' as ElementName;
 
@@ -439,6 +440,40 @@ class MtzEngine {
   public get initialized() : boolean {
     return this._initialized;
   }
+
+  public async createConnection(
+    parentPath: ElementPath,
+    sourceComponentName: ElementName,
+    sourcePinName: ElementName,
+    targetComponentName: ElementName,
+    targetPinName: ElementName
+
+  ): Promise<MtzElement> {
+
+    if (! this._initialized)
+      throw new Error("Engine not initialized");
+
+    await this.getElement(parentPath);
+    await this.getElement([...parentPath, sourceComponentName]);
+    await this.getElement([...parentPath, sourceComponentName, sourcePinName]);
+    await this.getElement([...parentPath, targetComponentName]);
+    await this.getElement([...parentPath, targetComponentName, targetPinName]);
+
+    const elementName = `${sourceComponentName}|${sourcePinName}|${targetComponentName}|${targetPinName}` as ElementName;
+
+    return this.createElement(
+      elementName,
+      parentPath,
+      [ ...linkTypeContainerPath, connectionTypeName ] as ElementPath,
+      {
+        sourceComponent: sourceComponentName,
+        sourcePin: sourcePinName,
+        targetComponent: targetComponentName,
+        targetPin: targetPinName
+      }
+    );
+  };
+
 }
 
 export { MtzEngine, ElementName, ElementPath };
