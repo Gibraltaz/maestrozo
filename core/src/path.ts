@@ -43,6 +43,13 @@ function pathStartsWith(path: ElementPath, prefix: ElementPath): boolean {
   return prefix.every((value, index) => path[index] === value);
 }
 
+function pathEquals(path1: ElementPath, path2: ElementPath): boolean {
+  if (path1.length !== path2.length)
+    return false;
+  return path1.every((value, index) => path2[index] === value);
+}
+
+
 function checkElementName(elementName: ElementName, acceptRoot:boolean = false) {
   if (elementName === undefined)
     throw new Error("Element name is not defined");
@@ -124,6 +131,7 @@ export {
   parentElementPath,
   pathToString,
   pathStartsWith,
+  pathEquals,
   checkElementName,
   checkElementPath,
   checkAbsoluteElementPath,

@@ -10,7 +10,8 @@ import {
   checkRelativeElementPath,
   ElementName,
   isRootName,
-  ElementPath
+  ElementPath,
+  pathEquals
 } from "@/path";
 
 describe("Path utilities", () => {
@@ -137,6 +138,43 @@ describe("Path utilities", () => {
         .to.throw("Relative path must start with «#»");
       expect(() => checkRelativeElementPath(['#', 'abc', 'def'] as ElementPath))
         .to.throw("Relative path must start with «#»");
+    });
+
+  });
+
+  describe("Function pathEquals", () => {
+
+    it("should detect when paths with one level are equal", () => {
+      expect(
+        pathEquals(['a'] as ElementPath , ['a'] as ElementPath)
+      ).to.equal(true);
+    });
+
+    it("should detect when paths with two levels are equal", () => {
+      expect(
+        pathEquals(['a', 'b'] as ElementPath , ['a', 'b'] as ElementPath)
+      ).to.equal(true);
+    });
+
+    it("should detect when paths with one level are different", () => {
+      expect(
+        pathEquals(['a'] as ElementPath , ['b'] as ElementPath)
+      ).to.equal(false);
+    });
+
+    it("should detect when paths with two levels are different", () => {
+      expect(
+        pathEquals(['a', 'b'] as ElementPath , ['a', 'c'] as ElementPath)
+      ).to.equal(false);
+    });
+
+    it("should detect that paths with different levels are different", () => {
+      expect(
+        pathEquals(['a'] as ElementPath , ['a', 'c'] as ElementPath)
+      ).to.equal(false);
+      expect(
+        pathEquals(['a', 'c'] as ElementPath , ['a'] as ElementPath)
+      ).to.equal(false);
     });
 
   });
