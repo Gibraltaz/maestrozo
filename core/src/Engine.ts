@@ -21,7 +21,11 @@ import {
   componentTypeContainerName,
   pinTypeContainerName,
   linkTypeContainerName,
-  linkTypeContainerPath
+  linkTypeContainerPath,
+  systemContainerName,
+  systemContainerPath,
+  runtimeContainerName,
+  messageQueueName
 } from '@/global';
 
 import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
@@ -38,9 +42,6 @@ import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
 import { connectionTypeDeclaration, connectionTypeName } from './typeHandlers/connectionTypeHandler';
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
 
-const runtimeContainerName = 'runtime' as ElementName;
-const systemContainerName = 'system' as ElementName;
-const messageQueueName = 'message-queue' as ElementName;
 
 
 type ContainerDeclaration = {
@@ -160,21 +161,16 @@ class MtzEngine {
 
 
   private async declareMessageQueue(): Promise<MtzElement> {
-    const parentPath: ElementPath = [rootName, systemContainerName];
-    const messageQueuePath = [...parentPath, messageQueueName ] as ElementPath;
+    const messageQueuePath = [systemContainerPath, messageQueueName ] as ElementPath;
     let messageQueueElement = await this.getStoredElement(messageQueuePath);
     if (messageQueueElement === null) {
-      messageQueueElement = {
-        revision: 0,
-        elementName: messageQueueName,
-        parentPath: parentPath,
-        elementType: [ messageQueueTypeDeclaration.parentPath, messageQueueTypeDeclaration.elementName],
-        isContainer: true,
-        isVolatile: false,
-        childNames: [],
-        data: null
-      } as MtzElement;
-      await this.storeNewElement(messageQueueElement);
+      messageQueueElement = await this.createElementInternal(
+        messageQueueName,
+        systemContainerPath,
+        [...messageQueueTypeDeclaration.parentPath , messageQueueTypeDeclaration.elementName],
+        {},
+        true
+      );
     }
     return messageQueueElement;
   }
@@ -360,14 +356,15 @@ class MtzEngine {
   }
 
 
-  public async createElement(
+  public async createElementInternal(
     elementName: ElementName,
     parentPath: ElementPath,
     typePath: ElementPath,
-    params: Record<string, any>
+    params: Record<string, any>,
+    force: boolean
   ): Promise<MtzElement> {
 
-    if (! this._initialized)
+    if (! force && ! this._initialized)
       throw new Error("Engine not initialized");
 
     // TODO à remonter dans MtzCore
@@ -390,10 +387,6 @@ class MtzEngine {
     const typeElement = await this.getStoredElement(typePath);
     if (typeElement === null)
       throw new Error(`Can not find parent «${pathToString(typePath)}»`);
-
-    // FIXME la fonction createElement est aussi appelée pour créer des pins
-    //if (! pathStartsWith(typeElement.parentPath, [rootName, rootTypeContainerName, componentTypeContainerName] ))
-    //  throw new Error(`Path «${pathToString(typePath)} is not a component type path`);
 
     const typeHandler: TypeHandler | null = typeElement?.data?.typeHandler as TypeHandler ?? null;
     if ( typeHandler === null)
@@ -463,8 +456,16 @@ class MtzEngine {
       // relire l'élément car sa propriété childNames a changé si des éléments enfants ont été créés dans cet élément
       element = await this.getStoredElement(elementPath);
     }
-
     return element;
+  }
+
+  public async createElement(
+    elementName: ElementName,
+    parentPath: ElementPath,
+    typePath: ElementPath,
+    params: Record<string, any>
+  ): Promise<MtzElement> {
+    return await this.createElementInternal(elementName, parentPath, typePath, params, false);
   }
 
   public async modifyElement(element: MtzElement): Promise<void> {

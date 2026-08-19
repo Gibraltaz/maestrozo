@@ -341,7 +341,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('elementName', 'message-queue');
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'system']);
-    expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isContainer', false);
     expect(element).to.have.property('isVolatile', false);
   });
 

@@ -1,4 +1,4 @@
-import { ElementName, rootName, } from '@/path';
+import { ElementName, ElementPath, rootName, } from '@/path';
 
 // name of element «/types»
 const rootTypeContainerName = 'types' as ElementName;
@@ -40,13 +40,26 @@ const componentTypeContainerPath = [...rootTypeContainerPath, componentTypeConta
 const linkTypeContainerName = 'links' as ElementName;
 const linkTypeContainerPath = [...rootTypeContainerPath, linkTypeContainerName];
 
+// name of element «#/runtime»
+const runtimeContainerName = 'runtime' as ElementName;
+const runtimeContainerPath = [...rootName, runtimeContainerName] as ElementPath;
+
+// name of element «#/system»
+const systemContainerName = 'system' as ElementName;
+const systemContainerPath = [...rootName, systemContainerName] as ElementPath;
+
+
 // name of element «#/types/message-queue»
 const messageQueueTypeName = 'message-queue';
 const messageQueueTypePath = [...rootTypeContainerPath, messageQueueTypeName ];
 
+// name of element «#/system/message-queue»
+const messageQueueName = 'message-queue' as ElementName;
+
 // name of element «#/types/message»
 const messageTypeName = 'message';
 const messageTypePath = [...rootTypeContainerPath, messageTypeName ];
+
 
 export {
   rootName,
@@ -60,6 +73,9 @@ export {
   inputPinTypeName, inputPinTypePath,
   outputPinTypeName, outputPinTypePath,
   linkTypeContainerName, linkTypeContainerPath,
+  runtimeContainerName, runtimeContainerPath, 
+  systemContainerName, systemContainerPath,
   messageQueueTypeName, messageQueueTypePath,
-  messageTypeName, messageTypePath 
+  messageQueueName,
+  messageTypeName, messageTypePath
 }

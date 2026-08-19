@@ -1,6 +1,6 @@
-import { ElementName, ElementPath, pathToString, rootName } from "@/path";
+import { ElementName, ElementPath, pathEquals, pathToString, rootName } from "@/path";
 import { BuildDataFunction, BuildHelpers, TypeDeclaration } from "./TypeHandler";
-import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath } from "@/global";
+import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath, systemContainerPath, systemContainerName, messageQueueName } from "@/global";
 import { ElementData } from "@/Element";
 
 const messageBuildDataFunction: BuildDataFunction = async (
@@ -28,12 +28,17 @@ const messageTypeDeclaration = {
 } as TypeDeclaration;
 
 const messageQueueBuildDataFunction: BuildDataFunction = async (
-  _elementName: ElementName,
+  elementName: ElementName,
   parentPath: ElementPath,
   _params:Record<string, any>,
   _helpers: BuildHelpers
 ): Promise<ElementData> => {
-  console.log("dOm path", parentPath);
+  if (! pathEquals(parentPath, systemContainerPath ))
+    throw new Error("Invalid parent path");
+  if (elementName !== messageQueueName)
+    throw new Error("Invalid name");
+
+
   return {
   } as ElementData; 
 };

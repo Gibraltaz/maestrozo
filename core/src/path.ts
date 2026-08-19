@@ -15,6 +15,7 @@ function getElementPath(element: MtzElement): ElementPath {
   return [...element.parentPath, element.elementName];
 }
 
+// FIXME doublon avec pathEquals
 function elementPathAreEquals ( pathA: ElementPath, pathB: ElementPath ) : boolean {
   if (pathA.length != pathB.length)
     return false;
