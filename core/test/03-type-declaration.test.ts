@@ -27,7 +27,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('isContainer', true);
     expect(element).to.have.property('isVolatile', false);
     expect(element).to.have.property('childNames');
-    expect(element.childNames).to.deep.equal(['types', 'runtime', 'message-queue']);
+    expect(element.childNames).to.deep.equal(['types', 'runtime', 'system']);
   });
 
   it("should find /types element", async () => {
@@ -318,5 +318,31 @@ describe("Maestrozo core", () => {
     expect(element.childNames).to.deep.equal([]);
   });
 
+  it("should find /types/system", async () => {
+    const element = await engine.getElement(['#', 'system'] as ElementPath);
+    expect(element).to.be.instanceof(Object);
+    expect(element).to.have.property('revision', 1);
+    expect(element).to.have.property('elementName', 'system');
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal(['#']);
+    expect(element).to.have.property('elementType');
+    expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
+    expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', false);
+    expect(element).to.have.property('childNames');
+    expect(element.childNames).to.deep.equal(['message-queue']);
+  });
+
+  it("should find /system/message-queue", async () => {
+    const element = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+    expect(element).not.to.equal(null);
+    expect(element).to.be.instanceof(Object);
+    expect(element).to.have.property('revision', 1);
+    expect(element).to.have.property('elementName', 'message-queue');
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal(['#', 'system']);
+    expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', false);
+  });
 
 });

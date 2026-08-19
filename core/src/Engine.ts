@@ -39,7 +39,9 @@ import { connectionTypeDeclaration, connectionTypeName } from './typeHandlers/co
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
 
 const runtimeContainerName = 'runtime' as ElementName;
+const systemContainerName = 'system' as ElementName;
 const messageQueueName = 'message-queue' as ElementName;
+
 
 type ContainerDeclaration = {
   elementName: ElementName,
@@ -158,7 +160,7 @@ class MtzEngine {
 
 
   private async declareMessageQueue(): Promise<MtzElement> {
-    const parentPath: ElementPath = [rootName];
+    const parentPath: ElementPath = [rootName, systemContainerName];
     const messageQueuePath = [...parentPath, messageQueueName ] as ElementPath;
     let messageQueueElement = await this.getStoredElement(messageQueuePath);
     if (messageQueueElement === null) {
@@ -286,6 +288,14 @@ class MtzEngine {
     // mise en place de «#/runtime»
     await this.declareContainer({
         elementName: runtimeContainerName,
+        parentPath: [rootName] as ElementPath,
+        isVolatile: false
+      }
+    );
+
+    // mise en place de «#/system»
+    await this.declareContainer({
+        elementName: systemContainerName,
         parentPath: [rootName] as ElementPath,
         isVolatile: false
       }

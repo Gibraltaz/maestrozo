@@ -3,7 +3,7 @@ import { BuildDataFunction, BuildHelpers, TypeDeclaration } from "./TypeHandler"
 import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath } from "@/global";
 import { ElementData } from "@/Element";
 
-const buildDataFunction: BuildDataFunction = async (
+const messageBuildDataFunction: BuildDataFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>,
@@ -24,8 +24,20 @@ const messageTypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  buildDataFunction: buildDataFunction
+  buildDataFunction: messageBuildDataFunction
 } as TypeDeclaration;
+
+const messageQueueBuildDataFunction: BuildDataFunction = async (
+  _elementName: ElementName,
+  parentPath: ElementPath,
+  _params:Record<string, any>,
+  _helpers: BuildHelpers
+): Promise<ElementData> => {
+  console.log("dOm path", parentPath);
+  return {
+  } as ElementData; 
+};
+
 
 const messageQueueTypeDeclaration = {
   elementName: messageQueueTypeName,
@@ -34,7 +46,7 @@ const messageQueueTypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  buildDataFunction: buildDataFunction,
+  buildDataFunction: messageQueueBuildDataFunction,
   buildElementFunction: null
 } as TypeDeclaration;
 
