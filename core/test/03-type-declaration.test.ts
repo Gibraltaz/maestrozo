@@ -27,7 +27,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('isContainer', true);
     expect(element).to.have.property('isVolatile', false);
     expect(element).to.have.property('childNames');
-    expect(element.childNames).to.deep.equal(['types', 'runtime']);
+    expect(element.childNames).to.deep.equal(['types', 'runtime', 'message-queue']);
   });
 
   it("should find /types element", async () => {

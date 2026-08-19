@@ -39,6 +39,7 @@ import { connectionTypeDeclaration, connectionTypeName } from './typeHandlers/co
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
 
 const runtimeContainerName = 'runtime' as ElementName;
+const messageQueueName = 'message-queue' as ElementName;
 
 type ContainerDeclaration = {
   elementName: ElementName,
@@ -155,6 +156,28 @@ class MtzEngine {
     return containerElement;
   }
 
+
+  private async declareMessageQueue(): Promise<MtzElement> {
+    const parentPath: ElementPath = [rootName];
+    const messageQueuePath = [...parentPath, messageQueueName ] as ElementPath;
+    let messageQueueElement = await this.getStoredElement(messageQueuePath);
+    if (messageQueueElement === null) {
+      messageQueueElement = {
+        revision: 0,
+        elementName: messageQueueName,
+        parentPath: parentPath,
+        elementType: [ messageQueueTypeDeclaration.parentPath, messageQueueTypeDeclaration.elementName],
+        isContainer: true,
+        isVolatile: false,
+        childNames: [],
+        data: null
+      } as MtzElement;
+      await this.storeNewElement(messageQueueElement);
+    }
+    return messageQueueElement;
+  }
+
+
   private async declareTypeInternal(args: TypeDeclaration, force: boolean): Promise<MtzElement> {
 
     if (! force) {
@@ -219,7 +242,6 @@ class MtzEngine {
     this.persistentStorage = storage;
 
     // mise en place de root «#/»
-
     const rootElement = await this.declareContainer({
       elementName: rootName,
       parentPath: [] as ElementPath, // empty path exception because root as no parent
@@ -308,6 +330,9 @@ class MtzEngine {
 
     // mise en place de «#/types/message»
     await this.declareTypeInternal(messageTypeDeclaration, false);
+
+    // mise en place de «#/message-queue»
+    await this.declareMessageQueue();
 
     this._initialized = true;
   }
