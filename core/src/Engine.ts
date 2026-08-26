@@ -161,7 +161,7 @@ class MtzEngine {
 
 
   private async declareMessageQueue(): Promise<MtzElement> {
-    const messageQueuePath = [systemContainerPath, messageQueueName ] as ElementPath;
+    const messageQueuePath = [...systemContainerPath, messageQueueName ] as ElementPath;
     let messageQueueElement = await this.getStoredElement(messageQueuePath);
     if (messageQueueElement === null) {
       messageQueueElement = await this.createElementInternal(
@@ -337,7 +337,7 @@ class MtzEngine {
     // mise en place de «#/types/message»
     await this.declareTypeInternal(messageTypeDeclaration, false);
 
-    // mise en place de «#/message-queue»
+    // mise en place de «#/system/message-queue»
     await this.declareMessageQueue();
 
     this._initialized = true;

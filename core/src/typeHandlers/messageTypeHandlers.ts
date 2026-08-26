@@ -1,7 +1,8 @@
 import { ElementName, ElementPath, pathEquals, pathToString, rootName } from "@/path";
 import { BuildDataFunction, BuildHelpers, TypeDeclaration } from "./TypeHandler";
-import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath, systemContainerPath, systemContainerName, messageQueueName } from "@/global";
+import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath, systemContainerPath, messageQueueName } from "@/global";
 import { ElementData } from "@/Element";
+import { mtzMessageQueueCreate } from "@/MessageQueue";
 
 const messageBuildDataFunction: BuildDataFunction = async (
   elementName: ElementName,
@@ -14,7 +15,7 @@ const messageBuildDataFunction: BuildDataFunction = async (
     throw new Error(`Value of pin «${elementName}» of element «${pathToString(parentPath)}» is not defined`);
   return {
     value
-  } as ElementData; 
+  } as ElementData;
 };
 
 const messageTypeDeclaration = {
@@ -38,9 +39,8 @@ const messageQueueBuildDataFunction: BuildDataFunction = async (
   if (elementName !== messageQueueName)
     throw new Error("Invalid name");
 
-
-  return {
-  } as ElementData; 
+  const messageQueue = mtzMessageQueueCreate();
+  return messageQueue  as ElementData;
 };
 
 
