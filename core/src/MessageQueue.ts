@@ -6,6 +6,7 @@
 import { ElementPath } from "./Element";
 
 type MtzMessageTime = number & { __brand: 'mtz-msg-time' };
+type MtzTimeFunction = () => MtzMessageTime;
 
 type MessageType =  string & { __brand: 'MsgEvent' };
     
@@ -15,6 +16,7 @@ type MtzMessage = {
   at: MtzMessageTime;
   elementPath: ElementPath;
   messageType: MessageType;
+  data: any;
 };
 
 
@@ -52,6 +54,7 @@ export {
   MessageType,
   MESSAGE_TYPE_CHANGE,
   MtzMessageTime,
+  MtzTimeFunction,
   MtzMessage,
   MtzMessageQueue,
   mtzMessageQueueCreate,

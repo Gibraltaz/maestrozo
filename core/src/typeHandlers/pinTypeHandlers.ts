@@ -9,8 +9,9 @@ const buildDataFunction: BuildDataFunction = async (
   params:Record<string, any>,
   _helpers: BuildHelpers
 ): Promise<ElementData> => {
-  const value = params?.value ?? null;
-  if (value === null)
+  const value = params.value;
+  // value can be null when value is unknown but it can not be undefined
+  if (value === undefined)
     throw new Error(`Value of pin «${elementName}» of element «${pathToString(parentPath)}» is not defined`);
   return {
     value

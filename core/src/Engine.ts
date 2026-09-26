@@ -25,7 +25,8 @@ import {
   systemContainerName,
   systemContainerPath,
   runtimeContainerName,
-  messageQueueName
+  messageQueueName,
+  messageQueuePath
 } from '@/global';
 
 import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
@@ -41,6 +42,7 @@ import { elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
 import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
 import { connectionTypeDeclaration, connectionTypeName } from './typeHandlers/connectionTypeHandler';
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
+import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction } from './MessageQueue';
 
 
 
@@ -50,11 +52,12 @@ type ContainerDeclaration = {
   isVolatile: boolean
 };
 
+
 class MtzEngine {
   private _initialized = false;
   private persistentStorage: MaestrozoStore| null = null;
   private volatileStore: MaestrozoStore = new RawMemoryStore;
-
+  private _timeFunction: MtzTimeFunction = () => Date.now() as MtzMessageTime;
 
   private async getStoredElement(elementPath: ElementPath): Promise<MtzElement> {
     const storeKey = pathToString(elementPath) as StoreKey;
@@ -161,7 +164,6 @@ class MtzEngine {
 
 
   private async declareMessageQueue(): Promise<MtzElement> {
-    const messageQueuePath = [...systemContainerPath, messageQueueName ] as ElementPath;
     let messageQueueElement = await this.getStoredElement(messageQueuePath);
     if (messageQueueElement === null) {
       messageQueueElement = await this.createElementInternal(
@@ -496,15 +498,13 @@ class MtzEngine {
     if (! this._initialized)
       throw new Error("Engine not initialized");
 
-    await this.getElement(parentPath);
-    await this.getElement([...parentPath, sourceComponentName]);
-    await this.getElement([...parentPath, sourceComponentName, sourcePinName]);
-    await this.getElement([...parentPath, targetComponentName]);
-    await this.getElement([...parentPath, targetComponentName, targetPinName]);
+    const sourcePin = await this.getElement([...parentPath, sourceComponentName, sourcePinName]);
+    const targetPin = await this.getElement([...parentPath, targetComponentName, targetPinName]);
 
+    // FIXME déclarer officiellement le séparateur «|» comme caractère interdit
     const elementName = `${sourceComponentName}|${sourcePinName}|${targetComponentName}|${targetPinName}` as ElementName;
 
-    return this.createElement(
+    const connectionElement = this.createElement(
       elementName,
       parentPath,
       [ ...linkTypeContainerPath, connectionTypeName ] as ElementPath,
@@ -515,7 +515,36 @@ class MtzEngine {
         targetPin: targetPinName
       }
     );
+
+    // propager la valeur de la sortie à l'entrée connectée si elle est déterminée
+    // FIXME est-il utile de tester si data.value === null ?
+    if (sourcePin.data !== null && sourcePin.data.value !== null) {
+        const message: MtzMessage  = {
+          at: this._timeFunction(),
+          elementPath: [...targetPin.parentPath, targetPin.elementName],
+          messageType: MESSAGE_TYPE_CHANGE,
+          data: {
+            value: sourcePin.data.value
+          }
+        };
+
+        const messageQueueElement = await this.getElement(messageQueuePath);
+        if (messageQueueElement.data === null)
+          throw new Error("Message queue data should not be null");
+        const messageQueue = {
+          messages: messageQueueElement.data.messages
+        } as MtzMessageQueue;
+        mtzMessageQueuePushMessage(messageQueue, message);
+        await this.modifyElement(messageQueueElement);
+    }
+
+    return connectionElement;
   };
+
+
+  setTimeFunction(timeFunction: MtzTimeFunction) {
+    this._timeFunction = timeFunction;
+  }
 
 }
 

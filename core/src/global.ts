@@ -55,6 +55,7 @@ const messageQueueTypePath = [...rootTypeContainerPath, messageQueueTypeName ];
 
 // name of element «#/system/message-queue»
 const messageQueueName = 'message-queue' as ElementName;
+const messageQueuePath = [...systemContainerPath, messageQueueName]; 
 
 // name of element «#/types/message»
 const messageTypeName = 'message';
@@ -76,6 +77,6 @@ export {
   runtimeContainerName, runtimeContainerPath, 
   systemContainerName, systemContainerPath,
   messageQueueTypeName, messageQueueTypePath,
-  messageQueueName,
+  messageQueueName, messageQueuePath,
   messageTypeName, messageTypePath
 }

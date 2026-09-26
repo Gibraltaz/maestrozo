@@ -10,7 +10,7 @@ import { rm } from "node:fs/promises";
 
 import { ElementName, ElementPath, MtzElement } from "@/Element";
 import { 
-  MESSAGE_TYPE_CHANGE, MtzMessageQueue, 
+  MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, 
   mtzMessageQueueGetMessageCount, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime
 } from "@/MessageQueue";
 
@@ -53,27 +53,29 @@ describe("Control message queue storing", () => {
 
       messageQueue = {
         messages: element.data.messages
-      } as MtzMessageQueue ;
+      } as MtzMessageQueue;
 
       expect(mtzMessageQueueGetMessageCount(messageQueue)).to.equal(0);
     });
 
     it("should push a first message", async () => {
-      mtzMessageQueuePushMessage(messageQueue, {
+      const message = {
         at: 1234 as MtzMessageTime,
         elementPath: [ 'a' as ElementName ],
         messageType: MESSAGE_TYPE_CHANGE 
-      });
+      } as MtzMessage;
+      mtzMessageQueuePushMessage(messageQueue, message);
       const messageCount = mtzMessageQueueGetMessageCount(messageQueue);
       expect(messageCount).to.equal(1);
     });
 
     it("should push a second message", async () => {
-      mtzMessageQueuePushMessage(messageQueue, {
+      const message = {
         at: 1233 as MtzMessageTime,
         elementPath: [ 'b' as ElementName ],
         messageType: MESSAGE_TYPE_CHANGE 
-      });
+      } as MtzMessage;
+      mtzMessageQueuePushMessage(messageQueue, message);
       const messageCount = mtzMessageQueueGetMessageCount(messageQueue);
       expect(messageCount).to.equal(2);
     });
