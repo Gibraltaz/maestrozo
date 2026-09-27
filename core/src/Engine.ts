@@ -42,7 +42,7 @@ import { elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
 import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
 import { connectionTypeDeclaration, connectionTypeName } from './typeHandlers/connectionTypeHandler';
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
-import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction } from './MessageQueue';
+import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction } from './MessageQueue';
 
 
 
@@ -345,11 +345,6 @@ class MtzEngine {
     this._initialized = true;
   }
 
-  public async runOnce(): Promise<void> {
-    if (! this._initialized)
-      throw new Error("Engine not initialized");
-  }
-
 
   public async getElement(elementPath: ElementPath): Promise<MtzElement> {
     if (! this._initialized)
@@ -499,7 +494,8 @@ class MtzEngine {
       throw new Error("Engine not initialized");
 
     const sourcePin = await this.getElement([...parentPath, sourceComponentName, sourcePinName]);
-    const targetPin = await this.getElement([...parentPath, targetComponentName, targetPinName]);
+    const targetComponent = await this.getElement([...parentPath, targetComponentName]);
+    //const targetPin = await this.getElement([...parentPath, targetComponentName, targetPinName]);
 
     // FIXME déclarer officiellement le séparateur «|» comme caractère interdit
     const elementName = `${sourceComponentName}|${sourcePinName}|${targetComponentName}|${targetPinName}` as ElementName;
@@ -521,10 +517,11 @@ class MtzEngine {
     if (sourcePin.data !== null && sourcePin.data.value !== null) {
         const message: MtzMessage  = {
           at: this._timeFunction(),
-          elementPath: [...targetPin.parentPath, targetPin.elementName],
+          elementPath: [...targetComponent.parentPath, targetComponent.elementName],
           messageType: MESSAGE_TYPE_CHANGE,
           data: {
-            value: sourcePin.data.value
+            pin: targetPinName,
+            value: sourcePin.data.value,
           }
         };
 
@@ -541,10 +538,16 @@ class MtzEngine {
     return connectionElement;
   };
 
-
   setTimeFunction(timeFunction: MtzTimeFunction) {
     this._timeFunction = timeFunction;
   }
+
+  public async runOnce(): Promise<void> {
+    if (! this._initialized)
+      throw new Error("Engine not initialized");
+  }
+
+
 
 }
 

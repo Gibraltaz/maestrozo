@@ -195,9 +195,10 @@ describe("Pin connection", () => {
     expect(message).to.be.have.property('at', 123456);
     expect(message).to.be.have.property('messageType', 'changed');
     expect(message).to.be.have.property('elementPath');
-    expect(message.elementPath).to.deep.equal([ '#', 'runtime', 'target-component-1', 'in:value' ]);
+    expect(message.elementPath).to.deep.equal([ '#', 'runtime', 'target-component-1' ]);
     expect(message).to.be.have.property('data');
     expect(message.data).to.be.instanceOf(Object);
+    expect(message.data).to.have.property('pin', 'in:value');
     expect(message.data).to.have.property('value', 123);
   });
 

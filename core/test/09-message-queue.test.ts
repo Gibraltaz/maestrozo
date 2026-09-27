@@ -4,7 +4,7 @@
  */
 
 import { ElementName } from "@/Element";
-import { MESSAGE_TYPE_CHANGE, MtzMessageQueue, mtzMessageQueueCreate, mtzMessageQueueGetMessageCount, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime } from "@/MessageQueue";
+import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueueCreate, mtzMessageQueueGetMessageCount, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime } from "@/MessageQueue";
 
 
 describe("Message queue", () => {
@@ -24,8 +24,7 @@ describe("Message queue", () => {
       at: 1234 as MtzMessageTime,
       elementPath: [ 'a' as ElementName ],
       messageType: MESSAGE_TYPE_CHANGE 
-    });
-
+    } as MtzMessage);
   });
 
   it("should have a message", async () => {
@@ -38,7 +37,7 @@ describe("Message queue", () => {
       at: 1233 as MtzMessageTime,
       elementPath: [ 'b' as ElementName ],
       messageType: MESSAGE_TYPE_CHANGE 
-    });
+    } as MtzMessage);
 
   });
 
