@@ -5,7 +5,7 @@
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "@/global";
-import { BuildDataFunction, BuildElementFunction, TypeDeclaration } from "./TypeHandler";
+import { BuildDataFunction, TypeDeclaration } from "./TypeHandler";
 
 const buildDataFunction: BuildDataFunction = async (
   _elementName: ElementName,

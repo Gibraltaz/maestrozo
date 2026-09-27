@@ -6,7 +6,7 @@
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
-import { BuildDataFunction, BuildElementFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const stringTypeName = 'string' as ElementName;
 

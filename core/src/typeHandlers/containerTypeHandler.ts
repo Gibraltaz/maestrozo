@@ -5,7 +5,7 @@
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName } from '@/global';
-import { BuildDataFunction, BuildElementFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const containerTypeName = 'container' as ElementName;
 
