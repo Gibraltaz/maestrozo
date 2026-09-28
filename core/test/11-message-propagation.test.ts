@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from "vitest";
 import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
+import { BuildDataFunction, BuildElementFunction, BuildHelpers, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
@@ -44,6 +44,28 @@ const sourceCustomComponentBuildElementFunction: BuildElementFunction = async (
   );
 }
 
+const targetCustomComponentEvaluateFunction: EvaluateComponentFunction = async (
+  element: MtzElement,
+  data:Record<string, any>,
+  _helpers: BuildHelpers
+) : Promise<EvaluationResult> => {
+
+  const pinName = data.pin;
+  if (pinName !== 'in:value')
+    throw new Error("Invalid pin name in evaluation data");
+
+  const newValue = data.value;
+  if (newValue === undefined)
+    throw new Error("Invalid value in evaluation data");
+
+  const newData = {...element.data, internalValue: newValue};
+
+  const result: EvaluationResult = {
+    setData: newData,
+    setOutputs: null
+  };
+  return result;
+};
 
 // target component with only one input pin
 const targetCustomComponentBuildDataFunction: BuildDataFunction = async (
@@ -84,42 +106,44 @@ describe("Pin connection", () => {
   it("should declare a source custom component", async () => {
     await engine.declareType({
       elementName: 'source-custom-component' as ElementName,
-      parentPath: [ 
+      parentPath: [
         '#' as ElementName,
-        'types' as ElementName, 
+        'types' as ElementName,
         'components' as ElementName
       ],
-      elementType: [ 
+      elementType: [
         '#' as ElementName,
-        'types' as ElementName, 
+        'types' as ElementName,
         'type' as ElementName
       ],
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
       buildDataFunction: sourceCustomComponentBuildDataFunction,
-      buildElementFunction: sourceCustomComponentBuildElementFunction
+      buildElementFunction: sourceCustomComponentBuildElementFunction,
+      evaluateComponentFunction: null
     });
   });
 
   it("should declare a target custom component", async () => {
     await engine.declareType({
       elementName: 'target-custom-component' as ElementName,
-      parentPath: [ 
+      parentPath: [
         '#' as ElementName,
-        'types' as ElementName, 
+        'types' as ElementName,
         'components' as ElementName
       ],
-      elementType: [ 
+      elementType: [
         '#' as ElementName,
-        'types' as ElementName, 
+        'types' as ElementName,
         'type' as ElementName
       ],
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
       buildDataFunction: targetCustomComponentBuildDataFunction,
-      buildElementFunction: targetCustomComponentBuildElementFunction
+      buildElementFunction: targetCustomComponentBuildElementFunction,
+      evaluateComponentFunction: targetCustomComponentEvaluateFunction
     });
   });
 
@@ -200,6 +224,32 @@ describe("Pin connection", () => {
     expect(message.data).to.be.instanceOf(Object);
     expect(message.data).to.have.property('pin', 'in:value');
     expect(message.data).to.have.property('value', 123);
+  });
+
+  it("should process waiting message", async () => {
+    await engine.runOnce();
+  });
+
+  it("should find no message in messages queue", async () => {
+    const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+    expect(messageQueueElement).to.be.instanceof(Object);
+    expect(messageQueueElement).to.have.property('data')
+    expect(messageQueueElement.data).to.have.property('messages')
+    const messages = messageQueueElement?.data?.messages ?? null;
+    assert(messages !== null);
+    expect(messages).to.be.instanceOf(Array);
+    expect(messages.length).to.equal(0);
+  });
+
+  it("should control target component internal value", async () => {
+    const targetComponent = await engine.getElement(['#', 'runtime', 'target-component-1'] as ElementPath);
+    expect(targetComponent).not.to.equal(null);
+    expect(targetComponent).to.be.instanceOf(Object);
+    expect(targetComponent).to.have.property('revision', 2);
+    expect(targetComponent).to.have.property('data');
+    const componentData = targetComponent.data;
+    expect(componentData).to.be.instanceOf(Object);
+    expect(componentData).to.have.property('internalValue', 123);
   });
 
 });

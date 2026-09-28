@@ -13,7 +13,7 @@ import {
   pathToString,
   getElementPath
 } from '@/path';
-import { MtzElement, ElementName, ElementPath, checkElement } from '@/Element';
+import { MtzElement, ElementName, ElementPath, checkElement, ElementData } from '@/Element';
 import {
   containerTypeName,
   rootTypeContainerName,
@@ -26,10 +26,11 @@ import {
   systemContainerPath,
   runtimeContainerName,
   messageQueueName,
-  messageQueuePath
+  messageQueuePath,
+  componentTypeContainerPath
 } from '@/global';
 
-import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildElementFunction, BuildHelpers, EvaluationResult, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 import { containerTypeDeclaration} from './typeHandlers/containerTypeHandler';
 import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
@@ -43,7 +44,6 @@ import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
 import { connectionTypeDeclaration, connectionTypeName } from './typeHandlers/connectionTypeHandler';
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
 import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction } from './MessageQueue';
-
 
 
 type ContainerDeclaration = {
@@ -210,6 +210,10 @@ class MtzEngine {
     if (buildDataFunction === null)
       throw new Error(`Type «${typePath}» declaration has no buildDataFunction function`);
 
+    const buildElementFunction=  args.buildElementFunction ?? null;
+
+    const evaluateComponentFunction = args?.evaluateComponentFunction ?? null;
+
     const element = {
       revision: 0,
       elementName: args.elementName,
@@ -220,10 +224,11 @@ class MtzEngine {
       childNames: isDerivable ? [] as Array<ElementName> : null,
       data: {
         typeHandler: {
-          isContainer: args.isContainer,
-          isVolatile: args.isVolatile,
-          buildDataFunction: args.buildDataFunction,
-          buildElementFunction: args.buildElementFunction
+          isContainer,
+          isVolatile,
+          buildDataFunction,
+          buildElementFunction,
+          evaluateComponentFunction
         }
       }
     } as MtzElement;
@@ -542,12 +547,76 @@ class MtzEngine {
     this._timeFunction = timeFunction;
   }
 
-  public async runOnce(): Promise<void> {
+
+  public async runOnce(): Promise<boolean> {
     if (! this._initialized)
       throw new Error("Engine not initialized");
+
+    const messageQueueElement = await this.getElement(messageQueuePath);
+    if (messageQueueElement.data === null)
+      throw new Error("Message queue data should not be null");
+
+    const messageQueue = {
+      messages: messageQueueElement.data.messages
+    } as MtzMessageQueue;
+
+    const now = this._timeFunction();
+    const message = mtzMessageQueuePopMessage(messageQueue, now);
+    if (message === null)
+      return false;
+
+    const data = message.data;
+
+    const componentElement = await this.getElement(message.elementPath);
+    if (componentElement === null)
+      throw new Error(`Can not find component «${pathToString(message.elementPath)}»`);
+
+    if (! pathStartsWith(componentElement.elementType, componentTypeContainerPath  ))
+      throw new Error(`Element «${pathToString(message.elementPath)}» is not a component`);
+
+    const componentType = await this.getElement(componentElement.elementType);
+    if (componentType === null)
+      throw new Error(`Can not find component type «${pathToString(componentElement.elementType)}»`);
+
+    const typeHandler: TypeHandler = componentType?.data?.typeHandler ?? null;
+    if (typeHandler === null)
+      throw new Error(`Can not find type handler of «${pathToString(componentElement.elementType)}»`);
+
+    switch (message.messageType) {
+
+      case MESSAGE_TYPE_CHANGE:
+
+        const evaluateComponentFunction = typeHandler.evaluateComponentFunction;
+        if (evaluateComponentFunction === undefined)
+          throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is not defined`);
+        if (evaluateComponentFunction === null)
+          throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is set`);
+        if (typeof(evaluateComponentFunction) !== 'function')
+          throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is not a function`);
+
+        const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, null);
+
+        if (result.setData !== null) {
+          componentElement.data = {...result.setData};
+          await this.modifyElement(componentElement);
+        }
+
+        if (result.setOutputs !== null) {
+          throw new Error("Not implemented");
+        }
+        break;
+
+      default:
+        // TODO déclencher un événement
+        console.error(`Unknown message type «${message.messageType}»`);
+        break;
+    }
+
+    await this.modifyElement(messageQueueElement);
+
+
+    return true;
   }
-
-
 
 }
 
