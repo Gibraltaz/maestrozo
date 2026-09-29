@@ -566,6 +566,7 @@ class MtzEngine {
     if (message === null)
       return false;
 
+
     const data = message.data;
 
     const componentElement = await this.getElement(message.elementPath);
@@ -676,6 +677,7 @@ class MtzEngine {
         break;
     }
 
+    await this.modifyElement(messageQueueElement);
     return true;
   }
 
