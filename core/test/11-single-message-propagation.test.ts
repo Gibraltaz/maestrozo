@@ -44,28 +44,7 @@ const sourceCustomComponentBuildElementFunction: BuildElementFunction = async (
   );
 }
 
-const targetCustomComponentEvaluateFunction: EvaluateComponentFunction = async (
-  element: MtzElement,
-  data:Record<string, any>,
-  _helpers: BuildHelpers
-) : Promise<EvaluationResult> => {
 
-  const pinName = data.pin;
-  if (pinName !== 'in:value')
-    throw new Error("Invalid pin name in evaluation data");
-
-  const newValue = data.value;
-  if (newValue === undefined)
-    throw new Error("Invalid value in evaluation data");
-
-  const newData = {...element.data, internalValue: newValue};
-
-  const result: EvaluationResult = {
-    setData: newData,
-    setOutputs: null
-  };
-  return result;
-};
 
 // target component with only one input pin
 const targetCustomComponentBuildDataFunction: BuildDataFunction = async (
@@ -93,9 +72,31 @@ const targetCustomComponentBuildElementFunction: BuildElementFunction = async (
 
 }
 
+const targetCustomComponentEvaluateFunction: EvaluateComponentFunction = async (
+  element: MtzElement,
+  data:Record<string, any>,
+  _helpers: BuildHelpers
+) : Promise<EvaluationResult> => {
+
+  const pinName = data.pin;
+  if (pinName !== 'in:value')
+    throw new Error("Invalid pin name in evaluation data");
+
+  const newValue = data.value;
+  if (newValue === undefined)
+    throw new Error("Invalid value in evaluation data");
+
+  const newData = {...element.data, internalValue: newValue};
+
+  const result: EvaluationResult = {
+    setData: newData,
+    setOutputs: null
+  };
+  return result;
+};
 
 
-describe("Pin connection", () => {
+describe("Single pin connection with two components", () => {
   const engine = new MtzEngine();
 
   it("should initialize engine", async () => {

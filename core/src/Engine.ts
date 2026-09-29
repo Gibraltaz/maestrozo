@@ -11,9 +11,10 @@ import {
   rootName,
   pathStartsWith,
   pathToString,
-  getElementPath
+  getElementPath,
+  elementPathAreEquals,
 } from '@/path';
-import { MtzElement, ElementName, ElementPath, checkElement, ElementData } from '@/Element';
+import { MtzElement, ElementName, ElementPath, checkElement } from '@/Element';
 import {
   containerTypeName,
   rootTypeContainerName,
@@ -41,7 +42,7 @@ import { constantComponentTypeDeclaration } from './typeHandlers/constantCompone
 import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler';
 import { elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
 import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
-import { connectionTypeDeclaration, connectionTypeName } from './typeHandlers/connectionTypeHandler';
+import { connectionTypeDeclaration, connectionTypeName, connectionTypePath } from './typeHandlers/connectionTypeHandler';
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
 import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction } from './MessageQueue';
 
@@ -571,6 +572,11 @@ class MtzEngine {
     if (componentElement === null)
       throw new Error(`Can not find component «${pathToString(message.elementPath)}»`);
 
+    const componentName = componentElement.elementName;
+
+    const containerElement = await this.getElement(componentElement.parentPath);
+    const containerPath = [...containerElement.parentPath, containerElement.elementName] as ElementPath;
+
     if (! pathStartsWith(componentElement.elementType, componentTypeContainerPath  ))
       throw new Error(`Element «${pathToString(message.elementPath)}» is not a component`);
 
@@ -590,19 +596,77 @@ class MtzEngine {
         if (evaluateComponentFunction === undefined)
           throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is not defined`);
         if (evaluateComponentFunction === null)
-          throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is set`);
+          throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is not set`);
         if (typeof(evaluateComponentFunction) !== 'function')
           throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is not a function`);
 
         const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, null);
 
+        // demande de changement de l'état interne du composant
         if (result.setData !== null) {
           componentElement.data = {...result.setData};
           await this.modifyElement(componentElement);
         }
 
-        if (result.setOutputs !== null) {
-          throw new Error("Not implemented");
+        // demande de changement d'état des sorties du composant
+        const setOutputsArray = result.setOutputs;
+        if (setOutputsArray !== null) {
+          if (! Array.isArray(setOutputsArray))
+            throw new Error(`Value of «setOutputs» in evaluation result of component «${pathToString(message.elementPath)}» is not an array`);
+
+          for (const setOutputEntry of setOutputsArray) {
+
+            const outputPinName = setOutputEntry.pin;
+            if (outputPinName === undefined)
+              throw new Error(`Value of «setOutputs.pin» is not set in evaluation result of component «${pathToString(message.elementPath)}»`);
+            if (typeof(outputPinName) !== 'string')
+              throw new Error(`Value of «setOutputs.pin» is not a string in evaluation result of component «${pathToString(message.elementPath)}»`);
+
+            const outputPinValue = setOutputEntry.value;
+            if (outputPinValue === undefined)
+              throw new Error(`Value of «setOutputs.value» is not set in evaluation result of component «${pathToString(message.elementPath)}»`);
+
+
+            if (containerElement.childNames === null)
+              throw new Error("Internal error : container should have children");
+
+            // pour tous les enfants du conteneur du composant
+            for (const childName of containerElement.childNames) {
+
+              const childElement = await this.getElement([ ...containerPath, childName ] as ElementPath);
+
+              // ne traiter que les enfants du type connexion
+              if (! elementPathAreEquals(childElement.elementType, connectionTypePath ))
+                continue;
+
+              // ne traiter que les connexions en sortie du composant
+              const sourceComponentName = childElement?.data?.sourceComponent ?? null;
+              if (sourceComponentName !== componentName)
+                continue;
+
+              // ne traiter que les connexions connectées à la sortie du composant
+              const sourcePinName = childElement?.data?.sourcePin ?? null;
+              if (sourcePinName !== outputPinName)
+                continue;
+
+              const targetComponentName = childElement?.data?.targetComponent ?? null;
+              const targetPinName = childElement?.data?.targetPin ?? null;
+
+              // TODO contrôler que le composant ou la broche accepte le type de la valeur
+
+              // poster un message de mise jour du composant cible
+              const message: MtzMessage  = {
+                at: this._timeFunction(),
+                elementPath: [...containerPath, targetComponentName],
+                messageType: MESSAGE_TYPE_CHANGE,
+                data: {
+                  pin: targetPinName,
+                  value: outputPinValue
+                }
+              };
+              mtzMessageQueuePushMessage(messageQueue, message);
+            }
+          }
         }
         break;
 
@@ -611,9 +675,6 @@ class MtzEngine {
         console.error(`Unknown message type «${message.messageType}»`);
         break;
     }
-
-    await this.modifyElement(messageQueueElement);
-
 
     return true;
   }
