@@ -19,7 +19,8 @@ import {
   containerTypeName,
   rootTypeContainerName,
   dataTypeName,
-  componentTypeContainerName,
+  componentTypeName,
+  componentTypePath,
   pinTypeContainerName,
   linkTypeContainerName,
   linkTypeContainerPath,
@@ -27,24 +28,28 @@ import {
   systemContainerPath,
   runtimeContainerName,
   messageQueueName,
-  messageQueuePath,
-  componentTypeContainerPath
+  messageQueuePath
 } from '@/global';
 
 import { BuildDataFunction, BuildElementFunction, BuildHelpers, EvaluationResult, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
-import { containerTypeDeclaration} from './typeHandlers/containerTypeHandler';
-import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
-import { stringTypeDeclaration } from './typeHandlers/stringTypeHandler';
-import { booleanTypeDeclaration } from './typeHandlers/booleanTypeHandler';
-import { inputPinTypeDeclaration, outputPinTypeDeclaration } from './typeHandlers/pinTypeHandlers';
-import { constantComponentTypeDeclaration } from './typeHandlers/constantComponentTypeHandler';
-import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler';
-import { elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
-import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
-import { connectionTypeDeclaration, connectionTypeName, connectionTypePath } from './typeHandlers/connectionTypeHandler';
-import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
-import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction } from './MessageQueue';
+import { containerTypeDeclaration} from '@/typeHandlers/containerTypeHandler';
+import { integerTypeDeclaration } from '@/typeHandlers/integerTypeHandler';
+import { stringTypeDeclaration } from '@/typeHandlers/stringTypeHandler';
+import { booleanTypeDeclaration } from '@/typeHandlers/booleanTypeHandler';
+import { inputPinTypeDeclaration, outputPinTypeDeclaration } from '@/typeHandlers/pinTypeHandlers';
+
+import { componentTypeDeclaration } from '@/typeHandlers/componentTypeHandler';
+import { constantComponentTypeDeclaration } from '@/typeHandlers/constantComponentTypeHandler';
+import { variableComponentTypeDeclaration } from '@/typeHandlers/variableComponentTypeHandler';
+import { elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
+import { typeTypeDeclaration } from '@/typeHandlers/typeTypeHandler';
+import { connectionTypeDeclaration, connectionTypeName, connectionTypePath } from '@/typeHandlers/connectionTypeHandler';
+import { messageTypeDeclaration, messageQueueTypeDeclaration } from '@/typeHandlers/messageTypeHandlers';
+import { MESSAGE_TYPE_CHANGE, MtzMessage,
+  MtzMessageQueue, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage,
+  MtzMessageTime, MtzTimeFunction
+} from '@/MessageQueue';
 
 
 type ContainerDeclaration = {
@@ -268,12 +273,14 @@ class MtzEngine {
       isVolatile: true
     });
 
-    // mise en place de «#/types/components»
+    /* TODO ménage
+    // mise en place de «#/types/component»
     await this.declareContainer({
-      elementName: componentTypeContainerName,
+      elementName: componentTypeName,
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       isVolatile: true
     });
+    */
 
     // mise en place de «#/types/pins»
     await this.declareContainer({
@@ -329,6 +336,10 @@ class MtzEngine {
 
     // mise en place de «#/types/pins/output-pin»
     await this.declareTypeInternal(outputPinTypeDeclaration, false);
+
+
+    // mise en place de «#/types/components»
+    await this.declareTypeInternal(componentTypeDeclaration, false);
 
     // mise en place de «#/types/components/constant»
     await this.declareTypeInternal(constantComponentTypeDeclaration, false);
@@ -578,7 +589,7 @@ class MtzEngine {
     const containerElement = await this.getElement(componentElement.parentPath);
     const containerPath = [...containerElement.parentPath, containerElement.elementName] as ElementPath;
 
-    if (! pathStartsWith(componentElement.elementType, componentTypeContainerPath  ))
+    if (! pathStartsWith(componentElement.elementType, componentTypePath  ))
       throw new Error(`Element «${pathToString(message.elementPath)}» is not a component`);
 
     const componentType = await this.getElement(componentElement.elementType);

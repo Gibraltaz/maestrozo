@@ -4,7 +4,7 @@
  */
 
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
-import { rootName, rootTypeContainerName, typeElementName, componentTypeContainerName } from '@/global';
+import { rootName, rootTypeContainerName, typeElementName, componentTypeName } from '@/global';
 import { BuildDataFunction, BuildHelpers, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const variableComponentTypeName = 'variable' as ElementName;
@@ -29,7 +29,7 @@ const buildElementFunction = async (
 
 const variableComponentTypeDeclaration = {
   elementName: variableComponentTypeName,
-  parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
+  parentPath: [rootName, rootTypeContainerName, componentTypeName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   isDerivable: false,
   isContainer: false,

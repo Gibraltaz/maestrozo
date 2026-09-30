@@ -4,7 +4,7 @@
  */
 
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
-import { rootName, rootTypeContainerName, componentTypeContainerName, typeElementName, outputPinTypePath } from '@/global';
+import { rootName, rootTypeContainerName, componentTypeName, typeElementName, outputPinTypePath } from '@/global';
 import { checkElementPath, getElementPath, pathStartsWith, pathToString } from "@/path";
 import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
@@ -68,7 +68,7 @@ const buildElementFunction: BuildElementFunction = async (
 
 const constantComponentTypeDeclaration = {
   elementName: constantComponentTypeName,
-  parentPath: [rootName, rootTypeContainerName, componentTypeContainerName] as ElementPath,
+  parentPath: [rootName, rootTypeContainerName, componentTypeName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   isDerivable: false,
   isContainer: true, // constant contains its output pin

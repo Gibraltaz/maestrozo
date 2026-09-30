@@ -43,8 +43,8 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('isVolatile', true);
     expect(element).to.have.property('childNames');
     expect(element.childNames).to.deep.equal([
-      'data', 'component', 'pins', 'links', 
-      'type', 'element', 'container',
+      'data', 'pins', 'links', 
+      'type', 'element', 'container', 'component',
       'message-queue', 'message'
     ]);
   });
@@ -240,7 +240,7 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('parentPath');
     expect(element.parentPath).to.deep.equal(['#', 'types']);
     expect(element).to.have.property('elementType');
-    expect(element.elementType).to.deep.equal(['#', 'types', 'container']);
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', true);
     expect(element).to.have.property('isVolatile', true);
     expect(element).to.have.property('childNames');
