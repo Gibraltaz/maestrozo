@@ -32,8 +32,8 @@ const inputPinTypePath = [...rootTypeContainerPath, pinTypeContainerName, inputP
 const outputPinTypeName = 'output-pin' as ElementName;
 const outputPinTypePath = [...rootTypeContainerPath, pinTypeContainerName, outputPinTypeName];
 
-// name of element «#/types/components»
-const componentTypeContainerName = 'components' as ElementName;
+// name of element «#/types/component
+const componentTypeContainerName = 'component' as ElementName;
 const componentTypeContainerPath = [...rootTypeContainerPath, componentTypeContainerName];
 
 // name of element «#/types/links»

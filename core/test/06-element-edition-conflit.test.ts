@@ -22,7 +22,7 @@ describe("Maestrozo core", () => {
     const component = await engine.createElement(
       'constantA' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'constant' ] as ElementPath,
+      [ '#', 'types', 'component', 'constant' ] as ElementPath,
       {
         'dataType': [ '#', 'types', 'data', 'integer' ],
         'value': 123

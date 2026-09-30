@@ -18,7 +18,7 @@ describe("Maestrozo core", () => {
     const component = await engine.createElement(
       'constantA' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'constant' ] as ElementPath,
+      [ '#', 'types', 'component', 'constant' ] as ElementPath,
       {
         'dataType': [ '#', 'types', 'data', 'integer' ],
         'value': 123
@@ -30,7 +30,7 @@ describe("Maestrozo core", () => {
     expect(component).to.have.property('parentPath');
     expect(component.parentPath).to.deep.equal(['#', 'runtime']);
     expect(component).to.have.property('elementType');
-    expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'constant']);
+    expect(component.elementType).to.deep.equal([ '#', 'types', 'component', 'constant']);
     expect(component).to.have.property('data');
     expect(component).to.have.property('isContainer', true);
     expect(component).to.have.property('isVolatile', false);
@@ -48,7 +48,7 @@ describe("Maestrozo core", () => {
     expect(component).to.have.property('parentPath');
     expect(component.parentPath).to.deep.equal(['#', 'runtime']);
     expect(component).to.have.property('elementType');
-    expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'constant']);
+    expect(component.elementType).to.deep.equal([ '#', 'types', 'component', 'constant']);
     expect(component).to.have.property('isContainer', true);
     expect(component).to.have.property('isVolatile', false);
     expect(component).to.have.property('data');
@@ -68,7 +68,7 @@ describe("Maestrozo core", () => {
       engine.createElement(
         'constantA' as ElementName,
         [ '#', 'runtime' ] as ElementPath,
-        [ '#', 'types', 'components', 'constant' ] as ElementPath,
+        [ '#', 'types', 'component', 'constant' ] as ElementPath,
         {
           'dataType': [ '#', 'types', 'data', 'integer' ],
           'value': 123
@@ -82,7 +82,7 @@ describe("Maestrozo core", () => {
       engine.createElement(
         'constantX' as ElementName,
         [ '#', 'runtime', 'xxx' ] as ElementPath,
-        [ '#', 'types', 'components', 'constant' ] as ElementPath,
+        [ '#', 'types', 'component', 'constant' ] as ElementPath,
         {
           'dataType': [ '#', 'types', 'data', 'integer' ],
           'value': 123
@@ -97,7 +97,7 @@ describe("Maestrozo core", () => {
       engine.createElement(
         'constantX' as ElementName,
         [ '#', 'runtime', 'constantA', 'out:value' ] as ElementPath,
-        [ '#', 'types', 'components', 'constant' ] as ElementPath,
+        [ '#', 'types', 'component', 'constant' ] as ElementPath,
         {
           'dataType': [ '#', 'types', 'data', 'integer' ],
           'value': 123

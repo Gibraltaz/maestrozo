@@ -110,7 +110,7 @@ describe("Single pin connection with two components", () => {
       parentPath: [
         '#' as ElementName,
         'types' as ElementName,
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [
         '#' as ElementName,
@@ -132,7 +132,7 @@ describe("Single pin connection with two components", () => {
       parentPath: [
         '#' as ElementName,
         'types' as ElementName,
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [
         '#' as ElementName,
@@ -153,7 +153,7 @@ describe("Single pin connection with two components", () => {
     const component = await engine.createElement(
       'source-component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'source-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'source-custom-component' ] as ElementPath,
       {
         value: 123
       }
@@ -166,7 +166,7 @@ describe("Single pin connection with two components", () => {
     const component = await engine.createElement(
       'target-component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'target-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'target-custom-component' ] as ElementPath,
       { }
     );
     expect(component).to.be.instanceof(Object);

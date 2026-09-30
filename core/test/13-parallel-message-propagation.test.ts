@@ -178,7 +178,7 @@ describe("Parallel pin connection with three components", () => {
       parentPath: [
         '#' as ElementName,
         'types' as ElementName,
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [
         '#' as ElementName,
@@ -201,7 +201,7 @@ describe("Parallel pin connection with three components", () => {
       parentPath: [
         '#' as ElementName,
         'types' as ElementName,
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [
         '#' as ElementName,
@@ -222,7 +222,7 @@ describe("Parallel pin connection with three components", () => {
     const component = await engine.createElement(
       'source-component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'source-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'source-custom-component' ] as ElementPath,
       {
         value: 123
       }
@@ -236,7 +236,7 @@ describe("Parallel pin connection with three components", () => {
     const component = await engine.createElement(
       'sink-component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'sink-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'sink-custom-component' ] as ElementPath,
       { }
     );
     expect(component).to.be.instanceof(Object);
@@ -247,7 +247,7 @@ describe("Parallel pin connection with three components", () => {
     const component = await engine.createElement(
       'sink-component-2' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'sink-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'sink-custom-component' ] as ElementPath,
       { }
     );
     expect(component).to.be.instanceof(Object);

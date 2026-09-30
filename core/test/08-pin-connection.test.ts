@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from "vitest";
 import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
+import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 
@@ -63,7 +63,7 @@ describe("Pin connection", () => {
       parentPath: [ 
         '#' as ElementName,
         'types' as ElementName, 
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [ 
         '#' as ElementName,
@@ -75,7 +75,7 @@ describe("Pin connection", () => {
       isVolatile: false,
       buildDataFunction: customComponentBuildDataFunction,
       buildElementFunction: customComponentBuildElementFunction
-    });
+    } as TypeDeclaration);
 
   });
 
@@ -83,7 +83,7 @@ describe("Pin connection", () => {
     const component = await engine.createElement(
       'component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'custom-component' ] as ElementPath,
       {
         inValue: 123,
         outValue: 456
@@ -98,7 +98,7 @@ describe("Pin connection", () => {
     const component = await engine.createElement(
       'component-2' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'custom-component' ] as ElementPath,
       {
         inValue: 123,
         outValue: 456

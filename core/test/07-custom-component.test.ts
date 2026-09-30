@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from "vitest";
 import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
+import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 
@@ -39,7 +39,7 @@ describe("Custom component without pin", () => {
       parentPath: [ 
         '#' as ElementName,
         'types' as ElementName, 
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [ 
         '#' as ElementName,
@@ -51,24 +51,24 @@ describe("Custom component without pin", () => {
       isVolatile: true,
       buildDataFunction: customComponentBuildDataFunction1,
       buildElementFunction: customComponentBuildElementFunction1
-    });
+    } as TypeDeclaration);
 
   });
 
-  it("should find custom component type in /types/components", async () => {
-    const element = await engine.getElement(['#', 'types', 'components'] as ElementPath);
+  it("should find custom component type in /types/component", async () => {
+    const element = await engine.getElement(['#', 'types', 'component'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('childNames');
     expect(element.childNames).to.deep.equal(['constant', 'variable', 'custom-component-A']);
   });
 
-  it("should find /types/components/custom-component-A", async () => {
-    const element = await engine.getElement(['#', 'types', 'components', 'custom-component-A'] as ElementPath);
+  it("should find /types/component/custom-component-A", async () => {
+    const element = await engine.getElement(['#', 'types', 'component', 'custom-component-A'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'custom-component-A');
     expect(element).to.have.property('parentPath');
-    expect(element.parentPath).to.deep.equal(['#', 'types', 'components']);
+    expect(element.parentPath).to.deep.equal(['#', 'types', 'component']);
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', false);
@@ -81,7 +81,7 @@ describe("Custom component without pin", () => {
     const component = await engine.createElement(
       'component-A-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'custom-component-A' ] as ElementPath,
+      [ '#', 'types', 'component', 'custom-component-A' ] as ElementPath,
       {}
     );
     expect(component).to.be.instanceof(Object);
@@ -91,7 +91,7 @@ describe("Custom component without pin", () => {
     expect(component).to.have.property('parentPath');
     expect(component.parentPath).to.deep.equal([ '#', 'runtime' ]);
     expect(component).to.have.property('elementType');
-    expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'custom-component-A' ]);
+    expect(component.elementType).to.deep.equal([ '#', 'types', 'component', 'custom-component-A' ]);
 
     expect(component).to.have.property('childNames');
     expect(component.childNames).to.deep.equal(null);
@@ -101,7 +101,7 @@ describe("Custom component without pin", () => {
     const component = await engine.createElement(
       'component-A-2' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'custom-component-A' ] as ElementPath,
+      [ '#', 'types', 'component', 'custom-component-A' ] as ElementPath,
       {}
     );
     expect(component).to.be.instanceof(Object);
@@ -111,7 +111,7 @@ describe("Custom component without pin", () => {
     expect(component).to.have.property('parentPath');
     expect(component.parentPath).to.deep.equal([ '#', 'runtime' ]);
     expect(component).to.have.property('elementType');
-    expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'custom-component-A' ]);
+    expect(component.elementType).to.deep.equal([ '#', 'types', 'component', 'custom-component-A' ]);
 
     expect(component).to.have.property('childNames');
     expect(component.childNames).to.deep.equal(null);
@@ -199,7 +199,7 @@ describe("Custom component with pins", () => {
       parentPath: [ 
         '#' as ElementName,
         'types' as ElementName, 
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [ 
         '#' as ElementName,
@@ -211,24 +211,24 @@ describe("Custom component with pins", () => {
       isVolatile: false,
       buildDataFunction: customComponentBuildDataFunction2,
       buildElementFunction: customComponentBuildElementFunction2
-    });
+    } as TypeDeclaration);
 
   });
 
-  it("should find custom component type in /types/components", async () => {
-    const element = await engine.getElement(['#', 'types', 'components'] as ElementPath);
+  it("should find custom component type in /types/component", async () => {
+    const element = await engine.getElement(['#', 'types', 'component'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('childNames');
     expect(element.childNames).to.deep.equal(['constant', 'variable', 'custom-component-B']);
   });
 
-  it("should find /types/components/custom-component-B", async () => {
-    const element = await engine.getElement(['#', 'types', 'components', 'custom-component-B'] as ElementPath);
+  it("should find /types/component/custom-component-B", async () => {
+    const element = await engine.getElement(['#', 'types', 'component', 'custom-component-B'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'custom-component-B');
     expect(element).to.have.property('parentPath');
-    expect(element.parentPath).to.deep.equal(['#', 'types', 'components']);
+    expect(element.parentPath).to.deep.equal(['#', 'types', 'component']);
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
     expect(element).to.have.property('isContainer', false);
@@ -241,7 +241,7 @@ describe("Custom component with pins", () => {
     const component = await engine.createElement(
       'component-B-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'custom-component-B' ] as ElementPath,
+      [ '#', 'types', 'component', 'custom-component-B' ] as ElementPath,
       {
         inValue: 123,
         outValue: 456
@@ -254,7 +254,7 @@ describe("Custom component with pins", () => {
     expect(component).to.have.property('parentPath');
     expect(component.parentPath).to.deep.equal([ '#', 'runtime' ]);
     expect(component).to.have.property('elementType');
-    expect(component.elementType).to.deep.equal([ '#', 'types', 'components', 'custom-component-B' ]);
+    expect(component.elementType).to.deep.equal([ '#', 'types', 'component', 'custom-component-B' ]);
 
     expect(component).to.have.property('childNames');
     expect(component.childNames).to.deep.equal([ 'in:value', 'out:value' ]);

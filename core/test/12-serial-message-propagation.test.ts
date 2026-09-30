@@ -171,7 +171,7 @@ describe("Serial pin connection with three components", () => {
       parentPath: [
         '#' as ElementName,
         'types' as ElementName,
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [
         '#' as ElementName,
@@ -193,7 +193,7 @@ describe("Serial pin connection with three components", () => {
       parentPath: [
         '#' as ElementName,
         'types' as ElementName,
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [
         '#' as ElementName,
@@ -216,7 +216,7 @@ describe("Serial pin connection with three components", () => {
       parentPath: [
         '#' as ElementName,
         'types' as ElementName,
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [
         '#' as ElementName,
@@ -237,7 +237,7 @@ describe("Serial pin connection with three components", () => {
     const component = await engine.createElement(
       'source-component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'source-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'source-custom-component' ] as ElementPath,
       {
         value: 123
       }
@@ -250,7 +250,7 @@ describe("Serial pin connection with three components", () => {
     const component = await engine.createElement(
       'relay-component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'relay-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'relay-custom-component' ] as ElementPath,
       { }
     );
     expect(component).to.be.instanceof(Object);
@@ -263,7 +263,7 @@ describe("Serial pin connection with three components", () => {
     const component = await engine.createElement(
       'sink-component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'sink-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'sink-custom-component' ] as ElementPath,
       { }
     );
     expect(component).to.be.instanceof(Object);
@@ -421,7 +421,7 @@ describe("Serial pin connection with four components", () => {
       parentPath: [
         '#' as ElementName,
         'types' as ElementName,
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [
         '#' as ElementName,
@@ -443,7 +443,7 @@ describe("Serial pin connection with four components", () => {
       parentPath: [
         '#' as ElementName,
         'types' as ElementName,
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [
         '#' as ElementName,
@@ -466,7 +466,7 @@ describe("Serial pin connection with four components", () => {
       parentPath: [
         '#' as ElementName,
         'types' as ElementName,
-        'components' as ElementName
+        'component' as ElementName
       ],
       elementType: [
         '#' as ElementName,
@@ -487,7 +487,7 @@ describe("Serial pin connection with four components", () => {
     const component = await engine.createElement(
       'source-component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'source-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'source-custom-component' ] as ElementPath,
       {
         value: 123
       }
@@ -500,7 +500,7 @@ describe("Serial pin connection with four components", () => {
     const component = await engine.createElement(
       'relay-component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'relay-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'relay-custom-component' ] as ElementPath,
       {
         value: null
       }
@@ -513,7 +513,7 @@ describe("Serial pin connection with four components", () => {
     const component = await engine.createElement(
       'relay-component-2' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'relay-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'relay-custom-component' ] as ElementPath,
       {
         value: null
       }
@@ -528,7 +528,7 @@ describe("Serial pin connection with four components", () => {
     const component = await engine.createElement(
       'sink-component-1' as ElementName,
       [ '#', 'runtime' ] as ElementPath,
-      [ '#', 'types', 'components', 'sink-custom-component' ] as ElementPath,
+      [ '#', 'types', 'component', 'sink-custom-component' ] as ElementPath,
       { }
     );
     expect(component).to.be.instanceof(Object);
