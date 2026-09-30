@@ -183,7 +183,7 @@ describe("Serial pin connection with three components", () => {
       isVolatile: false,
       buildDataFunction: sourceCustomComponentBuildDataFunction,
       buildElementFunction: sourceCustomComponentBuildElementFunction,
-      evaluateComponentFunction: null
+      callbacks: []
     });
   });
 
@@ -205,6 +205,7 @@ describe("Serial pin connection with three components", () => {
       isVolatile: false,
       buildDataFunction: relayCustomComponentBuildDataFunction,
       buildElementFunction: relayCustomComponentBuildElementFunction,
+      callbacks: [],
       evaluateComponentFunction: relayCustomComponentEvaluateFunction
     });
   });
@@ -228,6 +229,7 @@ describe("Serial pin connection with three components", () => {
       isVolatile: false,
       buildDataFunction: sinkCustomComponentBuildDataFunction,
       buildElementFunction: sinkCustomComponentBuildElementFunction,
+      callbacks: [],
       evaluateComponentFunction: sinkCustomComponentEvaluateFunction
     });
   });
@@ -433,6 +435,7 @@ describe("Serial pin connection with four components", () => {
       isVolatile: false,
       buildDataFunction: sourceCustomComponentBuildDataFunction,
       buildElementFunction: sourceCustomComponentBuildElementFunction,
+      callbacks: [],
       evaluateComponentFunction: null
     });
   });
@@ -455,6 +458,7 @@ describe("Serial pin connection with four components", () => {
       isVolatile: false,
       buildDataFunction: relayCustomComponentBuildDataFunction,
       buildElementFunction: relayCustomComponentBuildElementFunction,
+      callbacks: [],
       evaluateComponentFunction: relayCustomComponentEvaluateFunction
     });
   });
@@ -478,6 +482,7 @@ describe("Serial pin connection with four components", () => {
       isVolatile: false,
       buildDataFunction: sinkCustomComponentBuildDataFunction,
       buildElementFunction: sinkCustomComponentBuildElementFunction,
+      callbacks: [],
       evaluateComponentFunction: sinkCustomComponentEvaluateFunction
     });
   });

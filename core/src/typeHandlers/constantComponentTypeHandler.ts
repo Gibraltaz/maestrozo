@@ -66,7 +66,7 @@ const buildElementFunction: BuildElementFunction = async (
   );
 }
 
-const constantComponentTypeDeclaration = {
+const constantComponentTypeDeclaration: TypeDeclaration = {
   elementName: constantComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -74,8 +74,9 @@ const constantComponentTypeDeclaration = {
   isContainer: true, // constant contains its output pin
   isVolatile: false,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: buildElementFunction
-} as TypeDeclaration;
+  buildElementFunction: buildElementFunction,
+  callbacks: []
+};
 
 export { constantComponentTypeDeclaration, constantComponentTypeName };
 

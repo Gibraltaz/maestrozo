@@ -18,15 +18,17 @@ const messageBuildDataFunction: BuildDataFunction = async (
   } as ElementData;
 };
 
-const messageTypeDeclaration = {
+const messageTypeDeclaration: TypeDeclaration = {
   elementName: messageTypeName,
   parentPath: rootTypeContainerPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  buildDataFunction: messageBuildDataFunction
-} as TypeDeclaration;
+  buildDataFunction: messageBuildDataFunction,
+  buildElementFunction: null,
+  callbacks: []
+};
 
 const messageQueueBuildDataFunction: BuildDataFunction = async (
   elementName: ElementName,
@@ -44,7 +46,7 @@ const messageQueueBuildDataFunction: BuildDataFunction = async (
 };
 
 
-const messageQueueTypeDeclaration = {
+const messageQueueTypeDeclaration: TypeDeclaration = {
   elementName: messageQueueTypeName,
   parentPath: rootTypeContainerPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -52,8 +54,9 @@ const messageQueueTypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   buildDataFunction: messageQueueBuildDataFunction,
-  buildElementFunction: null
-} as TypeDeclaration;
+  buildElementFunction: null,
+  callbacks: []
+};
 
 export {
   messageTypeDeclaration,

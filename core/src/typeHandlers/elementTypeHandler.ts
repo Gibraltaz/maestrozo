@@ -16,16 +16,17 @@ const buildDataFunction: BuildDataFunction = async (
 };
 
 
-const elementTypeDeclaration = {
+const elementTypeDeclaration: TypeDeclaration = {
   elementName: elementTypeName,
   parentPath: [rootName, rootTypeContainerName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
-  childNames: null,
+  //TODO ménage : childNames: null,
   isDerivable: false,
   isContainer: false,
   isVolatile: true,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: null
-} as TypeDeclaration;
+  buildElementFunction: null,
+  callbacks: []
+};
 
 export { elementTypeDeclaration };

@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from "vitest";
 import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration } from "@/typeHandlers/TypeHandler";
+import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 
@@ -50,8 +50,9 @@ describe("Custom component without pin", () => {
       isContainer: false,
       isVolatile: true,
       buildDataFunction: customComponentBuildDataFunction1,
-      buildElementFunction: customComponentBuildElementFunction1
-    } as TypeDeclaration);
+      buildElementFunction: customComponentBuildElementFunction1,
+      callbacks: []
+    });
 
   });
 
@@ -210,8 +211,9 @@ describe("Custom component with pins", () => {
       isContainer: true,
       isVolatile: false,
       buildDataFunction: customComponentBuildDataFunction2,
-      buildElementFunction: customComponentBuildElementFunction2
-    } as TypeDeclaration);
+      buildElementFunction: customComponentBuildElementFunction2,
+      callbacks: []
+    });
 
   });
 

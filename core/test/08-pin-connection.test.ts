@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from "vitest";
 import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration } from "@/typeHandlers/TypeHandler";
+import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 
@@ -74,8 +74,9 @@ describe("Pin connection", () => {
       isContainer: true,
       isVolatile: false,
       buildDataFunction: customComponentBuildDataFunction,
-      buildElementFunction: customComponentBuildElementFunction
-    } as TypeDeclaration);
+      buildElementFunction: customComponentBuildElementFunction,
+      callbacks: []
+    });
 
   });
 

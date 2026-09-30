@@ -235,7 +235,8 @@ class MtzEngine {
           isVolatile,
           buildDataFunction,
           buildElementFunction,
-          evaluateComponentFunction
+          evaluateComponentFunction,
+          callbacks: [...typeDeclaration?.callbacks ?? []]
         }
       }
     } as MtzElement;

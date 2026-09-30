@@ -17,7 +17,7 @@ const buildDataFunction : BuildDataFunction = async (
   throw new Error("Container buildDataFunction not yet implemented");
 };
 
-const containerTypeDeclaration = {
+const containerTypeDeclaration: TypeDeclaration = {
   elementName: containerTypeName,
   parentPath: [rootName, rootTypeContainerName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -25,8 +25,9 @@ const containerTypeDeclaration = {
   isContainer: true,
   isVolatile: true,
   buildDataFunction: buildDataFunction, 
-  buildElementFunction: null
-} as TypeDeclaration;
+  buildElementFunction: null,
+  callbacks: []
+};
 
 export { containerTypeDeclaration, containerTypeName };
 

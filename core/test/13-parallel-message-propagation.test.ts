@@ -190,6 +190,7 @@ describe("Parallel pin connection with three components", () => {
       isVolatile: false,
       buildDataFunction: sourceCustomComponentBuildDataFunction,
       buildElementFunction: sourceCustomComponentBuildElementFunction,
+      callbacks: [],
       evaluateComponentFunction: null
     });
   });
@@ -213,6 +214,7 @@ describe("Parallel pin connection with three components", () => {
       isVolatile: false,
       buildDataFunction: sinkCustomComponentBuildDataFunction,
       buildElementFunction: sinkCustomComponentBuildElementFunction,
+      callbacks: [],
       evaluateComponentFunction: sinkCustomComponentEvaluateFunction
     });
   });

@@ -50,7 +50,7 @@ const buildElementFunction = async (
 ):Promise<void> => {
 }
 
-const connectionTypeDeclaration = {
+const connectionTypeDeclaration: TypeDeclaration = {
   elementName: connectionTypeName,
   parentPath: linkTypeContainerPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -58,8 +58,9 @@ const connectionTypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: buildElementFunction
-} as TypeDeclaration;
+  buildElementFunction: buildElementFunction,
+  callbacks: []
+};
 
 export { connectionTypeDeclaration, connectionTypeName, connectionTypePath };
 

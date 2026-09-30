@@ -27,7 +27,7 @@ const buildDataFunction: BuildDataFunction = async (
   } as ElementData;
 };
 
-const integerTypeDeclaration = {
+const integerTypeDeclaration: TypeDeclaration = {
   elementName: integerTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -35,7 +35,8 @@ const integerTypeDeclaration = {
   isContainer: false,
   isVolatile: true,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: null
-} as TypeDeclaration;
+  buildElementFunction: null,
+  callbacks: []
+};
 
 export { integerTypeDeclaration };

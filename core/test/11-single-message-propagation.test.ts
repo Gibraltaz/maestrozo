@@ -122,6 +122,7 @@ describe("Single pin connection with two components", () => {
       isVolatile: false,
       buildDataFunction: sourceCustomComponentBuildDataFunction,
       buildElementFunction: sourceCustomComponentBuildElementFunction,
+      callbacks: [],
       evaluateComponentFunction: null
     });
   });
@@ -144,6 +145,7 @@ describe("Single pin connection with two components", () => {
       isVolatile: false,
       buildDataFunction: targetCustomComponentBuildDataFunction,
       buildElementFunction: targetCustomComponentBuildElementFunction,
+      callbacks: [],
       evaluateComponentFunction: targetCustomComponentEvaluateFunction
     });
   });

@@ -27,7 +27,7 @@ const buildDataFunction : BuildDataFunction = async(
   } as ElementData;
 };
 
-const stringTypeDeclaration = {
+const stringTypeDeclaration: TypeDeclaration = {
   elementName: stringTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -35,8 +35,9 @@ const stringTypeDeclaration = {
   isContainer: false,
   isVolatile: true,
   buildDataFunction: buildDataFunction, 
-  buildElementFunction: null
-} as TypeDeclaration;
+  buildElementFunction: null,
+  callbacks: []
+};
 
 export { stringTypeDeclaration };
 

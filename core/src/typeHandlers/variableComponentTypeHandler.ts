@@ -27,7 +27,7 @@ const buildElementFunction = async (
 ):Promise<void> => {
 }
 
-const variableComponentTypeDeclaration = {
+const variableComponentTypeDeclaration: TypeDeclaration = {
   elementName: variableComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeName] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -35,8 +35,9 @@ const variableComponentTypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: buildElementFunction
-} as TypeDeclaration;
+  buildElementFunction: buildElementFunction,
+  callbacks: []
+};
 
 export { variableComponentTypeDeclaration, variableComponentTypeName };
 

@@ -29,7 +29,7 @@ const buildDataFunction: BuildDataFunction = async (
 };
 
 
-const booleanTypeDeclaration = {
+const booleanTypeDeclaration: TypeDeclaration = {
   elementName: booleanTypeName,
   parentPath: [rootName, rootTypeContainerName, dataTypeName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -37,8 +37,9 @@ const booleanTypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: null
-} as TypeDeclaration;
+  buildElementFunction: null,
+  callbacks: []
+};
 
 export { booleanTypeDeclaration };
 

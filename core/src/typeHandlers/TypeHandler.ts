@@ -39,6 +39,11 @@ type TypeHandler = {
   buildElementFunction: BuildElementFunction | null
 };
 
+type CallbackDeclaration = {
+  name: string,
+  function: Function;
+}
+
 type TypeDeclaration = {
   elementName:ElementName,
   parentPath: ElementPath,
@@ -48,7 +53,9 @@ type TypeDeclaration = {
   isVolatile: boolean, // un élément de ce type est-il recréé à chaque fois (ou sauvegardé)
   buildDataFunction: BuildDataFunction,
   buildElementFunction: BuildElementFunction | null,
+  callbacks: Array<CallbackDeclaration>
 };
+
 
 export {
   TypeDeclaration,

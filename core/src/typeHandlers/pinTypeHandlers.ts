@@ -18,17 +18,19 @@ const buildDataFunction: BuildDataFunction = async (
   } as ElementData; 
 };
 
-const inputPinTypeDeclaration = {
+const inputPinTypeDeclaration: TypeDeclaration = {
   elementName: inputPinTypeName,
   parentPath: pinTypeContainerPath as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  buildDataFunction: buildDataFunction
-} as TypeDeclaration;
+  buildDataFunction: buildDataFunction,
+  buildElementFunction: null,
+  callbacks: []
+};
 
-const outputPinTypeDeclaration = {
+const outputPinTypeDeclaration: TypeDeclaration = {
   elementName: outputPinTypeName,
   parentPath: pinTypeContainerPath as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -36,8 +38,9 @@ const outputPinTypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: null
-} as TypeDeclaration;
+  buildElementFunction: null,
+  callbacks: []
+};
 
 export {
   inputPinTypeDeclaration,
