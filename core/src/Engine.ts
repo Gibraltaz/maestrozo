@@ -38,7 +38,7 @@ import { stringTypeDeclaration } from '@/typeHandlers/stringTypeHandler';
 import { booleanTypeDeclaration } from '@/typeHandlers/booleanTypeHandler';
 import { inputPinTypeDeclaration, outputPinTypeDeclaration } from '@/typeHandlers/pinTypeHandlers';
 
-import { ComponentTypeDeclaration, componentTypeDeclaration, ComponentTypeHandler, EvaluationResult } from '@/typeHandlers/componentTypeHandler';
+import { componentTypeDeclaration, ComponentTypeHandler, EvaluateComponentFunction, EvaluationResult } from '@/typeHandlers/componentTypeHandler';
 import { constantComponentTypeDeclaration } from '@/typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from '@/typeHandlers/variableComponentTypeHandler';
 import { elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
@@ -217,9 +217,14 @@ class MtzEngine {
 
     const buildElementFunction=  typeDeclaration.buildElementFunction ?? null;
 
-    // FIXME passage en dur de la fonction du composant
-    const componentTypeDeclaration = typeDeclaration as ComponentTypeDeclaration;
-    const evaluateComponentFunction = componentTypeDeclaration?.evaluateComponentFunction ?? null;
+
+    const typeHandler: TypeHandler = {
+      isContainer,
+      isVolatile,
+      buildDataFunction,
+      buildElementFunction,
+      callbacks: [...typeDeclaration?.callbacks ?? []]
+    };
 
     const element = {
       revision: 0,
@@ -230,14 +235,7 @@ class MtzEngine {
       isVolatile: true,
       childNames: isDerivable ? [] as Array<ElementName> : null,
       data: {
-        typeHandler: {
-          isContainer,
-          isVolatile,
-          buildDataFunction,
-          buildElementFunction,
-          evaluateComponentFunction,
-          callbacks: [...typeDeclaration?.callbacks ?? []]
-        }
+        typeHandler
       }
     } as MtzElement;
 
@@ -274,15 +272,6 @@ class MtzEngine {
       parentPath: [rootName, rootTypeContainerName ] as ElementPath,
       isVolatile: true
     });
-
-    /* TODO ménage
-    // mise en place de «#/types/component»
-    await this.declareContainer({
-      elementName: componentTypeName,
-      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      isVolatile: true
-    });
-    */
 
     // mise en place de «#/types/pins»
     await this.declareContainer({
@@ -600,19 +589,18 @@ class MtzEngine {
     const typeHandler: TypeHandler = componentType?.data?.typeHandler ?? null;
     if (typeHandler === null)
       throw new Error(`Can not find type handler of «${pathToString(componentElement.elementType)}»`);
-    const componentTypeHandler = typeHandler as ComponentTypeHandler;
 
     switch (message.messageType) {
 
       case MESSAGE_TYPE_CHANGE:
 
-        const evaluateComponentFunction = componentTypeHandler.evaluateComponentFunction;
-        if (evaluateComponentFunction === undefined)
-          throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is not defined`);
-        if (evaluateComponentFunction === null)
-          throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is not set`);
-        if (typeof(evaluateComponentFunction) !== 'function')
-          throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is not a function`);
+        const callback = typeHandler.callbacks.find(callback => callback.name === 'evaluate-component');
+        if (callback === undefined)
+          throw new Error(`Evaluation function of component «${pathToString(message.elementPath)}» is not defined`);
+
+        const evaluateComponentFunction = callback.function as EvaluateComponentFunction;
+        if (typeof(evaluateComponentFunction ) !== 'function')
+          throw new Error(`Evaluation function of component «${pathToString(message.elementPath)}» is not a function`);
 
         // TODO passer le BuildHelpers
         const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, null as unknown as BuildHelpers);

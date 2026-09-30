@@ -31,18 +31,20 @@ type BuildElementFunction = (
   helpers: BuildHelpers
 ) => Promise<void>;
 
+type CallbackDeclaration = {
+  name: string,
+  function: Function;
+};
 
 type TypeHandler = {
   isContainer: boolean,
   isVolatile: boolean
   buildDataFunction: BuildDataFunction,
-  buildElementFunction: BuildElementFunction | null
+  buildElementFunction: BuildElementFunction | null,
+  callbacks: Array<CallbackDeclaration>
 };
 
-type CallbackDeclaration = {
-  name: string,
-  function: Function;
-}
+
 
 type TypeDeclaration = {
   elementName:ElementName,
@@ -62,5 +64,6 @@ export {
   TypeHandler,
   BuildDataFunction,
   BuildElementFunction,
-  BuildHelpers
+  BuildHelpers,
+  CallbackDeclaration
 };

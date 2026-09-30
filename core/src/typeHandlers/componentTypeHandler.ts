@@ -6,7 +6,7 @@
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { componentTypeName, componentTypePath, rootName, rootTypeContainerName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildElementFunction, BuildHelpers, CallbackDeclaration, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 
 const buildDataFunction : BuildDataFunction = async (
@@ -32,20 +32,25 @@ type EvaluateComponentFunction = (
   helpers: BuildHelpers
 ) => Promise<EvaluationResult>;
 
-type ComponentTypeDeclaration = TypeDeclaration & {
-  evaluateComponentFunction: EvaluateComponentFunction | null
-}
-
 type ComponentTypeHandler = {
   isContainer: boolean,
   isVolatile: boolean
   buildDataFunction: BuildDataFunction,
   buildElementFunction: BuildElementFunction | null,
-  evaluateComponentFunction: EvaluateComponentFunction | null
+  evaluateComponentFunction: EvaluateComponentFunction | null,
+  callbacks: Array<CallbackDeclaration>
+};
+
+const evaluateComponentFunction: EvaluateComponentFunction = async (
+  _element: MtzElement,
+  _data:Record<string, any>,
+  _helpers: BuildHelpers
+) : Promise<EvaluationResult> => {
+  throw new Error("Component evaluation function should not be called directly");
 };
 
 
-const componentTypeDeclaration = {
+const componentTypeDeclaration: TypeDeclaration = {
   elementName: componentTypeName,
   parentPath: [rootName, rootTypeContainerName ] as ElementPath,
   elementType: [rootName, rootTypeContainerName, typeElementName] as ElementPath,
@@ -53,12 +58,14 @@ const componentTypeDeclaration = {
   isContainer: true,
   isVolatile: true,
   buildDataFunction: buildDataFunction, 
-  buildElementFunction: null
-} as ComponentTypeDeclaration;
+  buildElementFunction: null,
+  callbacks: [
+    { name: 'evaluate-component', function: evaluateComponentFunction }
+  ]
+};
 
 
 export { 
-  ComponentTypeDeclaration,
   ComponentTypeHandler ,
   componentTypeDeclaration, componentTypeName,
   EvaluateComponentFunction, EvaluationResult

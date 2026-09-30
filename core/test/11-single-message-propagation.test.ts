@@ -5,10 +5,11 @@
 
 import { describe, it, expect } from "vitest";
 import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/TypeHandler";
+import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
+import { EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
 
 let customTime = -1;
 const customTimeFunction = () => customTime as MtzMessageTime;
@@ -122,8 +123,7 @@ describe("Single pin connection with two components", () => {
       isVolatile: false,
       buildDataFunction: sourceCustomComponentBuildDataFunction,
       buildElementFunction: sourceCustomComponentBuildElementFunction,
-      callbacks: [],
-      evaluateComponentFunction: null
+      callbacks: []
     });
   });
 
@@ -145,8 +145,9 @@ describe("Single pin connection with two components", () => {
       isVolatile: false,
       buildDataFunction: targetCustomComponentBuildDataFunction,
       buildElementFunction: targetCustomComponentBuildElementFunction,
-      callbacks: [],
-      evaluateComponentFunction: targetCustomComponentEvaluateFunction
+      callbacks: [
+        { name: 'evaluate-component', function: targetCustomComponentEvaluateFunction }
+      ]
     });
   });
 
