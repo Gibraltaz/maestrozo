@@ -31,26 +31,12 @@ type BuildElementFunction = (
   helpers: BuildHelpers
 ) => Promise<void>;
 
-type EvaluationResult = {
-  setData: ElementData | null;
-  setOutputs: Array<{
-    pin: ElementName;
-    value: unknown;
-  }> | null;
-};
-
-type EvaluateComponentFunction = (
-  element: MtzElement,
-  params:Record<string, any>,
-  helpers: BuildHelpers
-) => Promise<EvaluationResult>;
 
 type TypeHandler = {
   isContainer: boolean,
   isVolatile: boolean
   buildDataFunction: BuildDataFunction,
-  buildElementFunction: BuildElementFunction | null,
-  evaluateComponentFunction: EvaluateComponentFunction | null
+  buildElementFunction: BuildElementFunction | null
 };
 
 type TypeDeclaration = {
@@ -62,9 +48,6 @@ type TypeDeclaration = {
   isVolatile: boolean, // un élément de ce type est-il recréé à chaque fois (ou sauvegardé)
   buildDataFunction: BuildDataFunction,
   buildElementFunction: BuildElementFunction | null,
-  // FIXME la fonction d'évaluation spécifique à un composant ne devrait pas être déclarée
-  // pour tous les types et pas seulement pour les types de composant...
-  evaluateComponentFunction: EvaluateComponentFunction | null
 };
 
 export {
@@ -72,6 +55,5 @@ export {
   TypeHandler,
   BuildDataFunction,
   BuildElementFunction,
-  EvaluateComponentFunction, EvaluationResult,
   BuildHelpers
 };

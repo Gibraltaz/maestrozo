@@ -7,6 +7,7 @@ import { describe, it, expect } from "vitest";
 import { ElementPath, MtzEngine } from "@/Engine";
 import { MemoryStore } from "@/store/MemoryStore";
 
+
 describe("Maestrozo core", () => {
   let engine = new MtzEngine()
 

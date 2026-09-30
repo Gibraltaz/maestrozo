@@ -19,7 +19,6 @@ import {
   containerTypeName,
   rootTypeContainerName,
   dataTypeName,
-  componentTypeName,
   componentTypePath,
   pinTypeContainerName,
   linkTypeContainerName,
@@ -31,7 +30,7 @@ import {
   messageQueuePath
 } from '@/global';
 
-import { BuildDataFunction, BuildElementFunction, BuildHelpers, EvaluationResult, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 import { containerTypeDeclaration} from '@/typeHandlers/containerTypeHandler';
 import { integerTypeDeclaration } from '@/typeHandlers/integerTypeHandler';
@@ -39,7 +38,7 @@ import { stringTypeDeclaration } from '@/typeHandlers/stringTypeHandler';
 import { booleanTypeDeclaration } from '@/typeHandlers/booleanTypeHandler';
 import { inputPinTypeDeclaration, outputPinTypeDeclaration } from '@/typeHandlers/pinTypeHandlers';
 
-import { componentTypeDeclaration } from '@/typeHandlers/componentTypeHandler';
+import { ComponentTypeDeclaration, componentTypeDeclaration, ComponentTypeHandler, EvaluationResult } from '@/typeHandlers/componentTypeHandler';
 import { constantComponentTypeDeclaration } from '@/typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from '@/typeHandlers/variableComponentTypeHandler';
 import { elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
@@ -142,24 +141,24 @@ class MtzEngine {
   };
 
 
-  private async declareContainer(args: ContainerDeclaration): Promise<MtzElement> {
+  private async declareContainer(containerDeclaration: ContainerDeclaration): Promise<MtzElement> {
 
-    const containerPath = [...args.parentPath, args.elementName] as ElementPath;
+    const containerPath = [...containerDeclaration.parentPath, containerDeclaration.elementName] as ElementPath;
 
     let containerElement = await this.getStoredElement(containerPath);
     if (containerElement !== null) {
-      if (args.isVolatile)
+      if (containerDeclaration.isVolatile)
         throw new Error(`Container «${pathToString(containerPath)}» already exists`);
       return containerElement;
     }
 
     containerElement = {
       revision: 0,
-      elementName: args.elementName,
-      parentPath: args.parentPath,
+      elementName: containerDeclaration.elementName,
+      parentPath: containerDeclaration.parentPath,
       elementType: [rootName, rootTypeContainerName, containerTypeName],
       isContainer: true,
-      isVolatile: args.isVolatile,
+      isVolatile: containerDeclaration.isVolatile,
       childNames: [],
       data: null
     } as MtzElement;
@@ -184,47 +183,49 @@ class MtzEngine {
   }
 
 
-  private async declareTypeInternal(args: TypeDeclaration, force: boolean): Promise<MtzElement> {
+  private async declareTypeInternal(typeDeclaration: TypeDeclaration, force: boolean): Promise<MtzElement> {
 
     if (! force) {
-      if (await this.getStoredElement(args.parentPath) === null)
-        throw new Error(`Parent «${pathToString(args.parentPath)}» does not exist`);
+      if (await this.getStoredElement(typeDeclaration.parentPath) === null)
+        throw new Error(`Parent «${pathToString(typeDeclaration.parentPath)}» does not exist`);
 
-      if (await this.getStoredElement(args.elementType) === null)
-        throw new Error(`Type «${pathToString(args.elementType)}» does not exist`);
+      if (await this.getStoredElement(typeDeclaration.elementType) === null)
+        throw new Error(`Type «${pathToString(typeDeclaration.elementType)}» does not exist`);
 
-      const isType = pathStartsWith(args.parentPath, [rootName, rootTypeContainerName]);
+      const isType = pathStartsWith(typeDeclaration.parentPath, [rootName, rootTypeContainerName]);
       if (! isType)
-        throw new Error(`Type «${args.elementName}» should be declare in ${pathToString([rootName, rootTypeContainerName])}`);
+        throw new Error(`Type «${typeDeclaration.elementName}» should be declare in ${pathToString([rootName, rootTypeContainerName])}`);
     }
 
-    const typePath = pathToString([...args.parentPath, args.elementName]);
+    const typePath = pathToString([...typeDeclaration.parentPath, typeDeclaration.elementName]);
 
-    const isDerivable = args?.isDerivable ?? null;
+    const isDerivable = typeDeclaration?.isDerivable ?? null;
     if (isDerivable === null)
       throw new Error(`Type «${typePath}» declaration has no «isDerivable» property`);
 
-    const isContainer = args?.isContainer ?? null;
+    const isContainer = typeDeclaration?.isContainer ?? null;
     if (isContainer === null)
       throw new Error(`Type «${typePath}» declaration has no «isContainer» property`);
 
-    const isVolatile = args?.isVolatile ?? null;
+    const isVolatile = typeDeclaration?.isVolatile ?? null;
     if (isVolatile === null)
       throw new Error(`Type «${typePath}» declaration has no «isVolatile» property`);
 
-    const buildDataFunction = args?.buildDataFunction ?? null;
+    const buildDataFunction = typeDeclaration?.buildDataFunction ?? null;
     if (buildDataFunction === null)
       throw new Error(`Type «${typePath}» declaration has no buildDataFunction function`);
 
-    const buildElementFunction=  args.buildElementFunction ?? null;
+    const buildElementFunction=  typeDeclaration.buildElementFunction ?? null;
 
-    const evaluateComponentFunction = args?.evaluateComponentFunction ?? null;
+    // FIXME passage en dur de la fonction du composant
+    const componentTypeDeclaration = typeDeclaration as ComponentTypeDeclaration;
+    const evaluateComponentFunction = componentTypeDeclaration?.evaluateComponentFunction ?? null;
 
     const element = {
       revision: 0,
-      elementName: args.elementName,
-      parentPath: args.parentPath,
-      elementType: args.elementType,
+      elementName: typeDeclaration.elementName,
+      parentPath: typeDeclaration.parentPath,
+      elementType: typeDeclaration.elementType,
       isContainer: isDerivable ? true : false,
       isVolatile: true,
       childNames: isDerivable ? [] as Array<ElementName> : null,
@@ -243,8 +244,8 @@ class MtzEngine {
     return element;
   }
 
-  public async declareType(args: TypeDeclaration): Promise<MtzElement> {
-    return this.declareTypeInternal(args, false);
+  public async declareType(typeDeclaration: TypeDeclaration): Promise<MtzElement> {
+    return this.declareTypeInternal(typeDeclaration, false);
   }
 
   public async initialize (storage: MaestrozoStore) {
@@ -336,7 +337,6 @@ class MtzEngine {
 
     // mise en place de «#/types/pins/output-pin»
     await this.declareTypeInternal(outputPinTypeDeclaration, false);
-
 
     // mise en place de «#/types/components»
     await this.declareTypeInternal(componentTypeDeclaration, false);
@@ -599,12 +599,13 @@ class MtzEngine {
     const typeHandler: TypeHandler = componentType?.data?.typeHandler ?? null;
     if (typeHandler === null)
       throw new Error(`Can not find type handler of «${pathToString(componentElement.elementType)}»`);
+    const componentTypeHandler = typeHandler as ComponentTypeHandler;
 
     switch (message.messageType) {
 
       case MESSAGE_TYPE_CHANGE:
 
-        const evaluateComponentFunction = typeHandler.evaluateComponentFunction;
+        const evaluateComponentFunction = componentTypeHandler.evaluateComponentFunction;
         if (evaluateComponentFunction === undefined)
           throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is not defined`);
         if (evaluateComponentFunction === null)
@@ -612,7 +613,8 @@ class MtzEngine {
         if (typeof(evaluateComponentFunction) !== 'function')
           throw new Error(`Evaluate component function of component «${pathToString(message.elementPath)}» is not a function`);
 
-        const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, null);
+        // TODO passer le BuildHelpers
+        const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, null as unknown as BuildHelpers);
 
         // demande de changement de l'état interne du composant
         if (result.setData !== null) {
