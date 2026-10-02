@@ -8,6 +8,7 @@ import { rootName, rootTypeContainerName, componentTypeName, typeElementName, ou
 import { checkElementPath, getElementPath, pathStartsWith, pathToString } from "@/path";
 import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 import { BuildComponentCallback } from "./componentTypeHandler";
+import { BuildElementDataCallback } from "./elementTypeHandler";
 
 const constantComponentTypeName = 'constant' as ElementName;
 
@@ -39,11 +40,13 @@ const buildDataFunction: BuildDataFunction = async (
   if ( dataTypeHandler === null)
     throw new Error(`Type handler not defined in type «${pathToString(getElementPath(dataTypeElement))}»`);
 
-  const dataFactory: BuildDataFunction | null = dataTypeHandler?.buildDataFunction ?? null;
-  if (dataFactory === null)
+  const buildElementDataCallback = dataTypeHandler.callbacks.find(callback => callback.name === BuildElementDataCallback);
+  if (buildElementDataCallback  === undefined)
     throw new Error(`Factory not defined in type «${pathToString(getElementPath(dataTypeElement))}»`);
-  if (typeof(dataFactory) !== 'function')
+  if (typeof(buildElementDataCallback.function) !== 'function')
     throw new Error(`Factory not defined in type «${pathToString(getElementPath(dataTypeElement))}»`);
+
+  const dataFactory = buildElementDataCallback.function as BuildDataFunction;
 
   // FIXME faut-il fixer la propriété «value» au niveau du data du composant ou au niveau du data du output pin ?
   const data = await dataFactory(elementName, parentPath, params, helpers);
@@ -74,8 +77,8 @@ const constantComponentTypeDeclaration: TypeDeclaration = {
   isDerivable: false,
   isContainer: true, // constant contains its output pin
   isVolatile: false,
-  buildDataFunction: buildDataFunction,
   callbacks: [
+    { name: BuildElementDataCallback, function: buildDataFunction },
     { name: BuildComponentCallback, function: buildComponentFunction }
   ]
 };

@@ -7,6 +7,7 @@ import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
 import { BuildDataFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildElementDataCallback } from "./elementTypeHandler";
 
 const integerTypeName = 'integer' as ElementName;
 
@@ -34,8 +35,9 @@ const integerTypeDeclaration: TypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: true,
-  buildDataFunction: buildDataFunction,
-  callbacks: []
+  callbacks: [
+    { name: BuildElementDataCallback, function: buildDataFunction }
+  ]
 };
 
 export { integerTypeDeclaration };

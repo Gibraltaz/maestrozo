@@ -6,6 +6,7 @@
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName } from '@/global';
 import { BuildDataFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildElementDataCallback } from "./elementTypeHandler";
 
 const containerTypeName = 'container' as ElementName;
 
@@ -24,8 +25,9 @@ const containerTypeDeclaration: TypeDeclaration = {
   isDerivable: false,
   isContainer: true,
   isVolatile: true,
-  buildDataFunction: buildDataFunction, 
-  callbacks: []
+  callbacks: [
+    { name: BuildElementDataCallback, function: buildDataFunction }
+  ]
 };
 
 export { containerTypeDeclaration, containerTypeName };

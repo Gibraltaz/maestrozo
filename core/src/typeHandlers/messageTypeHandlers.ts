@@ -3,8 +3,9 @@ import { BuildDataFunction, BuildHelpers, TypeDeclaration } from "./TypeHandler"
 import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath, systemContainerPath, messageQueueName } from "@/global";
 import { ElementData } from "@/Element";
 import { mtzMessageQueueCreate } from "@/MessageQueue";
+import { BuildElementDataCallback } from "./elementTypeHandler";
 
-const messageBuildDataFunction: BuildDataFunction = async (
+const buildDataFunction: BuildDataFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>,
@@ -25,8 +26,9 @@ const messageTypeDeclaration: TypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  buildDataFunction: messageBuildDataFunction,
-  callbacks: []
+  callbacks: [
+    { name: BuildElementDataCallback, function: buildDataFunction }
+  ]
 };
 
 const messageQueueBuildDataFunction: BuildDataFunction = async (
@@ -52,9 +54,9 @@ const messageQueueTypeDeclaration: TypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  buildDataFunction: messageQueueBuildDataFunction,
-  buildElementFunction: null,
-  callbacks: []
+  callbacks: [
+    { name: BuildElementDataCallback, function: messageQueueBuildDataFunction }
+  ]
 };
 
 export {

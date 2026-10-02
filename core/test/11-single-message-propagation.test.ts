@@ -10,6 +10,7 @@ import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
 import { BuildComponentCallback, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
+import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
 
 let customTime = -1;
 const customTimeFunction = () => customTime as MtzMessageTime;
@@ -121,8 +122,8 @@ describe("Single pin connection with two components", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: sourceCustomComponentBuildDataFunction,
       callbacks: [
+        { name: BuildElementDataCallback, function: sourceCustomComponentBuildDataFunction },
         { name: BuildComponentCallback, function: sourceCustomComponentBuildElementFunction }
       ]
     });
@@ -144,8 +145,8 @@ describe("Single pin connection with two components", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: targetCustomComponentBuildDataFunction,
       callbacks: [
+        { name: BuildElementDataCallback, function: targetCustomComponentBuildDataFunction },
         { name: BuildComponentCallback, function: targetCustomComponentBuildElementFunction },
         { name: EvaluateComponentCallback, function: targetCustomComponentEvaluateFunction }
       ]

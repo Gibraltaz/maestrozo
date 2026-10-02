@@ -10,6 +10,7 @@ import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
 import { BuildComponentCallback, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
+import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
 
 let customTime = -1;
 const customTimeFunction = () => customTime as MtzMessageTime;
@@ -182,9 +183,9 @@ describe("Serial pin connection with three components", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: sourceCustomComponentBuildDataFunction,
       callbacks: [
-        { name: BuildComponentCallback, function: sourceCustomComponentBuildElementFunction}
+        { name: BuildElementDataCallback, function: sourceCustomComponentBuildDataFunction },
+        { name: BuildComponentCallback, function: sourceCustomComponentBuildElementFunction }
       ]
     });
   });
@@ -205,8 +206,8 @@ describe("Serial pin connection with three components", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: relayCustomComponentBuildDataFunction,
       callbacks: [
+        { name: BuildElementDataCallback, function: relayCustomComponentBuildDataFunction },
         { name: BuildComponentCallback, function: relayCustomComponentBuildElementFunction },
         { name: EvaluateComponentCallback, function: relayCustomComponentEvaluateFunction }
       ],
@@ -230,8 +231,8 @@ describe("Serial pin connection with three components", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: sinkCustomComponentBuildDataFunction,
       callbacks: [
+        { name: BuildElementDataCallback, function: sinkCustomComponentBuildDataFunction },
         { name: BuildComponentCallback, function: sinkCustomComponentBuildElementFunction },
         { name: EvaluateComponentCallback, function: sinkCustomComponentEvaluateFunction }
       ]
@@ -437,9 +438,9 @@ describe("Serial pin connection with four components", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: sourceCustomComponentBuildDataFunction,
       callbacks: [
-        { name: BuildComponentCallback, function: sourceCustomComponentBuildElementFunction}
+        { name: BuildElementDataCallback, function: sourceCustomComponentBuildDataFunction },
+        { name: BuildComponentCallback, function: sourceCustomComponentBuildElementFunction }
       ]
     });
   });
@@ -460,8 +461,8 @@ describe("Serial pin connection with four components", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: relayCustomComponentBuildDataFunction,
       callbacks: [
+        { name: BuildElementDataCallback, function: relayCustomComponentBuildDataFunction },
         { name: BuildComponentCallback, function: relayCustomComponentBuildElementFunction },
         { name: EvaluateComponentCallback, function: relayCustomComponentEvaluateFunction }
       ],
@@ -485,8 +486,8 @@ describe("Serial pin connection with four components", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: sinkCustomComponentBuildDataFunction,
       callbacks: [
+        { name: BuildElementDataCallback, function: sinkCustomComponentBuildDataFunction},
         { name: BuildComponentCallback, function: sinkCustomComponentBuildElementFunction },
         { name: EvaluateComponentCallback, function: sinkCustomComponentEvaluateFunction }
       ]

@@ -2,6 +2,7 @@ import { ElementName, ElementPath, pathToString, rootName } from "@/path";
 import { BuildDataFunction, BuildHelpers, TypeDeclaration } from "./TypeHandler";
 import { inputPinTypeName, outputPinTypeName, pinTypeContainerPath, rootTypeContainerName, typeElementName } from "@/global";
 import { ElementData } from "@/Element";
+import { BuildElementDataCallback } from "./elementTypeHandler";
 
 const buildDataFunction: BuildDataFunction = async (
   elementName: ElementName,
@@ -25,8 +26,9 @@ const inputPinTypeDeclaration: TypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  buildDataFunction: buildDataFunction,
-  callbacks: []
+  callbacks: [
+    { name: BuildElementDataCallback, function: buildDataFunction }
+  ]
 };
 
 const outputPinTypeDeclaration: TypeDeclaration = {
@@ -36,9 +38,9 @@ const outputPinTypeDeclaration: TypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  buildDataFunction: buildDataFunction,
-  buildElementFunction: null,
-  callbacks: []
+  callbacks: [
+    {name: BuildElementDataCallback, function: buildDataFunction }
+  ]
 };
 
 export {

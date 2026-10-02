@@ -10,6 +10,7 @@ import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
 import { BuildComponentCallback, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
+import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
 
 let customTime = -1;
 const customTimeFunction = () => customTime as MtzMessageTime;
@@ -44,68 +45,6 @@ const sourceCustomComponentBuildElementFunction: BuildElementFunction = async (
     { value: internalValue }
   );
 }
-
-// second component : relay component with one input pin and one output pin
-const relayCustomComponentBuildDataFunction: BuildDataFunction = async (
-  _elementName: ElementName,
-  _parentPath: ElementPath,
-  _params:Record<string, any>,
-  _helpers: BuildHelpers
-): Promise<ElementData> => {
-  return {
-    internalValue: null
-  } as ElementData;
-};
-
-const relayCustomComponentBuildElementFunction: BuildElementFunction = async (
-  _element: MtzElement,
-  _params:Record<string, any>,
-  helpers: BuildHelpers
-): Promise<void> => {
-
-  await helpers.createChildElement(
-    'in:value' as ElementName,
-    [ '#' as ElementName, 'types' as ElementName, 'pins' as ElementName, 'input-pin' as ElementName ],
-    { value: null}
-  );
-
-  await helpers.createChildElement(
-    'out:value' as ElementName,
-    [ '#' as ElementName, 'types' as ElementName, 'pins' as ElementName, 'output-pin' as ElementName ],
-    { value: null}
-  );
-
-}
-
-const relayCustomComponentEvaluateFunction: EvaluateComponentFunction = async (
-  element: MtzElement,
-  data:Record<string, any>,
-  _helpers: BuildHelpers
-) : Promise<EvaluationResult> => {
-
-  const pinName = data.pin;
-  if (pinName !== 'in:value')
-    throw new Error("Invalid pin name in evaluation data");
-
-  const newValue = data.value;
-  if (newValue === undefined)
-    throw new Error("Invalid value in evaluation data");
-
-  const result: EvaluationResult = {
-    setData: {
-      ...element.data,
-      internalValue: newValue
-    },
-    setOutputs: [
-      {
-        pin: 'out:value' as ElementName,
-        value: newValue
-      }
-    ]
-  };
-  return result;
-};
-
 
 
 // third sink component with only one input pin
@@ -189,8 +128,8 @@ describe("Parallel pin connection with three components", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: sourceCustomComponentBuildDataFunction,
       callbacks: [
+        { name: BuildElementDataCallback, function: sourceCustomComponentBuildDataFunction },
         { name: BuildComponentCallback, function: sourceCustomComponentBuildElementFunction}
       ]
     });
@@ -213,8 +152,8 @@ describe("Parallel pin connection with three components", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: sinkCustomComponentBuildDataFunction,
       callbacks: [
+        { name: BuildElementDataCallback, function: sinkCustomComponentBuildDataFunction },
         { name: BuildComponentCallback, function: sinkCustomComponentBuildElementFunction },
         { name: EvaluateComponentCallback, function: sinkCustomComponentEvaluateFunction }
       ]

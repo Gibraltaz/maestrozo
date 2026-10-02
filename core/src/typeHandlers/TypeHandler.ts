@@ -42,7 +42,6 @@ type CallbackDeclaration = {
 type TypeHandler = {
   isContainer: boolean,
   isVolatile: boolean
-  buildDataFunction: BuildDataFunction,
   callbacks: Array<CallbackDeclaration>
 };
 
@@ -55,7 +54,6 @@ type TypeDeclaration = {
   isDerivable: boolean, // le type peut-il être dérivé en sous-type
   isContainer: boolean, // un élément de ce type peut-il contenir d'autres éléments
   isVolatile: boolean, // un élément de ce type est-il recréé à chaque fois (ou sauvegardé)
-  buildDataFunction: BuildDataFunction,
   callbacks: Array<CallbackDeclaration>
 };
 

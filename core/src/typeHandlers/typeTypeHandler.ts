@@ -6,6 +6,7 @@
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName } from "@/global";
 import { BuildDataFunction, TypeDeclaration } from "./TypeHandler";
+import { BuildElementDataCallback } from "./elementTypeHandler";
 
 const buildDataFunction : BuildDataFunction = async (
   _elementName: ElementName,
@@ -23,8 +24,9 @@ const typeTypeDeclaration: TypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: true,
-  buildDataFunction: buildDataFunction,
-  callbacks: []
+  callbacks: [
+    { name: BuildElementDataCallback, function: buildDataFunction }
+  ]
 };
 
 export { typeTypeDeclaration };

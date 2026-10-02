@@ -7,6 +7,7 @@ import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { componentTypeName, componentTypePath, rootName, rootTypeContainerName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
 import { BuildDataFunction, BuildHelpers, CallbackName, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildElementDataCallback } from "./elementTypeHandler";
 
 const EvaluateComponentCallback = 'evaluate-component' as CallbackName;
 const BuildComponentCallback = 'build-component' as CallbackName;
@@ -50,8 +51,8 @@ const componentTypeDeclaration: TypeDeclaration = {
   isDerivable: true,
   isContainer: true,
   isVolatile: true,
-  buildDataFunction: buildDataFunction, 
   callbacks: [
+    { name: BuildElementDataCallback, function: buildDataFunction },
     { name:EvaluateComponentCallback , function: evaluateComponentFunction }
   ]
 };

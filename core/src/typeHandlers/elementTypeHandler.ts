@@ -5,7 +5,7 @@
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "@/global";
-import { BuildDataFunction, TypeDeclaration } from "./TypeHandler";
+import { BuildDataFunction, CallbackName, TypeDeclaration } from "./TypeHandler";
 
 const buildDataFunction: BuildDataFunction = async (
   _elementName: ElementName,
@@ -15,6 +15,7 @@ const buildDataFunction: BuildDataFunction = async (
   throw new Error("Element type can not be instanciate");
 };
 
+const BuildElementDataCallback = 'build-element-data' as CallbackName;
 
 const elementTypeDeclaration: TypeDeclaration = {
   elementName: elementTypeName,
@@ -23,8 +24,12 @@ const elementTypeDeclaration: TypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: true,
-  buildDataFunction: buildDataFunction,
-  callbacks: []
+  callbacks: [
+    { name: BuildElementDataCallback, function: buildDataFunction }
+  ]
 };
 
-export { elementTypeDeclaration };
+export {
+  elementTypeDeclaration,
+  BuildElementDataCallback 
+};

@@ -9,6 +9,7 @@ import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHan
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { BuildComponentCallback } from "@/typeHandlers/componentTypeHandler";
+import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
 
 
 const customComponentBuildDataFunction: BuildDataFunction = async (
@@ -74,8 +75,8 @@ describe("Pin connection", () => {
       isDerivable: false,
       isContainer: true,
       isVolatile: false,
-      buildDataFunction: customComponentBuildDataFunction,
       callbacks: [
+        { name: BuildElementDataCallback, function: customComponentBuildDataFunction },
         { name: BuildComponentCallback, function: customComponentBuildElementFunction }
       ]
     });

@@ -3,11 +3,11 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
+import { ElementData, ElementName, ElementPath } from "@/Element";
 import { linkTypeContainerPath, rootName, rootTypeContainerName, typeElementName } from '@/global';
-import { BuildDataFunction, BuildHelpers, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 import { rootTypeContainerPath, linkTypeContainerName } from '@/global';
-import { BuildComponentCallback } from "./componentTypeHandler";
+import { BuildElementDataCallback } from "./elementTypeHandler";
 
 
 // name of element «#/types/links/connection»
@@ -51,8 +51,9 @@ const connectionTypeDeclaration: TypeDeclaration = {
   isDerivable: false,
   isContainer: false,
   isVolatile: false,
-  buildDataFunction: buildDataFunction,
-  callbacks: []
+  callbacks: [
+    { name: BuildElementDataCallback, function: buildDataFunction }
+  ]
 };
 
 export { connectionTypeDeclaration, connectionTypeName, connectionTypePath };

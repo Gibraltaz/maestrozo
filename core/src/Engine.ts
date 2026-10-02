@@ -14,7 +14,7 @@ import {
   getElementPath,
   elementPathAreEquals,
 } from '@/path';
-import { MtzElement, ElementName, ElementPath, checkElement } from '@/Element';
+import { MtzElement, ElementName, ElementPath, checkElement, ElementData } from '@/Element';
 import {
   containerTypeName,
   rootTypeContainerName,
@@ -30,7 +30,7 @@ import {
   messageQueuePath
 } from '@/global';
 
-import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 import { containerTypeDeclaration} from '@/typeHandlers/containerTypeHandler';
 import { integerTypeDeclaration } from '@/typeHandlers/integerTypeHandler';
@@ -41,7 +41,7 @@ import { inputPinTypeDeclaration, outputPinTypeDeclaration } from '@/typeHandler
 import { BuildComponentCallback, componentTypeDeclaration, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from '@/typeHandlers/componentTypeHandler';
 import { constantComponentTypeDeclaration } from '@/typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from '@/typeHandlers/variableComponentTypeHandler';
-import { elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
+import { BuildElementDataCallback, elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
 import { typeTypeDeclaration } from '@/typeHandlers/typeTypeHandler';
 import { connectionTypeDeclaration, connectionTypeName, connectionTypePath } from '@/typeHandlers/connectionTypeHandler';
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from '@/typeHandlers/messageTypeHandlers';
@@ -211,15 +211,9 @@ class MtzEngine {
     if (isVolatile === null)
       throw new Error(`Type «${typePath}» declaration has no «isVolatile» property`);
 
-    const buildDataFunction = typeDeclaration?.buildDataFunction ?? null;
-    if (buildDataFunction === null)
-      throw new Error(`Type «${typePath}» declaration has no buildDataFunction function`);
-
-
     const typeHandler: TypeHandler = {
       isContainer,
       isVolatile,
-      buildDataFunction,
       callbacks: [...typeDeclaration?.callbacks ?? []]
     };
 
@@ -407,12 +401,6 @@ class MtzEngine {
     if (parentElement.isVolatile && ! isVolatile)
       throw new Error(`Non volatile element «${pathToString(getElementPath(typeElement))}» can not be store in a volatile container`);
 
-    const buildDataFunction: BuildDataFunction | null = typeHandler?.buildDataFunction ?? null;
-    if (buildDataFunction === null)
-      throw new Error(`Property «buildDataFunction» not defined in type «${pathToString(getElementPath(typeElement))}»`);
-    if (typeof(buildDataFunction) !== 'function')
-      throw new Error(`Property «buildDataFunction» not a function in type «${pathToString(getElementPath(typeElement))}»`);
-
     const buildHelpers: BuildHelpers = {
       getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
         return await this.getStoredElement(elementPath)
@@ -432,7 +420,15 @@ class MtzEngine {
       }
     }
 
-    const elementData = await buildDataFunction(elementName, parentPath, params, buildHelpers);
+    const buildElementDataCallback = typeHandler.callbacks.find(callback => callback.name === BuildElementDataCallback);
+    let elementData = {} as ElementData;
+
+    if (buildElementDataCallback !== undefined) {
+      const buildElementDataFunction = buildElementDataCallback.function as BuildDataFunction;
+      if (typeof(buildElementDataFunction) !== 'function')
+        throw new Error(`Build element data callback in type «${pathToString(getElementPath(typeElement))}» is not a function`);
+      elementData = await buildElementDataFunction(elementName, parentPath, params, buildHelpers);
+    }
 
     let element = {
       revision: 0,
@@ -451,7 +447,7 @@ class MtzEngine {
     if (buildComponentCallback !== undefined) {
       const buildComponentFunction = buildComponentCallback.function as EvaluateComponentFunction;
       if (typeof(buildComponentFunction) !== 'function')
-        throw new Error(`Evaluation function is not a function`);
+        throw new Error(`Evaluation callback is not a function`);
       // TODO tester que l'élément est bien un composant
       await buildComponentFunction(element, params, buildHelpers);
       // relire l'élément car sa propriété childNames a changé si des éléments enfants ont été créés dans cet élément
