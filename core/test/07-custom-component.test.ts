@@ -8,6 +8,7 @@ import { MtzEngine, ElementName, ElementPath } from "@/Engine";
 import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
+import { BuildComponentCallback } from "@/typeHandlers/componentTypeHandler";
 
 const customComponentBuildDataFunction1: BuildDataFunction = async (
   _elementName: ElementName,
@@ -50,8 +51,9 @@ describe("Custom component without pin", () => {
       isContainer: false,
       isVolatile: true,
       buildDataFunction: customComponentBuildDataFunction1,
-      buildElementFunction: customComponentBuildElementFunction1,
-      callbacks: []
+      callbacks: [
+        { name: BuildComponentCallback, function: customComponentBuildElementFunction1}
+      ]
     });
 
   });
@@ -212,7 +214,9 @@ describe("Custom component with pins", () => {
       isVolatile: false,
       buildDataFunction: customComponentBuildDataFunction2,
       buildElementFunction: customComponentBuildElementFunction2,
-      callbacks: []
+      callbacks: [
+        { name: BuildComponentCallback, function: customComponentBuildElementFunction2}
+      ]
     });
 
   });

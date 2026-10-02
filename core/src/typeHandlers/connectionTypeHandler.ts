@@ -7,6 +7,7 @@ import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { linkTypeContainerPath, rootName, rootTypeContainerName, typeElementName } from '@/global';
 import { BuildDataFunction, BuildHelpers, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 import { rootTypeContainerPath, linkTypeContainerName } from '@/global';
+import { BuildComponentCallback } from "./componentTypeHandler";
 
 
 // name of element «#/types/links/connection»
@@ -43,13 +44,6 @@ const buildDataFunction: BuildDataFunction = async (
   } as ElementData;
 };
 
-const buildElementFunction = async (
-  _element: MtzElement,
-  _params:Record<string, any>,
-  _helpers: BuildHelpers
-):Promise<void> => {
-}
-
 const connectionTypeDeclaration: TypeDeclaration = {
   elementName: connectionTypeName,
   parentPath: linkTypeContainerPath,
@@ -58,7 +52,6 @@ const connectionTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: buildElementFunction,
   callbacks: []
 };
 

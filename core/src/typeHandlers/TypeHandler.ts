@@ -25,14 +25,17 @@ type BuildDataFunction = (
   helpers: BuildHelpers
 ) => Promise<ElementData>;
 
+// TODO à renommer en BuildComponentFunction et à déplacer dans componentTypeHandler
 type BuildElementFunction = (
   element: MtzElement,
   params:Record<string, any>,
   helpers: BuildHelpers
 ) => Promise<void>;
 
+type CallbackName = string & { __brand:'CallbackName' };
+
 type CallbackDeclaration = {
-  name: string,
+  name: CallbackName,
   function: Function;
 };
 
@@ -40,7 +43,6 @@ type TypeHandler = {
   isContainer: boolean,
   isVolatile: boolean
   buildDataFunction: BuildDataFunction,
-  buildElementFunction: BuildElementFunction | null,
   callbacks: Array<CallbackDeclaration>
 };
 
@@ -54,7 +56,6 @@ type TypeDeclaration = {
   isContainer: boolean, // un élément de ce type peut-il contenir d'autres éléments
   isVolatile: boolean, // un élément de ce type est-il recréé à chaque fois (ou sauvegardé)
   buildDataFunction: BuildDataFunction,
-  buildElementFunction: BuildElementFunction | null,
   callbacks: Array<CallbackDeclaration>
 };
 
@@ -65,5 +66,6 @@ export {
   BuildDataFunction,
   BuildElementFunction,
   BuildHelpers,
+  CallbackName,
   CallbackDeclaration
 };

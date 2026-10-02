@@ -9,7 +9,7 @@ import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHan
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
-import { EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
+import { BuildComponentCallback, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
 
 let customTime = -1;
 const customTimeFunction = () => customTime as MtzMessageTime;
@@ -190,8 +190,9 @@ describe("Parallel pin connection with three components", () => {
       isContainer: true,
       isVolatile: false,
       buildDataFunction: sourceCustomComponentBuildDataFunction,
-      buildElementFunction: sourceCustomComponentBuildElementFunction,
-      callbacks: []
+      callbacks: [
+        { name: BuildComponentCallback, function: sourceCustomComponentBuildElementFunction}
+      ]
     });
   });
 
@@ -213,9 +214,9 @@ describe("Parallel pin connection with three components", () => {
       isContainer: true,
       isVolatile: false,
       buildDataFunction: sinkCustomComponentBuildDataFunction,
-      buildElementFunction: sinkCustomComponentBuildElementFunction,
       callbacks: [
-        { name: 'evaluate-component', function: sinkCustomComponentEvaluateFunction }
+        { name: BuildComponentCallback, function: sinkCustomComponentBuildElementFunction },
+        { name: EvaluateComponentCallback, function: sinkCustomComponentEvaluateFunction }
       ]
     });
   });

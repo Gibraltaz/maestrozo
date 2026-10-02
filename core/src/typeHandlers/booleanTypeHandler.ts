@@ -37,7 +37,6 @@ const booleanTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: null,
   callbacks: []
 };
 

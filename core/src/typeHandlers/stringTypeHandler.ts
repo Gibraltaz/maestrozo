@@ -35,7 +35,6 @@ const stringTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: true,
   buildDataFunction: buildDataFunction, 
-  buildElementFunction: null,
   callbacks: []
 };
 

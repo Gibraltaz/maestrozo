@@ -35,7 +35,6 @@ const integerTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: true,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: null,
   callbacks: []
 };
 

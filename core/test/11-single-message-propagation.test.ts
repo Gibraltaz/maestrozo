@@ -9,7 +9,7 @@ import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHan
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
-import { EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
+import { BuildComponentCallback, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
 
 let customTime = -1;
 const customTimeFunction = () => customTime as MtzMessageTime;
@@ -122,8 +122,9 @@ describe("Single pin connection with two components", () => {
       isContainer: true,
       isVolatile: false,
       buildDataFunction: sourceCustomComponentBuildDataFunction,
-      buildElementFunction: sourceCustomComponentBuildElementFunction,
-      callbacks: []
+      callbacks: [
+        { name: BuildComponentCallback, function: sourceCustomComponentBuildElementFunction }
+      ]
     });
   });
 
@@ -144,9 +145,9 @@ describe("Single pin connection with two components", () => {
       isContainer: true,
       isVolatile: false,
       buildDataFunction: targetCustomComponentBuildDataFunction,
-      buildElementFunction: targetCustomComponentBuildElementFunction,
       callbacks: [
-        { name: 'evaluate-component', function: targetCustomComponentEvaluateFunction }
+        { name: BuildComponentCallback, function: targetCustomComponentBuildElementFunction },
+        { name: EvaluateComponentCallback, function: targetCustomComponentEvaluateFunction }
       ]
     });
   });

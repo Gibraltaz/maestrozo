@@ -8,6 +8,7 @@ import { MtzEngine, ElementName, ElementPath } from "@/Engine";
 import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
+import { BuildComponentCallback } from "@/typeHandlers/componentTypeHandler";
 
 
 const customComponentBuildDataFunction: BuildDataFunction = async (
@@ -74,8 +75,9 @@ describe("Pin connection", () => {
       isContainer: true,
       isVolatile: false,
       buildDataFunction: customComponentBuildDataFunction,
-      buildElementFunction: customComponentBuildElementFunction,
-      callbacks: []
+      callbacks: [
+        { name: BuildComponentCallback, function: customComponentBuildElementFunction }
+      ]
     });
 
   });

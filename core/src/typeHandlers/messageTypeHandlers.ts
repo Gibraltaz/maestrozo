@@ -26,7 +26,6 @@ const messageTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   buildDataFunction: messageBuildDataFunction,
-  buildElementFunction: null,
   callbacks: []
 };
 

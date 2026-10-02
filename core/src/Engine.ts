@@ -38,7 +38,7 @@ import { stringTypeDeclaration } from '@/typeHandlers/stringTypeHandler';
 import { booleanTypeDeclaration } from '@/typeHandlers/booleanTypeHandler';
 import { inputPinTypeDeclaration, outputPinTypeDeclaration } from '@/typeHandlers/pinTypeHandlers';
 
-import { componentTypeDeclaration, ComponentTypeHandler, EvaluateComponentFunction, EvaluationResult } from '@/typeHandlers/componentTypeHandler';
+import { BuildComponentCallback, componentTypeDeclaration, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from '@/typeHandlers/componentTypeHandler';
 import { constantComponentTypeDeclaration } from '@/typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from '@/typeHandlers/variableComponentTypeHandler';
 import { elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
@@ -215,14 +215,11 @@ class MtzEngine {
     if (buildDataFunction === null)
       throw new Error(`Type «${typePath}» declaration has no buildDataFunction function`);
 
-    const buildElementFunction=  typeDeclaration.buildElementFunction ?? null;
-
 
     const typeHandler: TypeHandler = {
       isContainer,
       isVolatile,
       buildDataFunction,
-      buildElementFunction,
       callbacks: [...typeDeclaration?.callbacks ?? []]
     };
 
@@ -416,10 +413,6 @@ class MtzEngine {
     if (typeof(buildDataFunction) !== 'function')
       throw new Error(`Property «buildDataFunction» not a function in type «${pathToString(getElementPath(typeElement))}»`);
 
-    const buildElementFunction: BuildElementFunction | null = typeHandler?.buildElementFunction ?? null;
-    if (buildElementFunction !== null && typeof(buildElementFunction) !== 'function')
-      throw new Error(`Property «buildElementFunction» not a function in type «${pathToString(getElementPath(typeElement))}»`);
-
     const buildHelpers: BuildHelpers = {
       getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
         return await this.getStoredElement(elementPath)
@@ -454,9 +447,13 @@ class MtzEngine {
 
     await this.storeNewElement(element);
 
-    if (buildElementFunction !== null) {
-      // FIXME doit-on appeler cette fonction si isContainer vaut false ?
-      await buildElementFunction(element, params, buildHelpers);
+    const buildComponentCallback = typeHandler.callbacks.find(callback => callback.name === BuildComponentCallback);
+    if (buildComponentCallback !== undefined) {
+      const buildComponentFunction = buildComponentCallback.function as EvaluateComponentFunction;
+      if (typeof(buildComponentFunction) !== 'function')
+        throw new Error(`Evaluation function is not a function`);
+      // TODO tester que l'élément est bien un composant
+      await buildComponentFunction(element, params, buildHelpers);
       // relire l'élément car sa propriété childNames a changé si des éléments enfants ont été créés dans cet élément
       element = await this.getStoredElement(elementPath);
     }
@@ -594,7 +591,7 @@ class MtzEngine {
 
       case MESSAGE_TYPE_CHANGE:
 
-        const callback = typeHandler.callbacks.find(callback => callback.name === 'evaluate-component');
+        const callback = typeHandler.callbacks.find(callback => callback.name === EvaluateComponentCallback);
         if (callback === undefined)
           throw new Error(`Evaluation function of component «${pathToString(message.elementPath)}» is not defined`);
 

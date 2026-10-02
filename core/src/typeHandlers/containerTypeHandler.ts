@@ -25,7 +25,6 @@ const containerTypeDeclaration: TypeDeclaration = {
   isContainer: true,
   isVolatile: true,
   buildDataFunction: buildDataFunction, 
-  buildElementFunction: null,
   callbacks: []
 };
 

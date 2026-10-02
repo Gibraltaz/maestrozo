@@ -3,9 +3,9 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
+import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName, componentTypeName } from '@/global';
-import { BuildDataFunction, BuildHelpers, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
 const variableComponentTypeName = 'variable' as ElementName;
 
@@ -20,13 +20,6 @@ const buildDataFunction: BuildDataFunction = async (
   //} as ElementData;
 };
 
-const buildElementFunction = async (
-  _element: MtzElement,
-  _params:Record<string, any>,
-  _helpers: BuildHelpers
-):Promise<void> => {
-}
-
 const variableComponentTypeDeclaration: TypeDeclaration = {
   elementName: variableComponentTypeName,
   parentPath: [rootName, rootTypeContainerName, componentTypeName] as ElementPath,
@@ -35,7 +28,6 @@ const variableComponentTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: buildElementFunction,
   callbacks: []
 };
 

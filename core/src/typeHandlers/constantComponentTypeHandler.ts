@@ -7,6 +7,7 @@ import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { rootName, rootTypeContainerName, componentTypeName, typeElementName, outputPinTypePath } from '@/global';
 import { checkElementPath, getElementPath, pathStartsWith, pathToString } from "@/path";
 import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { BuildComponentCallback } from "./componentTypeHandler";
 
 const constantComponentTypeName = 'constant' as ElementName;
 
@@ -52,7 +53,7 @@ const buildDataFunction: BuildDataFunction = async (
   return data;
 };
 
-const buildElementFunction: BuildElementFunction = async (
+const buildComponentFunction: BuildElementFunction = async (
   element: MtzElement,
   _params:Record<string, any>,
   helpers: BuildHelpers
@@ -74,8 +75,9 @@ const constantComponentTypeDeclaration: TypeDeclaration = {
   isContainer: true, // constant contains its output pin
   isVolatile: false,
   buildDataFunction: buildDataFunction,
-  buildElementFunction: buildElementFunction,
-  callbacks: []
+  callbacks: [
+    { name: BuildComponentCallback, function: buildComponentFunction }
+  ]
 };
 
 export { constantComponentTypeDeclaration, constantComponentTypeName };

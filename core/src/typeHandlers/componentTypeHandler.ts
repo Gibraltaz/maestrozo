@@ -6,8 +6,10 @@
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { componentTypeName, componentTypePath, rootName, rootTypeContainerName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers, CallbackDeclaration, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildHelpers, CallbackName, TypeDeclaration } from '@/typeHandlers/TypeHandler';
 
+const EvaluateComponentCallback = 'evaluate-component' as CallbackName;
+const BuildComponentCallback = 'build-component' as CallbackName;
 
 const buildDataFunction : BuildDataFunction = async (
   _elementName: ElementName,
@@ -32,15 +34,6 @@ type EvaluateComponentFunction = (
   helpers: BuildHelpers
 ) => Promise<EvaluationResult>;
 
-type ComponentTypeHandler = {
-  isContainer: boolean,
-  isVolatile: boolean
-  buildDataFunction: BuildDataFunction,
-  buildElementFunction: BuildElementFunction | null,
-  evaluateComponentFunction: EvaluateComponentFunction | null,
-  callbacks: Array<CallbackDeclaration>
-};
-
 const evaluateComponentFunction: EvaluateComponentFunction = async (
   _element: MtzElement,
   _data:Record<string, any>,
@@ -58,16 +51,15 @@ const componentTypeDeclaration: TypeDeclaration = {
   isContainer: true,
   isVolatile: true,
   buildDataFunction: buildDataFunction, 
-  buildElementFunction: null,
   callbacks: [
-    { name: 'evaluate-component', function: evaluateComponentFunction }
+    { name:EvaluateComponentCallback , function: evaluateComponentFunction }
   ]
 };
 
 
 export { 
-  ComponentTypeHandler ,
   componentTypeDeclaration, componentTypeName,
-  EvaluateComponentFunction, EvaluationResult
+  EvaluateComponentFunction, EvaluationResult,
+  EvaluateComponentCallback, BuildComponentCallback 
 };
 
