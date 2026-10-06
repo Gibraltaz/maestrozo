@@ -63,7 +63,7 @@ describe("Custom component without pin", () => {
     const element = await engine.getElement(['#', 'types', 'component'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('childNames');
-    expect(element.childNames).to.deep.equal(['constant', 'variable', 'custom-component-A']);
+    expect(element.childNames).to.deep.equal(['composite', 'constant', 'variable', 'custom-component-A']);
   });
 
   it("should find /types/component/custom-component-A", async () => {
@@ -225,7 +225,7 @@ describe("Custom component with pins", () => {
     const element = await engine.getElement(['#', 'types', 'component'] as ElementPath);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('childNames');
-    expect(element.childNames).to.deep.equal(['constant', 'variable', 'custom-component-B']);
+    expect(element.childNames).to.deep.equal(['composite', 'constant', 'variable', 'custom-component-B']);
   });
 
   it("should find /types/component/custom-component-B", async () => {

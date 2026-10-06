@@ -9,7 +9,7 @@ import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHan
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
-import { BuildComponentCallback, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
+import { BuildComponentCallback, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
 import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
 
 let customTime = -1;
@@ -184,7 +184,8 @@ describe("Single pin connection with two components", () => {
   });
 
   it("should create a connection with createElement", async () => {
-    const connection = await engine.createConnection(
+    const connection = await connectComponents(
+      engine,
       [ '#', 'runtime' ] as ElementPath,
       'source-component-1' as ElementName,
       'out:value' as ElementName,

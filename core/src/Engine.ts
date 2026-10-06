@@ -22,15 +22,15 @@ import {
   componentTypePath,
   pinTypeContainerName,
   linkTypeContainerName,
-  linkTypeContainerPath,
   systemContainerName,
   systemContainerPath,
   runtimeContainerName,
   messageQueueName,
-  messageQueuePath
+  messageQueuePath,
+  outputPinTypePath,
 } from '@/global';
 
-import { BuildDataFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 import { containerTypeDeclaration} from '@/typeHandlers/containerTypeHandler';
 import { integerTypeDeclaration } from '@/typeHandlers/integerTypeHandler';
@@ -38,17 +38,24 @@ import { stringTypeDeclaration } from '@/typeHandlers/stringTypeHandler';
 import { booleanTypeDeclaration } from '@/typeHandlers/booleanTypeHandler';
 import { inputPinTypeDeclaration, outputPinTypeDeclaration } from '@/typeHandlers/pinTypeHandlers';
 
-import { BuildComponentCallback, componentTypeDeclaration, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from '@/typeHandlers/componentTypeHandler';
+import {
+  BuildComponentCallback, componentTypeDeclaration, EvaluateComponentCallback,
+  EvaluateComponentFunction, EvaluateComponentHelpers, EvaluationResult
+} from './typeHandlers/componentTypeHandler';
+
+import { compositeComponentTypeDeclaration } from '@/typeHandlers/compositeComponentTypeHandler';
 import { constantComponentTypeDeclaration } from '@/typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from '@/typeHandlers/variableComponentTypeHandler';
 import { BuildElementDataCallback, elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
 import { typeTypeDeclaration } from '@/typeHandlers/typeTypeHandler';
-import { connectionTypeDeclaration, connectionTypeName, connectionTypePath } from '@/typeHandlers/connectionTypeHandler';
+import { connectionTypeDeclaration, connectionTypePath } from '@/typeHandlers/connectionTypeHandler';
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from '@/typeHandlers/messageTypeHandlers';
-import { MESSAGE_TYPE_CHANGE, MtzMessage,
-  MtzMessageQueue, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage,
-  MtzMessageTime, MtzTimeFunction
-} from '@/MessageQueue';
+
+import {
+  MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage,
+  mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction
+} from './MessageQueue';
+
 
 
 type ContainerDeclaration = {
@@ -62,7 +69,7 @@ class MtzEngine {
   private _initialized = false;
   private persistentStorage: MaestrozoStore| null = null;
   private volatileStore: MaestrozoStore = new RawMemoryStore;
-  private _timeFunction: MtzTimeFunction = () => Date.now() as MtzMessageTime;
+  public timeFunction: MtzTimeFunction = () => Date.now() as MtzMessageTime;
 
   private async getStoredElement(elementPath: ElementPath): Promise<MtzElement> {
     const storeKey = pathToString(elementPath) as StoreKey;
@@ -322,6 +329,9 @@ class MtzEngine {
     // mise en place de «#/types/components»
     await this.declareTypeInternal(componentTypeDeclaration, false);
 
+    // mise en place de «#/types/components/composite»
+    await this.declareTypeInternal(compositeComponentTypeDeclaration, false);
+
     // mise en place de «#/types/components/constant»
     await this.declareTypeInternal(constantComponentTypeDeclaration, false);
 
@@ -445,9 +455,9 @@ class MtzEngine {
 
     const buildComponentCallback = typeHandler.callbacks.find(callback => callback.name === BuildComponentCallback);
     if (buildComponentCallback !== undefined) {
-      const buildComponentFunction = buildComponentCallback.function as EvaluateComponentFunction;
+      const buildComponentFunction = buildComponentCallback.function as BuildElementFunction;
       if (typeof(buildComponentFunction) !== 'function')
-        throw new Error(`Evaluation callback is not a function`);
+        throw new Error(`Build component callback is not a function`);
       // TODO tester que l'élément est bien un composant
       await buildComponentFunction(element, params, buildHelpers);
       // relire l'élément car sa propriété childNames a changé si des éléments enfants ont été créés dans cet élément
@@ -481,67 +491,10 @@ class MtzEngine {
     return this._initialized;
   }
 
-  public async createConnection(
-    parentPath: ElementPath,
-    sourceComponentName: ElementName,
-    sourcePinName: ElementName,
-    targetComponentName: ElementName,
-    targetPinName: ElementName
-
-  ): Promise<MtzElement> {
-
-    if (! this._initialized)
-      throw new Error("Engine not initialized");
-
-    const sourcePin = await this.getElement([...parentPath, sourceComponentName, sourcePinName]);
-    const targetComponent = await this.getElement([...parentPath, targetComponentName]);
-    //const targetPin = await this.getElement([...parentPath, targetComponentName, targetPinName]);
-
-    // FIXME déclarer officiellement le séparateur «|» comme caractère interdit
-    const elementName = `${sourceComponentName}|${sourcePinName}|${targetComponentName}|${targetPinName}` as ElementName;
-
-    const connectionElement = this.createElement(
-      elementName,
-      parentPath,
-      [ ...linkTypeContainerPath, connectionTypeName ] as ElementPath,
-      {
-        sourceComponent: sourceComponentName,
-        sourcePin: sourcePinName,
-        targetComponent: targetComponentName,
-        targetPin: targetPinName
-      }
-    );
-
-    // propager la valeur de la sortie à l'entrée connectée si elle est déterminée
-    // FIXME est-il utile de tester si data.value === null ?
-    if (sourcePin.data !== null && sourcePin.data.value !== null) {
-        const message: MtzMessage  = {
-          at: this._timeFunction(),
-          elementPath: [...targetComponent.parentPath, targetComponent.elementName],
-          messageType: MESSAGE_TYPE_CHANGE,
-          data: {
-            pin: targetPinName,
-            value: sourcePin.data.value,
-          }
-        };
-
-        const messageQueueElement = await this.getElement(messageQueuePath);
-        if (messageQueueElement.data === null)
-          throw new Error("Message queue data should not be null");
-        const messageQueue = {
-          messages: messageQueueElement.data.messages
-        } as MtzMessageQueue;
-        mtzMessageQueuePushMessage(messageQueue, message);
-        await this.modifyElement(messageQueueElement);
-    }
-
-    return connectionElement;
-  };
 
   setTimeFunction(timeFunction: MtzTimeFunction) {
-    this._timeFunction = timeFunction;
+    this.timeFunction = timeFunction;
   }
-
 
   public async runOnce(): Promise<boolean> {
     if (! this._initialized)
@@ -555,25 +508,19 @@ class MtzEngine {
       messages: messageQueueElement.data.messages
     } as MtzMessageQueue;
 
-    const now = this._timeFunction();
+    const now = this.timeFunction();
     const message = mtzMessageQueuePopMessage(messageQueue, now);
     if (message === null)
       return false;
 
 
-    const data = message.data;
-
-    const componentElement = await this.getElement(message.elementPath);
+    const componentPath = message.elementPath;
+    const componentElement = await this.getElement(componentPath);
     if (componentElement === null)
-      throw new Error(`Can not find component «${pathToString(message.elementPath)}»`);
+      throw new Error(`Can not find component «${pathToString(componentPath)}»`);
 
-    const componentName = componentElement.elementName;
-
-    const containerElement = await this.getElement(componentElement.parentPath);
-    const containerPath = [...containerElement.parentPath, containerElement.elementName] as ElementPath;
-
-    if (! pathStartsWith(componentElement.elementType, componentTypePath  ))
-      throw new Error(`Element «${pathToString(message.elementPath)}» is not a component`);
+    if (! pathStartsWith(componentElement.elementType, componentTypePath))
+      throw new Error(`Element «${pathToString(componentPath)}» is not a component`);
 
     const componentType = await this.getElement(componentElement.elementType);
     if (componentType === null)
@@ -582,6 +529,11 @@ class MtzEngine {
     const typeHandler: TypeHandler = componentType?.data?.typeHandler ?? null;
     if (typeHandler === null)
       throw new Error(`Can not find type handler of «${pathToString(componentElement.elementType)}»`);
+
+    const componentName = componentElement.elementName;
+    const containerPath = componentElement.parentPath;
+    const containerElement = await this.getElement(containerPath);
+    const data = message.data;
 
     switch (message.messageType) {
 
@@ -595,8 +547,27 @@ class MtzEngine {
         if (typeof(evaluateComponentFunction ) !== 'function')
           throw new Error(`Evaluation function of component «${pathToString(message.elementPath)}» is not a function`);
 
-        // TODO passer le BuildHelpers
-        const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, null as unknown as BuildHelpers);
+        const evaluateComponentHelpers: EvaluateComponentHelpers = {
+          // TODO autotest helper getChild
+          getChild : async (childName:ElementName): Promise<MtzElement> => {
+            const childPath = [...componentPath, childName];
+            return await this.getStoredElement(childPath);
+          },
+          postInputChangedToChild: async (childComponentName: ElementName, childPinName: ElementName, newValue: any): Promise<void> => {
+            const message: MtzMessage  = {
+              at: this.timeFunction(),
+              elementPath: [...componentPath, childComponentName],
+              messageType: MESSAGE_TYPE_CHANGE,
+              data: {
+                pin: childPinName,
+                value: newValue
+              }
+            };
+            mtzMessageQueuePushMessage(messageQueue, message);
+          }
+        }
+
+        const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, evaluateComponentHelpers);
 
         // demande de changement de l'état interne du composant
         if (result.setData !== null) {
@@ -626,10 +597,13 @@ class MtzEngine {
             if (containerElement.childNames === null)
               throw new Error("Internal error : container should have children");
 
-            // pour tous les enfants du conteneur du composant
+            // balayer tous les enfants du conteneur du composant à la recherche des connexions liées à la sortie modifiée
             for (const childName of containerElement.childNames) {
 
-              const childElement = await this.getElement([ ...containerPath, childName ] as ElementPath);
+              const childPath = [ ...containerPath, childName ] as ElementPath;
+              const childElement = await this.getElement(childPath);
+              if (childElement === null)
+                throw new Error(`Can not find element «${pathToString(childPath)}»`);
 
               // ne traiter que les enfants du type connexion
               if (! elementPathAreEquals(childElement.elementType, connectionTypePath ))
@@ -645,21 +619,40 @@ class MtzEngine {
               if (sourcePinName !== outputPinName)
                 continue;
 
-              const targetComponentName = childElement?.data?.targetComponent ?? null;
-              const targetPinName = childElement?.data?.targetPin ?? null;
+              const connection = childElement;
+              const targetComponentName = connection?.data?.targetComponent ?? null;
+              const targetPinName = connection?.data?.targetPin ?? null;
 
               // TODO contrôler que le composant ou la broche accepte le type de la valeur
 
               // poster un message de mise jour du composant cible
-              const message: MtzMessage  = {
-                at: this._timeFunction(),
-                elementPath: [...containerPath, targetComponentName],
-                messageType: MESSAGE_TYPE_CHANGE,
-                data: {
-                  pin: targetPinName,
-                  value: outputPinValue
-                }
-              };
+              let message: MtzMessage;
+
+              if (targetComponentName === null) {
+                // la connexion est liée à une sortie du composant composite
+                message = {
+                  at: this.timeFunction(),
+                  elementPath: [...containerPath],
+                  messageType: MESSAGE_TYPE_CHANGE,
+                  data: {
+                    pin: targetPinName, // targetComponentName
+                    value: outputPinValue
+                  }
+                };
+              }
+              else
+              {
+                // la connexion est liée à une entrée d'un composant interne
+                message = {
+                  at: this.timeFunction(),
+                  elementPath: [...containerPath, targetComponentName],
+                  messageType: MESSAGE_TYPE_CHANGE,
+                  data: {
+                    pin: targetPinName,
+                    value: outputPinValue
+                  }
+                };
+              }
               mtzMessageQueuePushMessage(messageQueue, message);
             }
           }

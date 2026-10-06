@@ -8,7 +8,7 @@ import { MtzEngine, ElementName, ElementPath } from "@/Engine";
 import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
-import { BuildComponentCallback } from "@/typeHandlers/componentTypeHandler";
+import { BuildComponentCallback, connectComponents } from "@/typeHandlers/componentTypeHandler";
 import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
 
 
@@ -143,8 +143,9 @@ describe("Pin connection", () => {
     expect(connection.data).to.have.property('targetPin', 'in:value');
   });
 
-  it("should create a connection with createConnection", async () => {
-    const connection = await engine.createConnection(
+  it("should create a connection with connectComponents", async () => {
+    const connection = await connectComponents(
+      engine,
       [ '#', 'runtime' ] as ElementPath,
       'component-1' as ElementName,
       'out:value' as ElementName,

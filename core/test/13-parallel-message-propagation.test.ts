@@ -9,7 +9,7 @@ import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHan
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
-import { BuildComponentCallback, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
+import { BuildComponentCallback, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
 import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
 
 let customTime = -1;
@@ -204,7 +204,8 @@ describe("Parallel pin connection with three components", () => {
   });
 
   it("should connect source and first sink components", async () => {
-    const connection = await engine.createConnection(
+    const connection = await connectComponents(
+      engine,
       [ '#', 'runtime' ] as ElementPath,
       'source-component-1' as ElementName,
       'out:value' as ElementName,
@@ -256,7 +257,8 @@ describe("Parallel pin connection with three components", () => {
   });
 
   it("should connect source and second sink components", async () => {
-    const connection = await engine.createConnection(
+    const connection = await connectComponents(
+      engine,
       [ '#', 'runtime' ] as ElementPath,
       'source-component-1' as ElementName,
       'out:value' as ElementName,
@@ -343,12 +345,12 @@ describe("Parallel pin connection with three components", () => {
   });
 
   it("should control first sink component internal value", async () => {
-    const relayComponent = await engine.getElement(['#', 'runtime', 'sink-component-1'] as ElementPath);
-    expect(relayComponent).not.to.equal(null);
-    expect(relayComponent).to.be.instanceOf(Object);
-    expect(relayComponent).to.have.property('revision', 2);
-    expect(relayComponent).to.have.property('data');
-    const componentData = relayComponent.data;
+    const sinkComponent = await engine.getElement(['#', 'runtime', 'sink-component-1'] as ElementPath);
+    expect(sinkComponent).not.to.equal(null);
+    expect(sinkComponent).to.be.instanceOf(Object);
+    expect(sinkComponent).to.have.property('revision', 2);
+    expect(sinkComponent).to.have.property('data');
+    const componentData = sinkComponent.data;
     expect(componentData).to.be.instanceOf(Object);
     expect(componentData).to.have.property('internalValue', 123);
   });
@@ -369,12 +371,12 @@ describe("Parallel pin connection with three components", () => {
   });
 
   it("should control second sink component internal value", async () => {
-    const relayComponent = await engine.getElement(['#', 'runtime', 'sink-component-2'] as ElementPath);
-    expect(relayComponent).not.to.equal(null);
-    expect(relayComponent).to.be.instanceOf(Object);
-    expect(relayComponent).to.have.property('revision', 2);
-    expect(relayComponent).to.have.property('data');
-    const componentData = relayComponent.data;
+    const sinkComponent = await engine.getElement(['#', 'runtime', 'sink-component-2'] as ElementPath);
+    expect(sinkComponent).not.to.equal(null);
+    expect(sinkComponent).to.be.instanceOf(Object);
+    expect(sinkComponent).to.have.property('revision', 2);
+    expect(sinkComponent).to.have.property('data');
+    const componentData = sinkComponent.data;
     expect(componentData).to.be.instanceOf(Object);
     expect(componentData).to.have.property('internalValue', 123);
   });

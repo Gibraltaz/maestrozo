@@ -245,7 +245,22 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('isContainer', true);
     expect(element).to.have.property('isVolatile', true);
     expect(element).to.have.property('childNames');
-    expect(element.childNames).to.deep.equal(['constant', 'variable']);
+    expect(element.childNames).to.deep.equal(['composite', 'constant', 'variable']);
+  });
+
+  it("should find /types/component/composite", async () => {
+    const element = await engine.getElement(['#', 'types', 'component', 'composite'] as ElementPath);
+    expect(element).to.be.instanceof(Object);
+    expect(element).to.have.property('revision', 1);
+    expect(element).to.have.property('elementName', 'composite');
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal(['#', 'types', 'component']);
+    expect(element).to.have.property('elementType');
+    expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
+    expect(element).to.have.property('isContainer', false);
+    expect(element).to.have.property('isVolatile', true);
+    expect(element).to.have.property('childNames');
+    expect(element.childNames).to.deep.equal(null);
   });
 
   it("should find /types/component/constant", async () => {

@@ -9,7 +9,7 @@ import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHan
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
-import { BuildComponentCallback, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
+import { BuildComponentCallback, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
 import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
 
 let customTime = -1;
@@ -283,7 +283,8 @@ describe("Serial pin connection with three components", () => {
   });
 
   it("should connect source and relay components", async () => {
-    const connection = await engine.createConnection(
+    const connection = await connectComponents(
+      engine,
       [ '#', 'runtime' ] as ElementPath,
       'source-component-1' as ElementName,
       'out:value' as ElementName,
@@ -310,7 +311,8 @@ describe("Serial pin connection with three components", () => {
   });
 
   it("should connect relay and sink components", async () => {
-    const connection = await engine.createConnection(
+    const connection = await connectComponents(
+      engine,
       [ '#', 'runtime' ] as ElementPath,
       'relay-component-1' as ElementName,
       'out:value' as ElementName,
@@ -553,7 +555,8 @@ describe("Serial pin connection with four components", () => {
   });
 
   it("should connect source and relay components", async () => {
-    const connection = await engine.createConnection(
+    const connection = await connectComponents(
+      engine,
       [ '#', 'runtime' ] as ElementPath,
       'source-component-1' as ElementName,
       'out:value' as ElementName,
@@ -581,7 +584,8 @@ describe("Serial pin connection with four components", () => {
 
 
   it("should first relay and second relay components", async () => {
-    const connection = await engine.createConnection(
+    const connection = await connectComponents(
+      engine,
       [ '#', 'runtime' ] as ElementPath,
       'relay-component-1' as ElementName,
       'out:value' as ElementName,
@@ -610,7 +614,8 @@ describe("Serial pin connection with four components", () => {
 
 
   it("should connect second relay and sink components", async () => {
-    const connection = await engine.createConnection(
+    const connection = await connectComponents(
+      engine,
       [ '#', 'runtime' ] as ElementPath,
       'relay-component-2' as ElementName,
       'out:value' as ElementName,
