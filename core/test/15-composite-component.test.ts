@@ -286,22 +286,10 @@ describe("Composite component", () => {
           'e1' as ElementName,
           [ '#', 'runtime', 'C1' ] as ElementPath,
           [ '#', 'types', 'pins', 'input-pin' ] as ElementPath,
-          { value:null }
+          { value: null }
         );
         expect(element).to.be.instanceof(Object);
         expect(element).to.have.property('elementName', 'e1');
-        /*
-        input pin {
-          revision: 1,
-          elementName: 'e1',
-          parentPath: [ '#', 'runtime', 'C1' ],
-          elementType: [ '#', 'types', 'pins', 'input-pin' ],
-          isContainer: false,
-          isVolatile: false,
-          childNames: null,
-          data: { value: null }
-        }
-        */
       });
 
       it("should find the input pin in the composite component", async () => {
@@ -597,6 +585,25 @@ describe("Composite component", () => {
 
   describe("Runtime", () => {
 
+    it("should have no value in composite input pin", async () => {
+      const inputPin = await engine.getElement([ '#', 'runtime', 'C1', 'e1' ] as ElementPath);
+      expect(inputPin).to.be.instanceOf(Object);
+      expect(inputPin).to.have.property('elementName', 'e1');
+      expect(inputPin).to.have.property('data');
+      expect(inputPin.data).to.have.property('value', null);
+      expect(inputPin).to.have.property('revision', 1);
+    });
+
+    it("should have no value in composite output pin", async () => {
+      const inputPin = await engine.getElement([ '#', 'runtime', 'C1', 'o1' ] as ElementPath);
+      expect(inputPin).to.be.instanceOf(Object);
+      expect(inputPin).to.have.property('elementName', 'o1');
+      expect(inputPin).to.have.property('data');
+      expect(inputPin.data).to.have.property('value', null);
+      expect(inputPin).to.have.property('revision', 1);
+    });
+
+
     it("should find a first message in message queue", async () => {
       const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
       expect(messageQueueElement).to.be.instanceof(Object);
@@ -622,6 +629,15 @@ describe("Composite component", () => {
       await engine.runOnce();
     });
 
+    it("should have updated the composite input pin", async () => {
+      const inputPin = await engine.getElement([ '#', 'runtime', 'C1', 'e1' ] as ElementPath);
+      expect(inputPin).to.be.instanceOf(Object);
+      expect(inputPin).to.have.property('elementName', 'e1');
+      expect(inputPin).to.have.property('data');
+      expect(inputPin.data).to.have.property('value', 123);
+      expect(inputPin).to.have.property('revision', 2);
+    });
+
     it("should find a second message in message queue", async () => {
       const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
       expect(messageQueueElement).to.be.instanceof(Object);
@@ -643,8 +659,18 @@ describe("Composite component", () => {
       expect(message.data).to.have.property('value', 123);
     });
 
+
     it("should process the second message", async () => {
       await engine.runOnce();
+    });
+
+
+    it("should have updated the relay internal value ", async () => {
+      const component = await engine.getElement([ '#', 'runtime', 'C1', 'R1' ] as ElementPath);
+      expect(component).to.be.instanceOf(Object);
+      expect(component).to.have.property('revision', 2);
+      expect(component).to.have.property('data');
+      expect(component.data).to.have.property('internalValue', 123);
     });
 
 
@@ -670,9 +696,20 @@ describe("Composite component", () => {
       expect(message.data).to.have.property('value', 123);
     });
 
+
     it("should process the second message", async () => {
       await engine.runOnce();
     });
+
+    it("should have updated the composite output pin", async () => {
+      const inputPin = await engine.getElement([ '#', 'runtime', 'C1', 'o1' ] as ElementPath);
+      expect(inputPin).to.be.instanceOf(Object);
+      expect(inputPin).to.have.property('elementName', 'o1');
+      expect(inputPin).to.have.property('data');
+      expect(inputPin.data).to.have.property('value', 123);
+      expect(inputPin).to.have.property('revision', 2);
+    });
+
 
   });
 

@@ -14,6 +14,7 @@ import { MtzEngine } from "@/Engine";
 import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMessage } from "@/MessageQueue";
 
 const compositeComponentTypeName = 'composite' as ElementName;
+const compositeComponentTypePath: ElementPath = [...componentTypePath, compositeComponentTypeName];
 
 const buildDataFunction: BuildDataFunction = async (
   _elementName: ElementName,
@@ -36,7 +37,7 @@ const evaluateComponentFunction: EvaluateComponentFunction = async (
   helpers: EvaluateComponentHelpers
 ) : Promise<EvaluationResult> => {
   assert(element.childNames !== null);
-  //console.log("dOm evaluateComponentFunction - data", data);
+
   for (const childName of element.childNames) {
     const childElement = await helpers.getChild(childName);
     assert(childElement !== null);
@@ -52,22 +53,21 @@ const evaluateComponentFunction: EvaluateComponentFunction = async (
     if (connectionData.sourceComponent !== null || connectionData.sourcePin !== data.pin)
       continue;
 
-    //console.log("dOm evaluateComponentFunction - connectionData", connectionData);
-
-    //TODO poster un message de mise à jour de son entrée au composant lié
+    // poster un message de mise à jour de son entrée au composant lié
     const connectedComponentName = connectionData.targetComponent;
     const connectedPinName = connectionData.targetPin;
-
     await helpers.postInputChangedToChild(connectedComponentName, connectedPinName, data.value);
 
   }
+
+  // la mise à jour de la valeur de l'entrée du composant composite est faite dans Engine.runOnce
 
   const result = {
     setData: null,
     setOutputs: []
   } as EvaluationResult;
-  return result;
 
+  return result;
 };
 
 
@@ -223,7 +223,9 @@ const connectComponentToOutput = async (
 
 
 export {
-  compositeComponentTypeDeclaration, compositeComponentTypeName,
+  compositeComponentTypeDeclaration,
+  compositeComponentTypeName,
+  compositeComponentTypePath,
   connectInputToComponent,
   connectComponentToOutput,
 };

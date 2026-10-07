@@ -19,7 +19,6 @@ import {
   containerTypeName,
   rootTypeContainerName,
   dataTypeName,
-  componentTypePath,
   pinTypeContainerName,
   linkTypeContainerName,
   systemContainerName,
@@ -27,7 +26,7 @@ import {
   runtimeContainerName,
   messageQueueName,
   messageQueuePath,
-  outputPinTypePath,
+  componentTypePath,
 } from '@/global';
 
 import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
@@ -43,7 +42,7 @@ import {
   EvaluateComponentFunction, EvaluateComponentHelpers, EvaluationResult
 } from './typeHandlers/componentTypeHandler';
 
-import { compositeComponentTypeDeclaration } from '@/typeHandlers/compositeComponentTypeHandler';
+import { compositeComponentTypeDeclaration, compositeComponentTypePath } from '@/typeHandlers/compositeComponentTypeHandler';
 import { constantComponentTypeDeclaration } from '@/typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from '@/typeHandlers/variableComponentTypeHandler';
 import { BuildElementDataCallback, elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
@@ -553,6 +552,7 @@ class MtzEngine {
             const childPath = [...componentPath, childName];
             return await this.getStoredElement(childPath);
           },
+          // TODO à transformer en fonction helper
           postInputChangedToChild: async (childComponentName: ElementName, childPinName: ElementName, newValue: any): Promise<void> => {
             const message: MtzMessage  = {
               at: this.timeFunction(),
@@ -566,8 +566,17 @@ class MtzEngine {
             mtzMessageQueuePushMessage(messageQueue, message);
           }
         }
-
         const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, evaluateComponentHelpers);
+
+        // mise à jour de la valeur de l'entrée ou de la sortie du composant composite
+        if (pathStartsWith(componentElement.elementType, compositeComponentTypePath)) {
+          const inputPinPath: ElementPath = [...componentPath, data.pin];
+          const inputPin = await this.getElement(inputPinPath)
+          if (inputPin.data === null)
+            inputPin.data = {};
+          inputPin.data.value = data.value;
+          await this.modifyElement(inputPin);
+        }
 
         // demande de changement de l'état interne du composant
         if (result.setData !== null) {
