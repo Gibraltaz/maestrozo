@@ -13,6 +13,7 @@ import {
   pathToString,
   getElementPath,
   elementPathAreEquals,
+  pathEquals,
 } from '@/path';
 import { MtzElement, ElementName, ElementPath, checkElement, ElementData } from '@/Element';
 import {
@@ -27,6 +28,7 @@ import {
   messageQueueName,
   messageQueuePath,
   componentTypePath,
+  outputPinTypePath,
 } from '@/global';
 
 import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
@@ -568,14 +570,52 @@ class MtzEngine {
         }
         const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, evaluateComponentHelpers);
 
-        // mise à jour de la valeur de l'entrée ou de la sortie du composant composite
+        // cas spécial n°1 du composant composite
         if (pathStartsWith(componentElement.elementType, compositeComponentTypePath)) {
-          const inputPinPath: ElementPath = [...componentPath, data.pin];
-          const inputPin = await this.getElement(inputPinPath)
-          if (inputPin.data === null)
-            inputPin.data = {};
-          inputPin.data.value = data.value;
-          await this.modifyElement(inputPin);
+
+          // mise à jour de la valeur de l'entrée ou de la sortie du composant composite
+          const pinPath: ElementPath = [...componentPath, data.pin];
+          const pin = await this.getElement(pinPath)
+          if (pin.data === null)
+            pin.data = {};
+          pin.data.value = data.value;
+          await this.modifyElement(pin);
+
+          // pour une sortie, propager le changement aux composants externes liés
+          if (pathEquals(pin.elementType, outputPinTypePath)) {
+            assert(containerElement.childNames !== null);
+            for (const childName of containerElement.childNames) {
+              const childElement = await this.getElement([...containerPath, childName]);
+
+              // ne traiter que les connexions
+              if (! pathEquals(childElement.elementType, connectionTypePath))
+                continue;
+
+              const connection = childElement.data;
+              assert(connection !== null);
+
+              // ne traiter que les connexions liées à la sortie du composant composite
+              if (connection.sourceComponent !== componentElement.elementName)
+                continue;
+              if (connection.sourcePin !== data.pin)
+                continue;
+
+              const targetComponentName = connection.targetComponent;
+              const targetPinName = connection.targetPin;
+              const message: MtzMessage= {
+                at: this.timeFunction(),
+                elementPath: [...containerPath, targetComponentName],
+                messageType: MESSAGE_TYPE_CHANGE,
+                data: {
+                  pin: targetPinName,
+                  value: data.value
+                }
+              };
+
+              mtzMessageQueuePushMessage(messageQueue, message);
+            }
+
+          }
         }
 
         // demande de changement de l'état interne du composant
@@ -637,6 +677,7 @@ class MtzEngine {
               // poster un message de mise jour du composant cible
               let message: MtzMessage;
 
+              // cas spécial n°2 du composant composite
               if (targetComponentName === null) {
                 // la connexion est liée à une sortie du composant composite
                 message = {

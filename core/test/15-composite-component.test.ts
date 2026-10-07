@@ -112,7 +112,6 @@ const relayCustomComponentEvaluateFunction: EvaluateComponentFunction = async (
 };
 
 
-/*
 // sink component with only one input pin
 const sinkCustomComponentBuildDataFunction: BuildDataFunction = async (
   _elementName: ElementName,
@@ -142,7 +141,7 @@ const sinkCustomComponentBuildElementFunction: BuildElementFunction = async (
 const sinkCustomComponentEvaluateFunction: EvaluateComponentFunction = async (
   element: MtzElement,
   data:Record<string, any>,
-  _helpers: BuildHelpers
+  _helpers: EvaluateComponentHelpers
 ) : Promise<EvaluationResult> => {
 
   const pinName = data.pin;
@@ -161,7 +160,6 @@ const sinkCustomComponentEvaluateFunction: EvaluateComponentFunction = async (
   };
   return result;
 };
-*/
 
 
 /*
@@ -542,6 +540,7 @@ describe("Composite component", () => {
       });
     });
 
+
     it("should instanciate the source component", async () => {
       const component = await engine.createElement(
         'I1' as ElementName,
@@ -583,7 +582,76 @@ describe("Composite component", () => {
 
   });
 
-  describe("Runtime", () => {
+
+  describe("Sink component", () => {
+
+    it("should declare the sink custom component type", async () => {
+      await engine.declareType({
+        elementName: 'sink-custom-component' as ElementName,
+        parentPath: [
+          '#' as ElementName,
+          'types' as ElementName,
+          'component' as ElementName
+        ],
+        elementType: [
+          '#' as ElementName,
+          'types' as ElementName,
+          'type' as ElementName
+        ],
+        isDerivable: false,
+        isContainer: true,
+        isVolatile: false,
+        callbacks: [
+          { name: BuildElementDataCallback, function: sinkCustomComponentBuildDataFunction },
+          { name: BuildComponentCallback, function: sinkCustomComponentBuildElementFunction },
+          { name: EvaluateComponentCallback, function: sinkCustomComponentEvaluateFunction }
+        ]
+      });
+    });
+
+    it("should instanciate the sink component", async () => {
+      const component = await engine.createElement(
+        'O1' as ElementName,
+        [ '#', 'runtime' ] as ElementPath,
+        [ '#', 'types', 'component', 'sink-custom-component' ] as ElementPath,
+        { }
+      );
+      expect(component).to.be.instanceof(Object);
+      expect(component).to.have.property('elementName', 'O1');
+    });
+
+    it("should connect composite and sink components", async () => {
+      const connection = await connectComponents(
+        engine,
+        [ '#', 'runtime' ] as ElementPath,
+        'C1' as ElementName,
+        'o1' as ElementName,
+        'O1' as ElementName,
+        'in' as ElementName
+      );
+
+      expect(connection).to.be.instanceof(Object);
+      expect(connection).to.have.property('revision', 1);
+      expect(connection).to.have.property('elementName', 'C1|o1|O1|in');
+      expect(connection).to.have.property('parentPath');
+      expect(connection.parentPath).to.deep.equal([ '#', 'runtime' ]);
+      expect(connection).to.have.property('elementType');
+      expect(connection.elementType).to.deep.equal([ '#', 'types', 'links', 'connection' ]);
+      expect(connection).to.have.property('isContainer', false);
+      expect(connection).to.have.property('isVolatile', false);
+      expect(connection).to.have.property('childNames', null);
+
+      expect(connection).to.have.property('data');
+      expect(connection.data).to.have.property('sourceComponent', 'C1');
+      expect(connection.data).to.have.property('sourcePin', 'o1');
+      expect(connection.data).to.have.property('targetComponent', 'O1');
+      expect(connection.data).to.have.property('targetPin', 'in');
+    });
+
+  });
+
+
+  describe("Runtime first pass", () => {
 
     it("should have no value in composite input pin", async () => {
       const inputPin = await engine.getElement([ '#', 'runtime', 'C1', 'e1' ] as ElementPath);
@@ -673,7 +741,6 @@ describe("Composite component", () => {
       expect(component.data).to.have.property('internalValue', 123);
     });
 
-
     it("should find a third message in message queue", async () => {
       const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
       expect(messageQueueElement).to.be.instanceof(Object);
@@ -697,7 +764,7 @@ describe("Composite component", () => {
     });
 
 
-    it("should process the second message", async () => {
+    it("should process the third message", async () => {
       await engine.runOnce();
     });
 
@@ -710,13 +777,61 @@ describe("Composite component", () => {
       expect(inputPin).to.have.property('revision', 2);
     });
 
+    it("should find a fourth message in message queue", async () => {
+      const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+      expect(messageQueueElement).to.be.instanceof(Object);
+      expect(messageQueueElement).to.have.property('data')
+      expect(messageQueueElement.data).to.have.property('messages')
+      const messages = messageQueueElement?.data?.messages ?? null;
+      assert(messages !== null);
+      expect(messages).to.be.instanceOf(Array);
+      expect(messages.length).to.equal(1);
+
+      const message = messages[0];
+      expect(message).to.be.instanceOf(Object);
+      expect(message).to.be.have.property('at', 10007);
+      expect(message).to.be.have.property('messageType', 'changed');
+      expect(message).to.be.have.property('elementPath');
+      expect(message.elementPath).to.deep.equal([ '#', 'runtime', 'O1' ]);
+      expect(message).to.be.have.property('data');
+      expect(message.data).to.be.instanceOf(Object);
+      expect(message.data).to.have.property('pin', 'in');
+      expect(message.data).to.have.property('value', 123);
+    });
+
+    it("should process the fourth message", async () => {
+      await engine.runOnce();
+    });
+
+    it("should have updated the shink", async () => {
+      const sink = await engine.getElement([ '#', 'runtime', 'O1' ] as ElementPath);
+      expect(sink).to.be.instanceOf(Object);
+      expect(sink).to.have.property('elementName', 'O1');
+      expect(sink).to.have.property('data');
+      expect(sink.data).to.have.property('internalValue', 123);
+      expect(sink).to.have.property('revision', 2);
+    });
+
+    it("should have no waiting messages", async () => {
+      const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+      expect(messageQueueElement).to.be.instanceof(Object);
+      expect(messageQueueElement).to.have.property('data')
+      expect(messageQueueElement.data).to.have.property('messages')
+      const messages = messageQueueElement?.data?.messages ?? null;
+      assert(messages !== null);
+      expect(messages).to.be.instanceOf(Array);
+      expect(messages.length).to.equal(0);
+    });
 
   });
 
+  //describe("Runtime first pass", () => {
+  //  //TODO mettre à jour la valeur de I1 et suivre la propagation du message
+  //});
 
 });
 
-/* FIXME tester un composant avec deux sous-composants
+/* TODO tester un composant avec deux sous-composants
             ┌────────────────┐
             │       C1       │
    ┌────┐ e1│ ┌────┐  ┌────┐ │o1 ┌────┐

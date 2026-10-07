@@ -60,7 +60,7 @@ const evaluateComponentFunction: EvaluateComponentFunction = async (
 
   }
 
-  // la mise à jour de la valeur de l'entrée du composant composite est faite dans Engine.runOnce
+  // la mise à jour de la valeur de l'entrée ou de la sortie du composant composite est faite dans Engine.runOnce
 
   const result = {
     setData: null,
