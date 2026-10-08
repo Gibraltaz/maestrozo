@@ -412,33 +412,44 @@ class MtzEngine {
     if (parentElement.isVolatile && ! isVolatile)
       throw new Error(`Non volatile element «${pathToString(getElementPath(typeElement))}» can not be store in a volatile container`);
 
-    const buildHelpers: BuildHelpers = {
-      getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
-        return await this.getStoredElement(elementPath)
-      },
-      createChildElement: async (
-        childElementName: ElementName,
-        childElementType: ElementPath,
-        childParams: Record<string, any>
-      ): Promise<MtzElement>  => {
-        const childElement = await this.createElement(
-          childElementName,
-          elementPath,
-          childElementType,
-          childParams,
-        );
-        return childElement;
-      }
-    }
 
     const buildElementDataCallback = typeHandler.callbacks.find(callback => callback.name === BuildElementDataCallback);
     let elementData = {} as ElementData;
 
     if (buildElementDataCallback !== undefined) {
+
+      //TODO autotest interdiction réutilisation helper
+      let buildElementDataHelpersActive = true; // contrôle de la réutilisation des fonctions helper
+
+      const buildElementDataHelpers: BuildHelpers = {
+        getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
+          if (! buildElementDataHelpersActive)
+            throw new Error(`Build element data helper «getChild» can no longer be used (element «${elementName}»)`);
+          return await this.getStoredElement(elementPath)
+        },
+        // TODO retirer createChildElement du build data !
+        createChildElement: async (
+          childElementName: ElementName,
+          childElementType: ElementPath,
+          childParams: Record<string, any>
+        ): Promise<MtzElement>  => {
+          if (!buildElementDataHelpersActive)
+            throw new Error(`Build element data helper «createChildElement» can no longer be used (element «${elementName}»)`);
+          const childElement = await this.createElement(
+            childElementName,
+            elementPath,
+            childElementType,
+            childParams,
+          );
+          return childElement;
+        }
+      }
+
       const buildElementDataFunction = buildElementDataCallback.function as BuildDataFunction;
       if (typeof(buildElementDataFunction) !== 'function')
         throw new Error(`Build element data callback in type «${pathToString(getElementPath(typeElement))}» is not a function`);
-      elementData = await buildElementDataFunction(elementName, parentPath, params, buildHelpers);
+      elementData = await buildElementDataFunction(elementName, parentPath, params, buildElementDataHelpers);
+      buildElementDataHelpersActive = false; // interdire la réutilisation des fonctions helper
     }
 
     let element = {
@@ -456,11 +467,37 @@ class MtzEngine {
 
     const buildComponentCallback = typeHandler.callbacks.find(callback => callback.name === BuildComponentCallback);
     if (buildComponentCallback !== undefined) {
+
+      //TODO autotest interdiction réutilisation helper
+      let buildComponentHelpersActive = true; // contrôle de la réutilisation des fonctions helper
+
+      const buildComponentHelpers: BuildHelpers = {
+        getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
+          if (! buildComponentHelpersActive)
+            throw new Error(`Build element data helper «getChild» can no longer be used (element «${elementName}»)`);
+          return await this.getStoredElement(elementPath)
+        },
+        createChildElement: async (
+          childElementName: ElementName,
+          childElementType: ElementPath,
+          childParams: Record<string, any>
+        ): Promise<MtzElement>  => {
+          if (!buildComponentHelpersActive)
+            throw new Error(`Build component helper «createChildElement» can no longer be used (element «${elementName}»)`);
+          const childElement = await this.createElement(
+            childElementName,
+            elementPath,
+            childElementType,
+            childParams,
+          );
+          return childElement;
+        }
+      }
       const buildComponentFunction = buildComponentCallback.function as BuildElementFunction;
       if (typeof(buildComponentFunction) !== 'function')
         throw new Error(`Build component callback is not a function`);
       // TODO tester que l'élément est bien un composant
-      await buildComponentFunction(element, params, buildHelpers);
+      await buildComponentFunction(element, params, buildComponentHelpers);
       // relire l'élément car sa propriété childNames a changé si des éléments enfants ont été créés dans cet élément
       element = await this.getStoredElement(elementPath);
     }
@@ -548,14 +585,21 @@ class MtzEngine {
         if (typeof(evaluateComponentFunction ) !== 'function')
           throw new Error(`Evaluation function of component «${pathToString(message.elementPath)}» is not a function`);
 
+        //TODO autotest interdiction réutilisation helper
+        let evaluateComponentHelpersActive = true; // contrôle de la réutilisation des fonctions helper
+
         const evaluateComponentHelpers: EvaluateComponentHelpers = {
           // TODO autotest helper getChild
           getChild : async (childName:ElementName): Promise<MtzElement> => {
+            if (! evaluateComponentHelpersActive)
+              throw new Error(`Evalute component helper «getChild» can no longer be used (element «${componentName}»)`);
             const childPath = [...componentPath, childName];
             return await this.getStoredElement(childPath);
           },
           // TODO à transformer en fonction helper
           postInputChangedToChild: async (childComponentName: ElementName, childPinName: ElementName, newValue: any): Promise<void> => {
+            if (! evaluateComponentHelpersActive)
+              throw new Error(`Evalute component helper «postInputChangedToChild » can no longer be used (element «${componentName}»)`);
             const message: MtzMessage  = {
               at: this.timeFunction(),
               elementPath: [...componentPath, childComponentName],
@@ -569,6 +613,7 @@ class MtzEngine {
           }
         }
         const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, evaluateComponentHelpers);
+        evaluateComponentHelpersActive = false; // interdire la réutilisation des fonctions helper
 
         // cas spécial n°1 du composant composite
         if (pathStartsWith(componentElement.elementType, compositeComponentTypePath)) {
