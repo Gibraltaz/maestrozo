@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { MtzElement, ElementData, ElementName, ElementPath } from "@/Element";
+import { MtzElement, ElementName, ElementPath } from "@/Element";
 
 type GetElementHelper = (elementPath: ElementPath) => Promise<MtzElement | null>;
 
@@ -13,24 +13,6 @@ type CreateChildElementHelper = (
   childParams: Record<string, any>
 ) => Promise<MtzElement>;
 
-type BuildHelpers = {
-  getElement: GetElementHelper,
-  createChildElement: CreateChildElementHelper
-};
-
-type BuildDataFunction = (
-  elementName: ElementName,
-  parentPath: ElementPath,
-  params:Record<string, any>,
-  helpers: BuildHelpers
-) => Promise<ElementData>;
-
-// TODO à renommer en BuildComponentFunction et à déplacer dans componentTypeHandler
-type BuildElementFunction = (
-  element: MtzElement,
-  params:Record<string, any>,
-  helpers: BuildHelpers
-) => Promise<void>;
 
 type CallbackName = string & { __brand:'CallbackName' };
 
@@ -61,9 +43,8 @@ type TypeDeclaration = {
 export {
   TypeDeclaration,
   TypeHandler,
-  BuildDataFunction,
-  BuildElementFunction,
-  BuildHelpers,
   CallbackName,
-  CallbackDeclaration
+  CallbackDeclaration,
+  GetElementHelper,
+  CreateChildElementHelper 
 };

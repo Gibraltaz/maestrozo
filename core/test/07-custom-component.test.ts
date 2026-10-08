@@ -5,25 +5,24 @@
 
 import { describe, it, expect } from "vitest";
 import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
-import { BuildComponentCallback } from "@/typeHandlers/componentTypeHandler";
-import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
+import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers } from "@/typeHandlers/componentTypeHandler";
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "@/typeHandlers/elementTypeHandler";
 
-const customComponentBuildDataFunction1: BuildDataFunction = async (
+const customComponentBuildElementDataFunction1: BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>,
-  _helpers: BuildHelpers
+  _helpers: BuildElementDataHelpers
 ): Promise<ElementData> => {
   return {} as ElementData;
 };
 
-const customComponentBuildElementFunction1: BuildElementFunction = async (
+const customComponentBuildElementFunction1: BuildComponentFunction = async (
   _element: MtzElement,
   _params:Record<string, any>,
-  _helpers: BuildHelpers
+  _helpers: BuildComponentHelpers
 ): Promise<void> => {
 }
 
@@ -52,7 +51,7 @@ describe("Custom component without pin", () => {
       isContainer: false,
       isVolatile: true,
       callbacks: [
-        { name: BuildElementDataCallback, function: customComponentBuildDataFunction1 },
+        { name: BuildElementDataCallback, function: customComponentBuildElementDataFunction1 },
         { name: BuildComponentCallback, function: customComponentBuildElementFunction1}
       ]
     });
@@ -150,11 +149,11 @@ describe("Custom component without pin", () => {
 });
 
 
-const customComponentBuildDataFunction2: BuildDataFunction = async (
+const customComponentBuildElementDataFunction2: BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   params:Record<string, any>,
-  _helpers: BuildHelpers
+  _helpers: BuildElementDataHelpers
 ): Promise<ElementData> => {
   if (params.inValue === undefined)
     throw new Error("Param «inValue» is not defined");
@@ -166,10 +165,10 @@ const customComponentBuildDataFunction2: BuildDataFunction = async (
   } as ElementData;
 };
 
-const customComponentBuildElementFunction2: BuildElementFunction = async (
+const customComponentBuildElementFunction2: BuildComponentFunction = async (
   element: MtzElement,
   _params:Record<string, any>,
-  helpers: BuildHelpers
+  helpers: BuildElementDataHelpers
 ): Promise<void> => {
   const inputPinValue = element?.data?.inputValue ?? null;
   const outputPinValue = element?.data?.outputValue ?? null;
@@ -214,7 +213,7 @@ describe("Custom component with pins", () => {
       isContainer: true,
       isVolatile: false,
       callbacks: [
-        { name: BuildElementDataCallback, function: customComponentBuildDataFunction2 },
+        { name: BuildElementDataCallback, function: customComponentBuildElementDataFunction2 },
         { name: BuildComponentCallback, function: customComponentBuildElementFunction2}
       ]
     });

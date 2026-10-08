@@ -5,10 +5,10 @@
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName } from "@/global";
-import { BuildDataFunction, TypeDeclaration } from "./TypeHandler";
-import { BuildElementDataCallback } from "./elementTypeHandler";
+import { TypeDeclaration } from "./TypeHandler";
+import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
 
-const buildDataFunction : BuildDataFunction = async (
+const buildElementDataFunction : BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
@@ -25,7 +25,7 @@ const typeTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: true,
   callbacks: [
-    { name: BuildElementDataCallback, function: buildDataFunction }
+    { name: BuildElementDataCallback, function: buildElementDataFunction }
   ]
 };
 

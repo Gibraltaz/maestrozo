@@ -5,9 +5,9 @@
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "@/global";
-import { BuildDataFunction, CallbackName, TypeDeclaration } from "./TypeHandler";
+import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from "./TypeHandler";
 
-const buildDataFunction: BuildDataFunction = async (
+const buildElementDataFunction: BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
@@ -25,11 +25,27 @@ const elementTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: true,
   callbacks: [
-    { name: BuildElementDataCallback, function: buildDataFunction }
+    { name: BuildElementDataCallback, function: buildElementDataFunction }
   ]
 };
 
+type BuildElementDataHelpers = {
+  getElement: GetElementHelper,
+  createChildElement: CreateChildElementHelper
+};
+
+
+type BuildElementDataFunction = (
+  elementName: ElementName,
+  parentPath: ElementPath,
+  params:Record<string, any>,
+  helpers: BuildElementDataHelpers
+) => Promise<ElementData>;
+
+
 export {
   elementTypeDeclaration,
-  BuildElementDataCallback 
+  BuildElementDataFunction,
+  BuildElementDataCallback,
+  BuildElementDataHelpers 
 };

@@ -6,12 +6,12 @@
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '@/global';
 import { pathToString } from "@/path";
-import { BuildDataFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
-import { BuildElementDataCallback } from "./elementTypeHandler";
+import { TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
 
 const booleanTypeName = 'boolean' as ElementName;
 
-const buildDataFunction: BuildDataFunction = async (
+const buildElementDataFunction: BuildElementDataFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>
@@ -38,7 +38,7 @@ const booleanTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   callbacks: [
-    { name: BuildElementDataCallback, function: buildDataFunction }
+    { name: BuildElementDataCallback, function: buildElementDataFunction }
   ]
 };
 

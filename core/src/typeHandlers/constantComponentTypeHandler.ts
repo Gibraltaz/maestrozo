@@ -6,17 +6,17 @@
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { rootName, rootTypeContainerName, componentTypeName, typeElementName, outputPinTypePath } from '@/global';
 import { checkElementPath, getElementPath, pathStartsWith, pathToString } from "@/path";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
-import { BuildComponentCallback } from "./componentTypeHandler";
-import { BuildElementDataCallback } from "./elementTypeHandler";
+import { TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers } from "./componentTypeHandler";
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "./elementTypeHandler";
 
 const constantComponentTypeName = 'constant' as ElementName;
 
-const buildDataFunction: BuildDataFunction = async (
+const buildElementDataFunction: BuildElementDataFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>,
-  helpers: BuildHelpers
+  helpers: BuildElementDataHelpers
 ): Promise<ElementData> => {
 
   const dataTypePath = params?.dataType ?? null;
@@ -46,7 +46,7 @@ const buildDataFunction: BuildDataFunction = async (
   if (typeof(buildElementDataCallback.function) !== 'function')
     throw new Error(`Factory not defined in type «${pathToString(getElementPath(dataTypeElement))}»`);
 
-  const dataFactory = buildElementDataCallback.function as BuildDataFunction;
+  const dataFactory = buildElementDataCallback.function as BuildElementDataFunction;
 
   // FIXME faut-il fixer la propriété «value» au niveau du data du composant ou au niveau du data du output pin ?
   const data = await dataFactory(elementName, parentPath, params, helpers);
@@ -56,10 +56,10 @@ const buildDataFunction: BuildDataFunction = async (
   return data;
 };
 
-const buildComponentFunction: BuildElementFunction = async (
+const buildComponentFunction: BuildComponentFunction = async (
   element: MtzElement,
   _params:Record<string, any>,
-  helpers: BuildHelpers
+  helpers: BuildComponentHelpers
 ):Promise<void> => {
   const value = element?.data?.value ?? null;
 
@@ -78,7 +78,7 @@ const constantComponentTypeDeclaration: TypeDeclaration = {
   isContainer: true, // constant contains its output pin
   isVolatile: false,
   callbacks: [
-    { name: BuildElementDataCallback, function: buildDataFunction },
+    { name: BuildElementDataCallback, function: buildElementDataFunction },
     { name: BuildComponentCallback, function: buildComponentFunction }
   ]
 };

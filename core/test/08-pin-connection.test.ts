@@ -5,18 +5,17 @@
 
 import { describe, it, expect } from "vitest";
 import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
-import { BuildComponentCallback, connectComponents } from "@/typeHandlers/componentTypeHandler";
-import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
+import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents } from "@/typeHandlers/componentTypeHandler";
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "@/typeHandlers/elementTypeHandler";
 
 
-const customComponentBuildDataFunction: BuildDataFunction = async (
+const customComponentBuildDataFunction: BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   params:Record<string, any>,
-  _helpers: BuildHelpers
+  _helpers: BuildElementDataHelpers
 ): Promise<ElementData> => {
   if (params.inValue === undefined)
     throw new Error("Param «inValue» is not defined");
@@ -28,10 +27,10 @@ const customComponentBuildDataFunction: BuildDataFunction = async (
   } as ElementData;
 };
 
-const customComponentBuildElementFunction: BuildElementFunction = async (
+const customComponentBuildElementFunction: BuildComponentFunction = async (
   element: MtzElement,
   _params:Record<string, any>,
-  helpers: BuildHelpers
+  helpers: BuildComponentHelpers
 ): Promise<void> => {
   const inputPinValue = element?.data?.inputValue ?? null;
   const outputPinValue = element?.data?.outputValue ?? null;

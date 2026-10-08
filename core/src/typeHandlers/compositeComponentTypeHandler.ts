@@ -5,9 +5,9 @@
 
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { rootName, rootTypeContainerName, componentTypeName, typeElementName, componentTypePath, inputPinTypePath, linkTypeContainerPath, messageQueuePath, outputPinTypePath } from '@/global';
-import { BuildDataFunction, BuildHelpers, TypeDeclaration } from '@/typeHandlers/TypeHandler';
-import { BuildElementDataCallback } from "./elementTypeHandler";
-import { EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluationResult } from "./componentTypeHandler";
+import { TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "./elementTypeHandler";
+import { EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "./componentTypeHandler";
 import { pathEquals, pathStartsWith, pathToString } from "@/path";
 import { connectionTypeName, connectionTypePath } from "./connectionTypeHandler";
 import { MtzEngine } from "@/Engine";
@@ -16,11 +16,11 @@ import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMe
 const compositeComponentTypeName = 'composite' as ElementName;
 const compositeComponentTypePath: ElementPath = [...componentTypePath, compositeComponentTypeName];
 
-const buildDataFunction: BuildDataFunction = async (
+const buildElementDataFunction: BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>,
-  _helpers: BuildHelpers
+  _helpers: BuildElementDataHelpers
 ): Promise<ElementData> => {
   return {};
 };
@@ -35,7 +35,7 @@ const evaluateComponentFunction: EvaluateComponentFunction = async (
   element: MtzElement,
   data:Record<string, any>,
   helpers: EvaluateComponentHelpers
-) : Promise<EvaluationResult> => {
+) : Promise<EvaluteComponentResult> => {
   assert(element.childNames !== null);
 
   for (const childName of element.childNames) {
@@ -65,7 +65,7 @@ const evaluateComponentFunction: EvaluateComponentFunction = async (
   const result = {
     setData: null,
     setOutputs: []
-  } as EvaluationResult;
+  } as EvaluteComponentResult;
 
   return result;
 };
@@ -79,7 +79,7 @@ const compositeComponentTypeDeclaration: TypeDeclaration = {
   isContainer: true, // composite contains its output pin
   isVolatile: false,
   callbacks: [
-    { name: BuildElementDataCallback, function: buildDataFunction },
+    { name: BuildElementDataCallback, function: buildElementDataFunction },
     { name: EvaluateComponentCallback, function: evaluateComponentFunction }
   ]
 };

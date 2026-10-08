@@ -6,8 +6,8 @@
 import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
 import { componentTypeName, componentTypePath, inputPinTypePath, linkTypeContainerPath, messageQueuePath, outputPinTypePath, rootName, rootTypeContainerName, typeElementName } from '@/global';
 import { pathStartsWith, pathToString } from "@/path";
-import { BuildDataFunction, CallbackName, TypeDeclaration } from '@/typeHandlers/TypeHandler';
-import { BuildElementDataCallback } from "./elementTypeHandler";
+import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
 import { MtzEngine } from "@/Engine";
 import { connectionTypeName } from "./connectionTypeHandler";
 import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMessage } from "@/MessageQueue";
@@ -15,7 +15,21 @@ import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMe
 const EvaluateComponentCallback = 'evaluate-component' as CallbackName;
 const BuildComponentCallback = 'build-component' as CallbackName;
 
-const buildDataFunction : BuildDataFunction = async (
+type BuildComponentHelpers = {
+  getElement: GetElementHelper,
+  createChildElement: CreateChildElementHelper
+};
+
+type BuildComponentResult = void; 
+
+type BuildComponentFunction = (
+  element: MtzElement,
+  params:Record<string, any>,
+  helpers: BuildComponentHelpers
+) => Promise<BuildComponentResult>;
+
+
+const buildElementDataFunction : BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
@@ -31,9 +45,7 @@ type EvaluateComponentHelpers = {
   postInputChangedToChild: PostInputChangedToChild
 };
 
-
-
-type EvaluationResult = {
+type EvaluteComponentResult = {
   setData: ElementData | null;
   setOutputs: Array<{
     pin: ElementName;
@@ -45,13 +57,13 @@ type EvaluateComponentFunction = (
   element: MtzElement,
   params:Record<string, any>,
   helpers: EvaluateComponentHelpers,
-) => Promise<EvaluationResult>;
+) => Promise<EvaluteComponentResult>;
 
 const evaluateComponentFunction: EvaluateComponentFunction = async (
   _element: MtzElement,
   _data:Record<string, any>,
   _helpers: EvaluateComponentHelpers,
-) : Promise<EvaluationResult> => {
+) : Promise<EvaluteComponentResult> => {
   throw new Error("Component evaluation function should not be called directly");
 };
 
@@ -64,8 +76,8 @@ const componentTypeDeclaration: TypeDeclaration = {
   isContainer: true,
   isVolatile: true,
   callbacks: [
-    { name: BuildElementDataCallback, function: buildDataFunction },
-    { name:EvaluateComponentCallback , function: evaluateComponentFunction }
+    { name: BuildElementDataCallback, function: buildElementDataFunction },
+    { name: EvaluateComponentCallback , function: evaluateComponentFunction }
   ]
 };
 
@@ -152,8 +164,8 @@ const connectComponents = async (
 
 export { 
   componentTypeDeclaration, componentTypeName,
-  EvaluateComponentFunction, EvaluationResult, EvaluateComponentHelpers,
-  EvaluateComponentCallback, BuildComponentCallback,
+  BuildComponentCallback, BuildComponentFunction, BuildComponentResult, BuildComponentHelpers,
+  EvaluateComponentCallback, EvaluateComponentFunction, EvaluteComponentResult, EvaluateComponentHelpers, 
   connectComponents,
 };
 

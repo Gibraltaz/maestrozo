@@ -1,15 +1,15 @@
 import { ElementName, ElementPath, pathEquals, pathToString, rootName } from "@/path";
-import { BuildDataFunction, BuildHelpers, TypeDeclaration } from "./TypeHandler";
+import { TypeDeclaration } from "./TypeHandler";
 import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath, systemContainerPath, messageQueueName } from "@/global";
 import { ElementData } from "@/Element";
 import { mtzMessageQueueCreate } from "@/MessageQueue";
-import { BuildElementDataCallback } from "./elementTypeHandler";
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "./elementTypeHandler";
 
-const buildDataFunction: BuildDataFunction = async (
+const buildElementDataFunction: BuildElementDataFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   params:Record<string, any>,
-  _helpers: BuildHelpers
+  _helpers: BuildElementDataHelpers
 ): Promise<ElementData> => {
   const value = params?.value ?? null;
   if (value === null)
@@ -27,15 +27,15 @@ const messageTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   callbacks: [
-    { name: BuildElementDataCallback, function: buildDataFunction }
+    { name: BuildElementDataCallback, function: buildElementDataFunction }
   ]
 };
 
-const messageQueueBuildDataFunction: BuildDataFunction = async (
+const messageQueueBuildDataFunction: BuildElementDataFunction = async (
   elementName: ElementName,
   parentPath: ElementPath,
   _params:Record<string, any>,
-  _helpers: BuildHelpers
+  _helpers: BuildElementDataHelpers
 ): Promise<ElementData> => {
   if (! pathEquals(parentPath, systemContainerPath ))
     throw new Error("Invalid parent path");

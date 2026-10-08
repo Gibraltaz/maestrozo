@@ -5,16 +5,16 @@
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { linkTypeContainerPath, rootName, rootTypeContainerName, typeElementName } from '@/global';
-import { BuildDataFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { TypeDeclaration } from '@/typeHandlers/TypeHandler';
 import { rootTypeContainerPath, linkTypeContainerName } from '@/global';
-import { BuildElementDataCallback } from "./elementTypeHandler";
+import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
 
 
 // name of element «#/types/links/connection»
 const connectionTypeName = 'connection' as ElementName;
 const connectionTypePath = [...rootTypeContainerPath, linkTypeContainerName, connectionTypeName];
 
-const buildDataFunction: BuildDataFunction = async (
+const buildElementDataFunction: BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   params:Record<string, any>
@@ -52,7 +52,7 @@ const connectionTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   callbacks: [
-    { name: BuildElementDataCallback, function: buildDataFunction }
+    { name: BuildElementDataCallback, function: buildElementDataFunction }
   ]
 };
 

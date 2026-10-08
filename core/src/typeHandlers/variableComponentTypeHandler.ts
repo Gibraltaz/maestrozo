@@ -5,20 +5,18 @@
 
 import { ElementData, ElementName, ElementPath } from "@/Element";
 import { rootName, rootTypeContainerName, typeElementName, componentTypeName } from '@/global';
-import { BuildDataFunction, TypeDeclaration } from '@/typeHandlers/TypeHandler';
-import { BuildElementDataCallback } from "./elementTypeHandler";
+import { TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
 
 const variableComponentTypeName = 'variable' as ElementName;
 
 
-const buildDataFunction: BuildDataFunction = async (
+const buildElementDataFunction: BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>
 ): Promise<ElementData> => {
   throw new Error("Variable component buildDataFunction not yet implemented");
-  //return {
-  //} as ElementData;
 };
 
 const variableComponentTypeDeclaration: TypeDeclaration = {
@@ -29,7 +27,7 @@ const variableComponentTypeDeclaration: TypeDeclaration = {
   isContainer: false,
   isVolatile: false,
   callbacks: [
-    { name: BuildElementDataCallback, function: buildDataFunction }
+    { name: BuildElementDataCallback, function: buildElementDataFunction }
   ]
 };
 

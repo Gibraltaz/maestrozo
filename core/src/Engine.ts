@@ -1,7 +1,7 @@
 /*
-* SPDX-License-Identifier: LGPL-3.0-or-later
-* Copyright (C) 2026 Executive Gibraltaz
-*/
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
 
 import { MaestrozoStore, StoreKey } from '@/store/MaestrozoStore';
 import { RawMemoryStore } from '@/store/RawMemoryStore';
@@ -31,7 +31,7 @@ import {
   outputPinTypePath,
 } from '@/global';
 
-import { BuildDataFunction, BuildElementFunction, BuildHelpers, TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
 
 import { containerTypeDeclaration} from '@/typeHandlers/containerTypeHandler';
 import { integerTypeDeclaration } from '@/typeHandlers/integerTypeHandler';
@@ -40,14 +40,15 @@ import { booleanTypeDeclaration } from '@/typeHandlers/booleanTypeHandler';
 import { inputPinTypeDeclaration, outputPinTypeDeclaration } from '@/typeHandlers/pinTypeHandlers';
 
 import {
-  BuildComponentCallback, componentTypeDeclaration, EvaluateComponentCallback,
-  EvaluateComponentFunction, EvaluateComponentHelpers, EvaluationResult
+  BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, componentTypeDeclaration, EvaluateComponentCallback,
+  EvaluateComponentFunction, EvaluateComponentHelpers,
+  EvaluteComponentResult
 } from './typeHandlers/componentTypeHandler';
 
 import { compositeComponentTypeDeclaration, compositeComponentTypePath } from '@/typeHandlers/compositeComponentTypeHandler';
 import { constantComponentTypeDeclaration } from '@/typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from '@/typeHandlers/variableComponentTypeHandler';
-import { BuildElementDataCallback, elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
 import { typeTypeDeclaration } from '@/typeHandlers/typeTypeHandler';
 import { connectionTypeDeclaration, connectionTypePath } from '@/typeHandlers/connectionTypeHandler';
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from '@/typeHandlers/messageTypeHandlers';
@@ -421,7 +422,7 @@ class MtzEngine {
       //TODO autotest interdiction réutilisation helper
       let buildElementDataHelpersActive = true; // contrôle de la réutilisation des fonctions helper
 
-      const buildElementDataHelpers: BuildHelpers = {
+      const buildElementDataHelpers: BuildElementDataHelpers = {
         getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
           if (! buildElementDataHelpersActive)
             throw new Error(`Build element data helper «getChild» can no longer be used (element «${elementName}»)`);
@@ -445,7 +446,7 @@ class MtzEngine {
         }
       }
 
-      const buildElementDataFunction = buildElementDataCallback.function as BuildDataFunction;
+      const buildElementDataFunction = buildElementDataCallback.function as BuildElementDataFunction;
       if (typeof(buildElementDataFunction) !== 'function')
         throw new Error(`Build element data callback in type «${pathToString(getElementPath(typeElement))}» is not a function`);
       elementData = await buildElementDataFunction(elementName, parentPath, params, buildElementDataHelpers);
@@ -471,7 +472,7 @@ class MtzEngine {
       //TODO autotest interdiction réutilisation helper
       let buildComponentHelpersActive = true; // contrôle de la réutilisation des fonctions helper
 
-      const buildComponentHelpers: BuildHelpers = {
+      const buildComponentHelpers: BuildComponentHelpers = {
         getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
           if (! buildComponentHelpersActive)
             throw new Error(`Build element data helper «getChild» can no longer be used (element «${elementName}»)`);
@@ -493,7 +494,7 @@ class MtzEngine {
           return childElement;
         }
       }
-      const buildComponentFunction = buildComponentCallback.function as BuildElementFunction;
+      const buildComponentFunction = buildComponentCallback.function as BuildComponentFunction;
       if (typeof(buildComponentFunction) !== 'function')
         throw new Error(`Build component callback is not a function`);
       // TODO tester que l'élément est bien un composant
@@ -612,7 +613,7 @@ class MtzEngine {
             mtzMessageQueuePushMessage(messageQueue, message);
           }
         }
-        const result: EvaluationResult  = await evaluateComponentFunction(componentElement, data, evaluateComponentHelpers);
+        const result: EvaluteComponentResult = await evaluateComponentFunction(componentElement, data, evaluateComponentHelpers);
         evaluateComponentHelpersActive = false; // interdire la réutilisation des fonctions helper
 
         // cas spécial n°1 du composant composite

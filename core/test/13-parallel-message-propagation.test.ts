@@ -5,22 +5,21 @@
 
 import { describe, it, expect } from "vitest";
 import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { BuildDataFunction, BuildElementFunction, BuildHelpers } from "@/typeHandlers/TypeHandler";
 import { ElementData, MtzElement } from "@/Element";
 import { MemoryStore } from "@/store/MemoryStore";
 import { MtzMessageTime } from "@/MessageQueue";
-import { BuildComponentCallback, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluationResult } from "@/typeHandlers/componentTypeHandler";
-import { BuildElementDataCallback } from "@/typeHandlers/elementTypeHandler";
+import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "@/typeHandlers/componentTypeHandler";
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "@/typeHandlers/elementTypeHandler";
 
 let customTime = -1;
 const customTimeFunction = () => customTime as MtzMessageTime;
 
 // first component : source component with one output pin
-const sourceCustomComponentBuildDataFunction: BuildDataFunction = async (
+const sourceCustomComponentBuildDataFunction: BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   params:Record<string, any>,
-  _helpers: BuildHelpers
+  _helpers: BuildElementDataHelpers
 ): Promise<ElementData> => {
   if (params.value === undefined)
     throw new Error("Param «value» is not defined");
@@ -29,10 +28,10 @@ const sourceCustomComponentBuildDataFunction: BuildDataFunction = async (
   } as ElementData;
 };
 
-const sourceCustomComponentBuildElementFunction: BuildElementFunction = async (
+const sourceCustomComponentBuildElementFunction: BuildComponentFunction = async (
   element: MtzElement,
   _params:Record<string, any>,
-  helpers: BuildHelpers
+  helpers: BuildComponentHelpers
 ): Promise<void> => {
 
   const internalValue = element?.data?.internalValue ?? null;
@@ -48,21 +47,21 @@ const sourceCustomComponentBuildElementFunction: BuildElementFunction = async (
 
 
 // third sink component with only one input pin
-const sinkCustomComponentBuildDataFunction: BuildDataFunction = async (
+const sinkCustomComponentBuildDataFunction: BuildElementDataFunction = async (
   _elementName: ElementName,
   _parentPath: ElementPath,
   _params:Record<string, any>,
-  _helpers: BuildHelpers
+  _helpers: BuildElementDataHelpers
 ): Promise<ElementData> => {
   return {
     internalValue: null
   } as ElementData;
 };
 
-const sinkCustomComponentBuildElementFunction: BuildElementFunction = async (
+const sinkCustomComponentBuildElementFunction: BuildComponentFunction = async (
   _element: MtzElement,
   _params:Record<string, any>,
-  helpers: BuildHelpers
+  helpers: BuildComponentHelpers
 ): Promise<void> => {
 
   await helpers.createChildElement(
@@ -76,8 +75,8 @@ const sinkCustomComponentBuildElementFunction: BuildElementFunction = async (
 const sinkCustomComponentEvaluateFunction: EvaluateComponentFunction = async (
   element: MtzElement,
   data:Record<string, any>,
-  _helpers: BuildHelpers
-) : Promise<EvaluationResult> => {
+  _helpers: EvaluateComponentHelpers
+) : Promise<EvaluteComponentResult> => {
 
   const pinName = data.pin;
   if (pinName !== 'in:value')
@@ -89,7 +88,7 @@ const sinkCustomComponentEvaluateFunction: EvaluateComponentFunction = async (
 
   const newData = {...element.data, internalValue: newValue};
 
-  const result: EvaluationResult = {
+  const result: EvaluteComponentResult = {
     setData: newData,
     setOutputs: null
   };
