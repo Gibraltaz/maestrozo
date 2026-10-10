@@ -16,7 +16,7 @@ type MtzElement = {
   isContainer: boolean;
   isVolatile: boolean;
   data: ElementData | null;
-  childNames: Array<ElementName> | null; // FIXME devrait être dans un type MtzContainer
+  childNames: Array<ElementName> | null; // FIXME null ou tableau vide pour les conteneurs ?
 };
 
 const elementPropertyNames : Array<string> = [

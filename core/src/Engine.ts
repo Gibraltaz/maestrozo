@@ -45,10 +45,11 @@ import {
   EvaluteComponentResult
 } from './typeHandlers/componentTypeHandler';
 
+
 import { compositeComponentTypeDeclaration, compositeComponentTypePath } from '@/typeHandlers/compositeComponentTypeHandler';
 import { constantComponentTypeDeclaration } from '@/typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from '@/typeHandlers/variableComponentTypeHandler';
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, elementTypeDeclaration, InitializeElementCallback, InitializeElementFunction } from '@/typeHandlers/elementTypeHandler';
 import { typeTypeDeclaration } from '@/typeHandlers/typeTypeHandler';
 import { connectionTypeDeclaration, connectionTypePath } from '@/typeHandlers/connectionTypeHandler';
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from '@/typeHandlers/messageTypeHandlers';
@@ -57,7 +58,7 @@ import {
   MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage,
   mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction
 } from './MessageQueue';
-
+import { buildElementCapabilities } from './elementCapabilities';
 
 
 type ContainerDeclaration = {
@@ -112,9 +113,9 @@ class MtzEngine {
       const parentPath = element.parentPath;
       parentElement = await this.getStoredElement(parentPath);
       if (parentElement === null)
-        throw new Error(`Parent of element «${pathToString(parentPath)}» does not exist`);
+        throw new Error(`Parent of element «${pathToString(elementPath)}» does not exist`);
       if (! parentElement.isContainer)
-        throw new Error(`Parent of element «${pathToString(parentPath)}» is not a container`);
+        throw new Error(`Parent of element «${pathToString(elementPath)}» is not a container`);
     }
 
     if (element.isContainer) {
@@ -169,7 +170,7 @@ class MtzEngine {
       isContainer: true,
       isVolatile: containerDeclaration.isVolatile,
       childNames: [],
-      data: null
+      data: null,
     } as MtzElement;
 
     await this.storeNewElement(containerElement);
@@ -359,7 +360,26 @@ class MtzEngine {
   public async getElement(elementPath: ElementPath): Promise<MtzElement> {
     if (! this._initialized)
       throw new Error("Engine not initialized");
-    return await this.getStoredElement(elementPath);
+    const element = await this.getStoredElement(elementPath);
+
+    // FIXME code en double avec createElementInternal
+    const typePath = element.elementType;
+    const typeElement = await this.getStoredElement(typePath);
+    if (typeElement === null)
+      throw new Error(`Can not find parent «${pathToString(typePath)}»`);
+    const typeHandler: TypeHandler | null = typeElement?.data?.typeHandler as TypeHandler ?? null;
+    if ( typeHandler === null)
+      throw new Error(`Type handler not defined in type «${pathToString(getElementPath(typeElement))}»`);
+    const initializeElementCallback = typeHandler.callbacks.find(callback => callback.name === InitializeElementCallback);
+    if (initializeElementCallback !== undefined) {
+      const capabilities = buildElementCapabilities(element, this);
+      const initializeElementFunction = initializeElementCallback.function as InitializeElementFunction;
+      if (typeof(initializeElementFunction) !== 'function')
+        throw new Error(`Invalid initialize element callback a function`);
+      await initializeElementFunction(element, capabilities );
+    }
+
+    return element;
   }
 
 
@@ -453,7 +473,7 @@ class MtzEngine {
       buildElementDataHelpersActive = false; // interdire la réutilisation des fonctions helper
     }
 
-    let element = {
+    let element: MtzElement = {
       revision: 0,
       elementName,
       parentPath,
@@ -461,10 +481,18 @@ class MtzEngine {
       isContainer,
       isVolatile,
       childNames: isContainer ? [] : null,
-      data: elementData
-    } as MtzElement;
-
+      data: elementData,
+    };
     await this.storeNewElement(element);
+
+    const initializeElementCallback = typeHandler.callbacks.find(callback => callback.name === InitializeElementCallback);
+    if (initializeElementCallback !== undefined) {
+      const capabilities = buildElementCapabilities(element, this);
+      const initializeElementFunction = initializeElementCallback.function as InitializeElementFunction;
+      if (typeof(initializeElementFunction) !== 'function')
+        throw new Error(`Invalid initialize element callback a function`);
+      await initializeElementFunction(element, capabilities );
+    }
 
     const buildComponentCallback = typeHandler.callbacks.find(callback => callback.name === BuildComponentCallback);
     if (buildComponentCallback !== undefined) {
@@ -496,7 +524,7 @@ class MtzEngine {
       }
       const buildComponentFunction = buildComponentCallback.function as BuildComponentFunction;
       if (typeof(buildComponentFunction) !== 'function')
-        throw new Error(`Build component callback is not a function`);
+        throw new Error(`Invalid build component callback function`);
       // TODO tester que l'élément est bien un composant
       await buildComponentFunction(element, params, buildComponentHelpers);
       // relire l'élément car sa propriété childNames a changé si des éléments enfants ont été créés dans cet élément
