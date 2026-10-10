@@ -90,10 +90,10 @@ describe("Maestrozo core", () => {
     expect(element.parentPath).to.deep.equal(['#', 'types']);
     expect(element).to.have.property('elementType');
     expect(element.elementType).to.deep.equal(['#', 'types', 'type']);
-    expect(element).to.have.property('isContainer', false);
+    expect(element).to.have.property('isContainer', true);
     expect(element).to.have.property('isVolatile', true);
     expect(element).to.have.property('childNames');
-    expect(element.childNames).to.deep.equal(null);
+    expect(element.childNames).to.deep.equal([]);
   });
 
   it("should find /types/data", async () => {
