@@ -55,7 +55,7 @@ import { connectionTypeDeclaration, connectionTypePath } from '@/typeHandlers/co
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from '@/typeHandlers/messageTypeHandlers';
 
 import {
-  MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage,
+  MESSAGE_TYPE_CHANGE, MessageType, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage,
   mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction
 } from './MessageQueue';
 import { buildElementCapabilities } from './elementCapabilities';
@@ -638,6 +638,7 @@ class MtzEngine {
                 value: newValue
               }
             };
+            //TODO utiliser this.postMessage
             mtzMessageQueuePushMessage(messageQueue, message);
           }
         }
@@ -686,6 +687,7 @@ class MtzEngine {
                 }
               };
 
+              //TODO utiliser this.postMessage
               mtzMessageQueuePushMessage(messageQueue, message);
             }
 
@@ -777,6 +779,7 @@ class MtzEngine {
                   }
                 };
               }
+              //TODO utiliser this.postMessage
               mtzMessageQueuePushMessage(messageQueue, message);
             }
           }
@@ -791,6 +794,34 @@ class MtzEngine {
 
     await this.modifyElement(messageQueueElement);
     return true;
+  }
+
+  public async postMessage (
+    elementPath: ElementPath,
+    messageType:MessageType,
+    data: any,
+    at?: MtzMessageTime
+  ) {
+    if (at === undefined)
+      at = this.timeFunction();
+    const message: MtzMessage = {
+      elementPath,
+      messageType,
+      data,
+      at
+    };
+
+    const messageQueueElement = await this.getElement(messageQueuePath);
+    if (messageQueueElement.data === null)
+      throw new Error("Message queue data should not be null");
+
+    const messageQueue = {
+      messages: messageQueueElement.data.messages
+    } as MtzMessageQueue;
+
+    mtzMessageQueuePushMessage(messageQueue, message);
+
+    await this.modifyElement(messageQueueElement);
   }
 
 }

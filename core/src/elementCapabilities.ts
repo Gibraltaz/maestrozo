@@ -1,12 +1,22 @@
 import { MtzElement, ElementPath, ElementName } from "@/Element";
 import { MtzEngine } from "./Engine";
 import { pathToString } from "./path";
+import { MESSAGE_TYPE_CHANGE, MessageType, MtzMessageTime } from "./MessageQueue";
 
 type GetElementFunction = (elementPath: ElementPath) => Promise<MtzElement | null>;
 type GetChildFunction = (childName: ElementName) => Promise<MtzElement | null>;
 type GetParentFunction = () => Promise<MtzElement | null>;
-type ScheduleEvaluation = (delay: number) => Promise<void>;
 type GetPathFunction = () => ElementPath;
+type ScheduleEvaluation = (data: any, at?: MtzMessageTime) => Promise<void>;
+/*
+type postMessage = (
+      elementPath: ElementPath,
+      messageType:MessageType,
+      data: any,
+      at?: MtzMessageTime
+) => Promise<void>;
+*/
+
 
 type MtzElementCapabilities = {
   getPath: GetPathFunction,
@@ -39,10 +49,25 @@ const buildElementCapabilities = (element: MtzElement, engine: MtzEngine) : MtzE
       return engine.getElement(element.parentPath);
     },
 
-    scheduleEvaluation: async (_delay: number) => {
-      // TODO poster un message à l'élément
-      //const time = engine.timeFunction() + delay;
+    scheduleEvaluation: async (
+      data: any,
+      at?: MtzMessageTime
+    ) => {
+      const elementPath = [...element.parentPath, element.elementName] as ElementPath;
+      const messageType = MESSAGE_TYPE_CHANGE;
+      engine.postMessage(elementPath, messageType, data, at);
     }
+
+    /*
+    postMessage: async (
+      elementPath: ElementPath,
+      messageType:MessageType,
+      data: any,
+      at?: MtzMessageTime
+    ) => {
+      engine.postMessage(elementPath, messageType, data, at);
+    }
+    */
 
   };
 };
