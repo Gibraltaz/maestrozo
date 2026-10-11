@@ -1,0 +1,10 @@
+
+
+INSTALLATION :
+──────────────
+
+$ npm install
+$ npm install-scripts approve esbuild
+$ npm run dev
+
+
