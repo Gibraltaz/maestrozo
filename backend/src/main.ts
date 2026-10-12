@@ -3,12 +3,13 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { createEngine } from 'maestrozo-core';
+import { maestrozoCore } from 'maestrozo-core';
 import { loadConfig } from './config.js';
 import { server } from './server.js';
 
 const main = async () => {
-  await createEngine({name:"Maestrozo backend"});
+  const core = await maestrozoCore();
+  console.log("Core version", core.version);
   let configPath = './config.json';
   if (process.argv.length > 2)
     configPath = process.argv[2] as string;

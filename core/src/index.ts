@@ -1,2 +1,2 @@
-export { createEngine } from './api.js';
-export type { CreateEngineOptions } from './api.js';
+export { maestrozoCore } from './core.js';
+export type { MaestrozoCore } from './core.js';
