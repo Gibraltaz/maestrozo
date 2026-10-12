@@ -3,9 +3,9 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "@/Element";
-import { rootName, rootTypeContainerName, typeElementName, componentTypeName } from '@/global';
-import { TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { ElementData, ElementName, ElementPath } from "../Element";
+import { rootName, rootTypeContainerName, typeElementName, componentTypeName } from '../global';
+import { TypeDeclaration } from './TypeHandler';
 import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
 
 const variableComponentTypeName = 'variable' as ElementName;

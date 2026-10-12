@@ -3,10 +3,10 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
-import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "@/global";
-import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from "@/typeHandlers/TypeHandler";
-import { MtzElementCapabilities } from '@/elementCapabilities';
+import { MtzElementCapabilities } from '../elementCapabilities';
+import { ElementData, ElementName, ElementPath, MtzElement } from "../Element";
+import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "../global";
+import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from "./TypeHandler";
 
 const BuildElementDataCallback = 'build-element-data' as CallbackName;
 

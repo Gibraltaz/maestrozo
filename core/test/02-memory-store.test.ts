@@ -5,8 +5,8 @@
 
 import { describe, it, expect } from "vitest";
 
-import { StoreKey, StoreValue } from "@/store/MaestrozoStore";
-import { MemoryStore } from "@/store/MemoryStore";
+import { StoreKey, StoreValue } from "../src/store/MaestrozoStore";
+import { MemoryStore } from "../src/store/MemoryStore";
 
 describe("Memory store", () => {
 

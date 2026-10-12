@@ -1,0 +1,30 @@
+{
+  "name": "maestrozo-backend",
+  "version": "0.0.1",
+  "description": "Maestrozo Backend",
+  "license": "GPL-V3",
+  "author": "Executive Gibraltaz (contact@gibraltaz.fr)",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "tsx watch src/main.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "maestrozo-core": "file:../core",
+    "express": "^5.2.1",
+    "nconf": "^0.13.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/nconf": "^0.10.7",
+    "@types/node": "^26.6.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

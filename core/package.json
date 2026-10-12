@@ -5,10 +5,19 @@
   "author": "Dominique Parisot <dominique@gibraltaz.fr>",
   "license": "GPL-V3",
   "type": "module",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "check": "tsc --noEmit --watch --pretty",
     "test": "vitest",
     "test:watch": "vitest --watch"

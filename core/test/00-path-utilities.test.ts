@@ -12,7 +12,7 @@ import {
   isRootName,
   ElementPath,
   pathEquals
-} from "@/path";
+} from "../src/path";
 
 describe("Path utilities", () => {
 

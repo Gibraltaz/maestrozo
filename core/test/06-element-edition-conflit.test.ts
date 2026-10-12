@@ -4,9 +4,9 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { ElementName, ElementPath, MtzEngine } from "@/Engine";
-import { MemoryStore } from "@/store/MemoryStore";
-import { MtzElement } from "@/Element";
+import { ElementName, ElementPath, MtzEngine } from "../src/Engine";
+import { MemoryStore } from "../src/store/MemoryStore";
+import { MtzElement } from "../src/Element";
 
 describe("Maestrozo core", () => {
   const memoryStore = new MemoryStore();

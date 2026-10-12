@@ -4,8 +4,8 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { ElementPath, MtzEngine } from "@/Engine";
-import { MemoryStore } from "@/store/MemoryStore";
+import { ElementPath, MtzEngine } from "../src/Engine";
+import { MemoryStore } from "../src/store/MemoryStore";
 
 
 describe("Maestrozo core", () => {

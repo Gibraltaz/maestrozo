@@ -1,7 +1,7 @@
 import { MtzElement, ElementPath, ElementName } from "@/Element";
 import { MtzEngine } from "./Engine";
 import { pathToString } from "./path";
-import { MESSAGE_TYPE_CHANGE, MessageType, MtzMessageTime } from "./MessageQueue";
+import { MESSAGE_TYPE_CHANGE, MtzMessageTime } from "./MessageQueue";
 
 type GetElementFunction = (elementPath: ElementPath) => Promise<MtzElement | null>;
 type GetChildFunction = (childName: ElementName) => Promise<MtzElement | null>;

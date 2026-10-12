@@ -4,19 +4,19 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { ElementData, MtzElement } from "@/Element";
-import { MemoryStore } from "@/store/MemoryStore";
-import { MtzElementCapabilities } from "@/elementCapabilities";
-import { MtzMessageTime } from "@/MessageQueue";
+import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
+import { ElementData, MtzElement } from "../src/Element";
+import { MemoryStore } from "../src/store/MemoryStore";
+import { MtzElementCapabilities } from "../src/elementCapabilities";
+import { MtzMessageTime } from "../src/MessageQueue";
 import {
   BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers,
   InitializeElementCallback, InitializeElementFunction
-} from "@/typeHandlers/elementTypeHandler";
+} from "../src/typeHandlers/elementTypeHandler";
 import {
   EvaluateComponentCallback, EvaluateComponentFunction, 
   EvaluateComponentHelpers, EvaluteComponentResult
-} from "@/typeHandlers/componentTypeHandler";
+} from "../src/typeHandlers/componentTypeHandler";
 
 let containerCapabilities: MtzElementCapabilities|null = null;
 let sinkCapabilities: MtzElementCapabilities|null = null;

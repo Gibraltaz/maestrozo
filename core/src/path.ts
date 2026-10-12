@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { MtzElement, ElementName, ElementPath } from '@/Element';
+import { MtzElement, ElementName, ElementPath } from './Element';
 
 const pathSeparator = '/';
 const rootName = '#' as ElementName;
