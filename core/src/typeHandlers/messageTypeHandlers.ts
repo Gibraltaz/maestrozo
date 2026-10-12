@@ -1,8 +1,8 @@
-import { ElementName, ElementPath, pathEquals, pathToString, rootName } from "@/path";
+import { ElementName, ElementPath, pathEquals, pathToString, rootName } from "../path";
 import { TypeDeclaration } from "./TypeHandler";
-import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath, systemContainerPath, messageQueueName } from "@/global";
-import { ElementData } from "@/Element";
-import { mtzMessageQueueCreate } from "@/MessageQueue";
+import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath, systemContainerPath, messageQueueName } from "../global";
+import { ElementData } from "../Element";
+import { mtzMessageQueueCreate } from "../MessageQueue";
 import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "./elementTypeHandler";
 
 const buildElementDataFunction: BuildElementDataFunction = async (

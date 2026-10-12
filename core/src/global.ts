@@ -1,4 +1,4 @@
-import { ElementName, ElementPath, rootName, } from '@/path';
+import { ElementName, ElementPath, rootName, } from './path';
 
 // name of element «/types»
 const rootTypeContainerName = 'types' as ElementName;

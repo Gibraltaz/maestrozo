@@ -8,16 +8,16 @@ import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { rm } from "node:fs/promises";
 
-import { ElementName, ElementPath, MtzElement } from "@/Element";
+import { ElementName, ElementPath, MtzElement } from "../src/Element";
 import { 
   MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, 
   mtzMessageQueueGetMessageCount, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime
-} from "@/MessageQueue";
+} from "../src/MessageQueue";
 
 const tmpFilePath = (prefix:string) =>join( tmpdir(), `${prefix}-${randomUUID()}.tmp`);
 
-import { FileStore } from '@/store/FileStore';
-import { MtzEngine } from '@/Engine';
+import { FileStore } from '../src/store/FileStore';
+import { MtzEngine } from '../src/Engine';
 
 let storePath: string;
 

@@ -3,8 +3,8 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementName } from "@/Element";
-import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueueCreate, mtzMessageQueueGetMessageCount, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime } from "@/MessageQueue";
+import { ElementName } from "../src/Element";
+import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueueCreate, mtzMessageQueueGetMessageCount, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime } from "../src/MessageQueue";
 
 
 describe("Message queue", () => {

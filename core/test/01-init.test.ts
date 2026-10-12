@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { MtzCore } from "@/Core";
+import { MtzCore } from "../src/Core";
 
 describe("Maestrozo core", () => {
   let maestrozoCore = new MtzCore();

@@ -5,8 +5,8 @@
 
 import { describe, it, expect, assert, beforeAll, afterAll } from "vitest";
 
-import { StoreKey, StoreValue } from "@/store/MaestrozoStore";
-import { FileStore } from "@/store/FileStore";
+import { StoreKey, StoreValue } from "../src/store/MaestrozoStore";
+import { FileStore } from "../src/store/FileStore";
 
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';

@@ -3,14 +3,14 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath, MtzElement } from "@/Element";
-import { componentTypeName, componentTypePath, inputPinTypePath, linkTypeContainerPath, messageQueuePath, outputPinTypePath, rootName, rootTypeContainerName, typeElementName } from '@/global';
-import { pathStartsWith, pathToString } from "@/path";
-import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { ElementData, ElementName, ElementPath, MtzElement } from "../Element";
+import { componentTypeName, componentTypePath, inputPinTypePath, linkTypeContainerPath, messageQueuePath, outputPinTypePath, rootName, rootTypeContainerName, typeElementName } from '../global';
+import { pathStartsWith, pathToString } from "../path";
+import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from './TypeHandler';
 import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
-import { MtzEngine } from "@/Engine";
+import { MtzEngine } from "../Engine";
 import { connectionTypeName } from "./connectionTypeHandler";
-import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMessage } from "@/MessageQueue";
+import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMessage } from "../MessageQueue";
 
 const EvaluateComponentCallback = 'evaluate-component' as CallbackName;
 const BuildComponentCallback = 'build-component' as CallbackName;

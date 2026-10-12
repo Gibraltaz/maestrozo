@@ -3,10 +3,10 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "@/Element";
-import { linkTypeContainerPath, rootName, rootTypeContainerName, typeElementName } from '@/global';
-import { TypeDeclaration } from '@/typeHandlers/TypeHandler';
-import { rootTypeContainerPath, linkTypeContainerName } from '@/global';
+import { ElementData, ElementName, ElementPath } from "../Element";
+import { linkTypeContainerPath, rootName, rootTypeContainerName, typeElementName } from '../global';
+import { rootTypeContainerPath, linkTypeContainerName } from '../global';
+import { TypeDeclaration } from './TypeHandler';
 import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
 
 

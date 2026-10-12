@@ -4,8 +4,8 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { MemoryStore } from "@/store/MemoryStore";
+import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
+import { MemoryStore } from "../src/store/MemoryStore";
 
 
 describe("Component type", () => {

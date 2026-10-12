@@ -3,8 +3,8 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { MaestrozoStore, StoreKey } from '@/store/MaestrozoStore';
-import { RawMemoryStore } from '@/store/RawMemoryStore';
+import { MaestrozoStore, StoreKey } from './store/MaestrozoStore';
+import { RawMemoryStore } from './store/RawMemoryStore';
 import {
   checkElementName,
   checkElementPath,
@@ -14,8 +14,8 @@ import {
   getElementPath,
   elementPathAreEquals,
   pathEquals,
-} from '@/path';
-import { MtzElement, ElementName, ElementPath, checkElement, ElementData } from '@/Element';
+} from './path';
+import { MtzElement, ElementName, ElementPath, checkElement, ElementData } from './Element';
 import {
   containerTypeName,
   rootTypeContainerName,
@@ -29,15 +29,15 @@ import {
   messageQueuePath,
   componentTypePath,
   outputPinTypePath,
-} from '@/global';
+} from './global';
 
-import { TypeDeclaration, TypeHandler } from '@/typeHandlers/TypeHandler';
+import { TypeDeclaration, TypeHandler } from './typeHandlers/TypeHandler';
 
-import { containerTypeDeclaration} from '@/typeHandlers/containerTypeHandler';
-import { integerTypeDeclaration } from '@/typeHandlers/integerTypeHandler';
-import { stringTypeDeclaration } from '@/typeHandlers/stringTypeHandler';
-import { booleanTypeDeclaration } from '@/typeHandlers/booleanTypeHandler';
-import { inputPinTypeDeclaration, outputPinTypeDeclaration } from '@/typeHandlers/pinTypeHandlers';
+import { containerTypeDeclaration} from './typeHandlers/containerTypeHandler';
+import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
+import { stringTypeDeclaration } from './typeHandlers/stringTypeHandler';
+import { booleanTypeDeclaration } from './typeHandlers/booleanTypeHandler';
+import { inputPinTypeDeclaration, outputPinTypeDeclaration } from './typeHandlers/pinTypeHandlers';
 
 import {
   BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, componentTypeDeclaration, EvaluateComponentCallback,
@@ -45,13 +45,13 @@ import {
   EvaluteComponentResult
 } from './typeHandlers/componentTypeHandler';
 
-import { compositeComponentTypeDeclaration, compositeComponentTypePath } from '@/typeHandlers/compositeComponentTypeHandler';
-import { constantComponentTypeDeclaration } from '@/typeHandlers/constantComponentTypeHandler';
-import { variableComponentTypeDeclaration } from '@/typeHandlers/variableComponentTypeHandler';
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, elementTypeDeclaration } from '@/typeHandlers/elementTypeHandler';
-import { typeTypeDeclaration } from '@/typeHandlers/typeTypeHandler';
-import { connectionTypeDeclaration, connectionTypePath } from '@/typeHandlers/connectionTypeHandler';
-import { messageTypeDeclaration, messageQueueTypeDeclaration } from '@/typeHandlers/messageTypeHandlers';
+import { compositeComponentTypeDeclaration, compositeComponentTypePath } from './typeHandlers/compositeComponentTypeHandler';
+import { constantComponentTypeDeclaration } from './typeHandlers/constantComponentTypeHandler';
+import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler';
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, elementTypeDeclaration } from './typeHandlers/elementTypeHandler';
+import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
+import { connectionTypeDeclaration, connectionTypePath } from './typeHandlers/connectionTypeHandler';
+import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
 
 import {
   MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage,

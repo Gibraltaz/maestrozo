@@ -4,11 +4,11 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { ElementData, MtzElement } from "@/Element";
-import { MemoryStore } from "@/store/MemoryStore";
-import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers } from "@/typeHandlers/componentTypeHandler";
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "@/typeHandlers/elementTypeHandler";
+import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
+import { ElementData, MtzElement } from "../src/Element";
+import { MemoryStore } from "../src/store/MemoryStore";
+import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers } from "../src/typeHandlers/componentTypeHandler";
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";
 
 const customComponentBuildElementDataFunction1: BuildElementDataFunction = async (
   _elementName: ElementName,

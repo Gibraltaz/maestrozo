@@ -3,10 +3,10 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "@/Element";
-import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '@/global';
-import { pathToString } from "@/path";
-import { TypeDeclaration } from '@/typeHandlers/TypeHandler';
+import { ElementData, ElementName, ElementPath } from "../Element";
+import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '../global';
+import { pathToString } from "../path";
+import { TypeDeclaration } from './TypeHandler';
 import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
 
 const integerTypeName = 'integer' as ElementName;

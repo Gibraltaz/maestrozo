@@ -4,13 +4,13 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { ElementData, MtzElement } from "@/Element";
-import { MemoryStore } from "@/store/MemoryStore";
-import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "@/typeHandlers/componentTypeHandler";
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "@/typeHandlers/elementTypeHandler";
-import { MtzMessageTime } from "@/MessageQueue";
-import { connectComponentToOutput, connectInputToComponent } from "@/typeHandlers/compositeComponentTypeHandler";
+import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
+import { ElementData, MtzElement } from "../src/Element";
+import { MemoryStore } from "../src/store/MemoryStore";
+import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "../src/typeHandlers/componentTypeHandler";
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";
+import { MtzMessageTime } from "../src/MessageQueue";
+import { connectComponentToOutput, connectInputToComponent } from "../src/typeHandlers/compositeComponentTypeHandler";
 
 let customTime = 10000 as MtzMessageTime; 
 const customTimeFunction = () => {

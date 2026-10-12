@@ -3,8 +3,8 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "@/Element";
-import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "@/global";
+import { ElementData, ElementName, ElementPath } from "../Element";
+import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "../global";
 import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from "./TypeHandler";
 
 const buildElementDataFunction: BuildElementDataFunction = async (

@@ -4,12 +4,12 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { MtzEngine, ElementName, ElementPath } from "@/Engine";
-import { ElementData, MtzElement } from "@/Element";
-import { MemoryStore } from "@/store/MemoryStore";
-import { MtzMessageTime } from "@/MessageQueue";
-import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "@/typeHandlers/componentTypeHandler";
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "@/typeHandlers/elementTypeHandler";
+import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
+import { ElementData, MtzElement } from "../src/Element";
+import { MemoryStore } from "../src/store/MemoryStore";
+import { MtzMessageTime } from "../src/MessageQueue";
+import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "../src/typeHandlers/componentTypeHandler";
+import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";
 
 let customTime = -1;
 const customTimeFunction = () => customTime as MtzMessageTime;

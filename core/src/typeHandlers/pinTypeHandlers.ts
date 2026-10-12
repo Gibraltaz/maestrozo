@@ -1,7 +1,7 @@
-import { ElementName, ElementPath, pathToString, rootName } from "@/path";
+import { ElementName, ElementPath, pathToString, rootName } from "../path";
 import { TypeDeclaration } from "./TypeHandler";
-import { inputPinTypeName, outputPinTypeName, pinTypeContainerPath, rootTypeContainerName, typeElementName } from "@/global";
-import { ElementData } from "@/Element";
+import { inputPinTypeName, outputPinTypeName, pinTypeContainerPath, rootTypeContainerName, typeElementName } from "../global";
+import { ElementData } from "../Element";
 import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "./elementTypeHandler";
 
 const buildElementDataFunction: BuildElementDataFunction = async (
