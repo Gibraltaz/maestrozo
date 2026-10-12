@@ -13,10 +13,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "nconf": "^0.13.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/nconf": "^0.10.7",
     "@types/node": "^26.6.4",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"

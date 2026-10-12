@@ -3,8 +3,17 @@
 INSTALLATION :
 ──────────────
 
-$ npm install
-$ npm install-scripts approve esbuild
-$ npm run dev
+Installer les modules nécessaires :
+
+  $ npm install
+  $ npm install-scripts approve esbuild
+
+
+Créer un fichier «config.json» à partir du fichier «config.json.template».
+
+
+Lancer l'exécution du backend : 
+
+  $ npm run dev
 
 

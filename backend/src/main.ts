@@ -3,20 +3,25 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import express from 'express';
+import { loadConfig } from './config.js';
+import { server } from './server.js';
 
-const port = process.env.PORT || 9000;
+const main = async () => {
+  let configPath = './config.json';
+  if (process.argv.length > 2)
+    configPath = process.argv[2] as string;
+  const config = await loadConfig(configPath);
+  await server(config);
+}
 
-const app = express();
+try {
+  await main();
+}
+catch (error) {
+  console.error(error);
+}
 
-app.use(express.json());
 
-app.get('/', (_req, res) => {
-    res.json({
-        name: 'Maestrozo Backend'
-    });
-});
 
-app.listen(port, () => {
-    console.log(`Maestrozo Backend is listening on port ${port}`);
-});
+
+

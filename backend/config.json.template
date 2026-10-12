@@ -1,0 +1,13 @@
+{
+  "server": {
+    "port":9101
+  },
+  "storage": {
+    "type": "couchdb",
+    "name":"maestrozo",
+    "host":"127.0.0.1",
+    "port":5984,
+    "account":"admin",
+    "password":"<REPLACE>" 
+  }
+}
