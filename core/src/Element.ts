@@ -17,6 +17,7 @@ type MtzElement = {
   isVolatile: boolean;
   data: ElementData | null;
   childNames: Array<ElementName> | null; // FIXME null ou tableau vide pour les conteneurs ?
+  storeData?: any; // données propres au store (ex.: «_id» et ex.: «_rev» pour CouchDB)
 };
 
 const elementPropertyNames : Array<string> = [
