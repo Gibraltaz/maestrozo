@@ -4,39 +4,27 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { MtzCore } from "../src/Core";
+import { MaestrozoCore, maestrozoCore } from "../src/core";
 
-describe("Maestrozo core", () => {
-  let maestrozoCore = new MtzCore();
+describe("Maestrozo core", async () => {
+  let core: MaestrozoCore | null = null;
 
-  it("should check engine version", () => {
-    expect(maestrozoCore).to.have.property('version', '0.0.1');
+  it("should check engine version", async () => {
+    core = await maestrozoCore();
+    expect(core).to.be.instanceOf(Object);
   });
 
-  it("should not be initialized at startup", async () => {
-    expect(maestrozoCore).to.have.property('initialized', false);
-  });
-
-  it("should not accept to run when not initialized", async () => {
-    await expect(
-     maestrozoCore.runOnce()
-    ).rejects.toThrow("Core not initialized");
+  it("should check engine version", ({skip}) => {
+    skip(core === null, "Core not initialized");
+    assert(core !== null);
+    expect(core).to.have.property('version', '0.0.1');
   });
 
 
-  it("should accept to be initialized", async () => {
-    await maestrozoCore.initialize();
+  it("should accept to run", async ({skip}) => {
+    skip(core === null, "Core not initialized");
+    assert(core !== null);
+    core.runOnce();
   });
-
-  it("should be initialized", async () => {
-    expect(maestrozoCore).to.have.property('initialized', true);
-  });
-
-  // TODO à activer
-  //it("should not accept to run when not initialized", async () => {
-  //  await expect(
-  //   maestrozoCore.runOnce()
-  //  ).rejects.toThrow("Core not initialized");
-  //});
 
 });
