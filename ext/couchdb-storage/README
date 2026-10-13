@@ -1,0 +1,13 @@
+
+
+Installation : 
+  $ npm install
+  $ npm install-scripts approve
+
+Construction: 
+  $ npm run build
+
+Auto-tests : 
+• créer un fichier «config.json» à partir de «config.json.template» avec les paramètres de connexion CouchDb
+• lancer la commande : 
+    $ npm run test

@@ -1,0 +1,7 @@
+{
+  "host": "127.0.0.1",
+  "port": 5984,
+  "database": "db_maestrozo_dev",
+  "user": "maestrozo_dev",
+  "password": "<TO REPLACE>" 
+}
