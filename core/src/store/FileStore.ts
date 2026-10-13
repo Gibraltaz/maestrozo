@@ -58,25 +58,38 @@ class FileStore implements MaestrozoStore{
   async getItem(key: StoreKey) : Promise<StoreValue | null> {
     await this.initialize();
     checkStoreKey(key);
-    const value = this._map.get(key) ?? null;
-    return value;
+    const item = this._map.get(key) ?? null;
+    return item;
   }
 
-  async setItem(key: StoreKey, value:  StoreValue): Promise<void> {
-    await this.initialize();
+  async _setItem(key: StoreKey, item:  StoreValue): Promise<void> {
     checkStoreKey(key);
-    checkStoreValue(value);
-    // convert object to JSON object by removing properties witch have function as value
-    // (ATTENTION : properties with undefined value are removed)
+    checkStoreValue(item);
+    // convert object to JSON object by removing properties witch have function as item
+    // (ATTENTION : properties with undefined item are removed)
     let cleanValue: StoreValue;
     try {
-      cleanValue = JSON.parse(JSON.stringify(value));
+      cleanValue = JSON.parse(JSON.stringify(item));
     }
     catch (err) {
       throw new Error("Value is not JSON serializable", { cause: err });
     }
     this._map.set(key, cleanValue);
     await this.saveFile();
+  }
+
+  async createItem(key: StoreKey, item: StoreValue): Promise<void> {
+    await this.initialize();
+    if (this._map.has(key))
+      throw new Error(`Item «${key}» already exists`);
+    await this._setItem(key, item);
+  }
+
+  async updateItem(key: StoreKey, item: StoreValue): Promise<void> {
+    await this.initialize();
+    if (!this._map.has(key))
+      throw new Error(`Item «${key}» does not exist`);
+    await this._setItem(key, item);
   }
 
   get path(): string {

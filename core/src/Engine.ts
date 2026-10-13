@@ -84,17 +84,30 @@ class MtzEngine {
     return element;
   }
 
-  private async storeElement(element: MtzElement): Promise<void> {
+  private async createElementInStore(element: MtzElement): Promise<void> {
     const elementPath = getElementPath(element);
     const storeKey = pathToString(elementPath) as StoreKey;
     if (element.isVolatile)
-      await this.volatileStore.setItem(storeKey , element);
+      await this.volatileStore.createItem(storeKey , element);
     else {
       if (this.persistentStorage === null)
         throw new Error("Persistent storage is null");
-      await this.persistentStorage.setItem(storeKey , element);
+      await this.persistentStorage.createItem(storeKey , element);
     }
   }
+
+  private async updateElementInStore(element: MtzElement): Promise<void> {
+    const elementPath = getElementPath(element);
+    const storeKey = pathToString(elementPath) as StoreKey;
+    if (element.isVolatile)
+      await this.volatileStore.updateItem(storeKey , element);
+    else {
+      if (this.persistentStorage === null)
+        throw new Error("Persistent storage is null");
+      await this.persistentStorage.updateItem(storeKey , element);
+    }
+  }
+
 
   private async storeNewElement(element: MtzElement): Promise<void> {
 
@@ -131,7 +144,7 @@ class MtzEngine {
     element.revision = 1;
 
 
-    await this.storeElement(element);
+    await this.createElementInStore(element);
 
     if (parentElement) {
       const parentStoreKey = pathToString(element.parentPath) as StoreKey;
@@ -139,12 +152,12 @@ class MtzEngine {
         throw new Error(`Child name list not initialized in element «${parentStoreKey}»`);
       parentElement.childNames.push(element.elementName);
       if (parentElement.isVolatile) {
-        await this.volatileStore.setItem(parentStoreKey , parentElement);
+        await this.volatileStore.updateItem(parentStoreKey , parentElement);
       }
       else {
         if (this.persistentStorage === null)
           throw new Error("Persistent storage is null");
-        await this.persistentStorage.setItem(parentStoreKey , parentElement);
+        await this.persistentStorage.updateItem(parentStoreKey , parentElement);
       }
     }
   };
@@ -550,7 +563,7 @@ class MtzEngine {
       throw new Error(`Conflict in edition of element «${pathToString(getElementPath(element))}»`);
 
     element.revision++;
-    await this.storeElement(element);
+    await this.updateElementInStore(element);
   }
 
   public get initialized() : boolean {

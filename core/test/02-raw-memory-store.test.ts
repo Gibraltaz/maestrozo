@@ -17,7 +17,7 @@ describe("Raw memory store", () => {
   });
 
   it("should write a value", async () => {
-    await rawMemoryStore.setItem('abc' as StoreKey, 'ABC' as StoreValue);
+    await rawMemoryStore.createItem('abc' as StoreKey, 'ABC' as StoreValue);
   });
 
   it("should read an existing value from store", async () => {
@@ -26,7 +26,7 @@ describe("Raw memory store", () => {
   });
 
   it("should change an existing value", async () => {
-    await rawMemoryStore.setItem('abc' as StoreKey, 'A_B_C' as StoreValue);
+    await rawMemoryStore.updateItem('abc' as StoreKey, 'A_B_C' as StoreValue);
   });
 
   it("should retrieve modified value store", async () => {
@@ -35,7 +35,7 @@ describe("Raw memory store", () => {
   });
 
   it("should write another value", async () => {
-    await rawMemoryStore.setItem('def' as StoreKey, 'D_E_F' as StoreValue);
+    await rawMemoryStore.createItem('def' as StoreKey, 'D_E_F' as StoreValue);
   });
 
   it("should retrieve new value from store", async () => {
@@ -50,7 +50,7 @@ describe("Raw memory store", () => {
 
 
   it("should write an object", async () => {
-    await rawMemoryStore.setItem('obj1' as StoreKey, {
+    await rawMemoryStore.createItem('obj1' as StoreKey, {
       'p1': 'V1',
       'p2': 'V2'
     });
@@ -66,7 +66,7 @@ describe("Raw memory store", () => {
   });
 
   it("should write an object with functions", async () => {
-    await rawMemoryStore.setItem('obj2' as StoreKey, {
+    await rawMemoryStore.createItem('obj2' as StoreKey, {
       'p1': 'X1',
       'p2': 'X2',
       'f1': () => true,
@@ -90,19 +90,19 @@ describe("Raw memory store", () => {
 
   it("should not write a value with an undefined key", async () => {
     await expect(
-      rawMemoryStore.setItem(undefined as any as StoreKey, 'ABC' as StoreValue)
+      rawMemoryStore.createItem(undefined as any as StoreKey, 'ABC' as StoreValue)
     ).rejects.toThrow("Store key must be defined");
   });
 
   it("should not write a value with an empty key", async () => {
     await expect(
-      rawMemoryStore.setItem('' as StoreKey, 'ABC' as StoreValue)
+      rawMemoryStore.createItem('' as StoreKey, 'ABC' as StoreValue)
     ).rejects.toThrow("Store key could not be empty");
   });
 
   it("should not write a value with an undefined value", async () => {
     await expect(
-      rawMemoryStore.setItem('abc' as StoreKey, undefined as StoreValue)
+      rawMemoryStore.createItem('abc' as StoreKey, undefined as StoreValue)
     ).rejects.toThrow("Store value must be defined");
   });
 

@@ -16,20 +16,31 @@ import { checkStoreKey, checkStoreValue } from './storeUtils';
  */
 class MemoryStore implements MaestrozoStore{
 
-  private map = new Map<StoreKey, StoreValue>();
+  private _map = new Map<StoreKey, StoreValue>();
 
   async getItem(key: StoreKey) : Promise<StoreValue | null> {
     checkStoreKey(key);
-    const strValue = this.map.get(key) ?? null;
-    const value = (strValue === null) ? null : JSON.parse(strValue);
-    return value;
+    const strValue = this._map.get(key) ?? null;
+    const item = (strValue === null) ? null : JSON.parse(strValue);
+    return item;
   }
 
-  async setItem(key: StoreKey, value:  StoreValue): Promise<void> {
+  async createItem(key: StoreKey, item:  StoreValue): Promise<void> {
     checkStoreKey(key);
-    checkStoreValue(value);
-    const strValue = JSON.stringify(value);
-    this.map.set(key, strValue);
+    checkStoreValue(item);
+    if (this._map.has(key))
+      throw new Error(`Item «${key}» already exists`);
+    const strValue = JSON.stringify(item);
+    this._map.set(key, strValue);
+  }
+
+  async updateItem(key: StoreKey, item:  StoreValue): Promise<void> {
+    checkStoreKey(key);
+    checkStoreValue(item);
+    if (!this._map.has(key))
+      throw new Error(`Item «${key}» does not exist`);
+    const strValue = JSON.stringify(item);
+    this._map.set(key, strValue);
   }
 
 };

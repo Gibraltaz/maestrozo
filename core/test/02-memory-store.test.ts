@@ -17,7 +17,7 @@ describe("Memory store", () => {
   });
 
   it("should write a value", async () => {
-    await memoryStore.setItem('abc' as StoreKey, 'ABC' as StoreValue);
+    await memoryStore.createItem('abc' as StoreKey, 'ABC' as StoreValue);
   });
 
 
@@ -27,7 +27,7 @@ describe("Memory store", () => {
   });
 
   it("should change an existing value", async () => {
-    await memoryStore.setItem('abc' as StoreKey, 'A_B_C' as StoreValue);
+    await memoryStore.updateItem('abc' as StoreKey, 'A_B_C' as StoreValue);
   });
 
   it("should retrieve modified value store", async () => {
@@ -36,7 +36,7 @@ describe("Memory store", () => {
   });
 
   it("should write another value", async () => {
-    await memoryStore.setItem('def' as StoreKey, 'D_E_F' as StoreValue);
+    await memoryStore.createItem('def' as StoreKey, 'D_E_F' as StoreValue);
   });
 
   it("should retrieve new value from store", async () => {
@@ -50,7 +50,7 @@ describe("Memory store", () => {
   });
 
   it("should write an object", async () => {
-    await memoryStore.setItem('obj1' as StoreKey, {
+    await memoryStore.createItem('obj1' as StoreKey, {
       'p1': 'V1',
       'p2': 'V2'
     });
@@ -66,7 +66,7 @@ describe("Memory store", () => {
   });
 
   it("should write an object with functions", async () => {
-    await memoryStore.setItem('obj2' as StoreKey, {
+    await memoryStore.createItem('obj2' as StoreKey, {
       'p1': 'X1',
       'p2': 'X2',
       'f1': () => true,
@@ -86,41 +86,79 @@ describe("Memory store", () => {
   });
 
 
-  it("should not write a value with an undefined key", async () => {
-    await expect(
-      memoryStore.setItem(undefined as any as StoreKey, 'ABC' as StoreValue)
-    ).rejects.toThrow("Store key must be defined");
+  describe("Item creation function", () => {
+
+    it("should detect creation conflict on existing object", async () => {
+      await expect(
+        memoryStore.createItem('abc' as StoreKey, 'ABC' as StoreValue)
+      ).rejects.toThrow("Item «abc» already exists");
+    });
+
+    it("should not create a value with an undefined key", async () => {
+      await expect(
+        memoryStore.createItem(undefined as any as StoreKey, 'ABC' as StoreValue)
+      ).rejects.toThrow("Store key must be defined");
+    });
+
+    it("should not create a value with an empty key", async () => {
+      await expect(
+        memoryStore.createItem('' as StoreKey, 'ABC' as StoreValue)
+      ).rejects.toThrow("Store key could not be empty");
+    });
+
+    it("should not create a value with an undefined value", async () => {
+      await expect(
+        memoryStore.createItem('abc' as StoreKey, undefined as StoreValue)
+      ).rejects.toThrow("Store value must be defined");
+    });
   });
 
-  it("should not write a value with an empty key", async () => {
-    await expect(
-      memoryStore.setItem('' as StoreKey, 'ABC' as StoreValue)
-    ).rejects.toThrow("Store key could not be empty");
+  describe("Item update function", () => {
+
+    it("should detect non existing object", async () => {
+      await expect(
+        memoryStore.updateItem('zzz' as StoreKey, 'ABC' as StoreValue)
+      ).rejects.toThrow("Item «zzz» does not exist");
+    });
+
+
+    it("should not update a value with an undefined key", async () => {
+      await expect(
+        memoryStore.updateItem(undefined as any as StoreKey, 'ABC' as StoreValue)
+      ).rejects.toThrow("Store key must be defined");
+    });
+
+    it("should not update a value with an empty key", async () => {
+      await expect(
+        memoryStore.updateItem('' as StoreKey, 'ABC' as StoreValue)
+      ).rejects.toThrow("Store key could not be empty");
+    });
+
+    it("should not update a value with an undefined value", async () => {
+      await expect(
+        memoryStore.updateItem('abc' as StoreKey, undefined as StoreValue)
+      ).rejects.toThrow("Store value must be defined");
+    });
   });
 
-  it("should not write a value with an undefined value", async () => {
-    await expect(
-      memoryStore.setItem('abc' as StoreKey, undefined as StoreValue)
-    ).rejects.toThrow("Store value must be defined");
-  });
+  describe("Item get function", () => {
+    it("should not read a value with an undefined key", async () => {
+      await expect(
+        memoryStore.getItem(undefined as any as StoreKey)
+      ).rejects.toThrow("Store key must be defined");
+    });
 
-  it("should not read a value with an undefined key", async () => {
-    await expect(
-      memoryStore.getItem(undefined as any as StoreKey)
-    ).rejects.toThrow("Store key must be defined");
-  });
+    it("should not read an undefined value with an undefined key", async () => {
+      await expect(
+        memoryStore.getItem(undefined as any as StoreKey)
+      ).rejects.toThrow("Store key must be defined");
+    });
 
-  it("should not read an undefined value with an undefined key", async () => {
-    await expect(
-      memoryStore.getItem(undefined as any as StoreKey)
-    ).rejects.toThrow("Store key must be defined");
-  });
-
-
-  it("should not read a value with an empty key", async () => {
-    await expect(
-      memoryStore.getItem('' as StoreKey)
-    ).rejects.toThrow("Store key could not be empty");
+    it("should not read a value with an empty key", async () => {
+      await expect(
+        memoryStore.getItem('' as StoreKey)
+      ).rejects.toThrow("Store key could not be empty");
+    });
   });
 
 });

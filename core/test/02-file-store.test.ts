@@ -50,12 +50,12 @@ describe("File store", () => {
 
   it("should write a first value", async () => {
     assert (fileStore1 !== null);
-    await fileStore1.setItem('abc' as StoreKey, 'ABC' as StoreValue);
+    await fileStore1.createItem('abc' as StoreKey, 'ABC' as StoreValue);
   });
 
   it("should write a second value", async () => {
     assert (fileStore1 !== null);
-    await fileStore1.setItem('def' as StoreKey, 'DEF' as StoreValue);
+    await fileStore1.createItem('def' as StoreKey, 'DEF' as StoreValue);
   });
 
   it("should read an existing value from store", async () => {

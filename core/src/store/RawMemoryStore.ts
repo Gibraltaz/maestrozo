@@ -8,17 +8,27 @@ import { checkStoreKey, checkStoreValue } from './storeUtils';
 
 class RawMemoryStore implements MaestrozoStore{
 
-  private map = new Map<StoreKey, StoreValue>();
+  private _map = new Map<StoreKey, StoreValue>();
 
   async getItem(key: StoreKey) : Promise<StoreValue | null> {
     checkStoreKey(key);
-    return this.map.get(key) ?? null;
+    return this._map.get(key) ?? null;
   }
 
-  async setItem(key: StoreKey, value:  StoreValue): Promise<void> {
+  async createItem(key: StoreKey, item:  StoreValue): Promise<void> {
     checkStoreKey(key);
-    checkStoreValue(value);
-    this.map.set(key, value);
+    checkStoreValue(item);
+    if (this._map.has(key))
+      throw new Error(`Item «${key}» already exists`);
+    this._map.set(key, item);
+  }
+
+  async updateItem(key: StoreKey, item:  StoreValue): Promise<void> {
+    checkStoreKey(key);
+    checkStoreValue(item);
+    if (!this._map.has(key))
+      throw new Error(`Item «${key}» does not exist`);
+    this._map.set(key, item);
   }
 
 };
