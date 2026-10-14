@@ -3,9 +3,16 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
+import { ElementPath, MtzElement } from '../Element';
+import { pathToString, getElementPath } from '../path';
 import { MaestrozoStore, StoreKey, StoreValue } from './MaestrozoStore';
 import { checkStoreKey, checkStoreValue } from './storeUtils';
 
+/*
+ * La classe «RawMemoryStore» accepte des éléments avec des pointeurs 
+ * sur des fonctions comme c'est le cas pour les types qui ont un objet
+ * TypeHandler avec des pointeurs sur les fonctions de callback.
+ */
 class RawMemoryStore implements MaestrozoStore{
 
   private _map = new Map<StoreKey, StoreValue>();
@@ -29,6 +36,30 @@ class RawMemoryStore implements MaestrozoStore{
     if (!this._map.has(key))
       throw new Error(`Item «${key}» does not exist`);
     this._map.set(key, item);
+  }
+
+
+  async getElement(elementPath: ElementPath): Promise<MtzElement | null> {
+    const storeKey = pathToString(elementPath) as StoreKey;
+    checkStoreKey(storeKey);
+    const element:MtzElement = this._map.get(storeKey) ?? null;
+    return element;
+  }
+
+  async setElement(element: MtzElement): Promise<void> {
+    const elementPath = getElementPath(element);
+    const storeKey = pathToString(elementPath) as StoreKey;
+    if (element.revision === 1) {
+      if (this._map.has(storeKey))
+        throw new Error(`Element «${storeKey}» already exists`);
+    }
+    else {
+      if (! this._map.has(storeKey))
+        throw new Error(`Element «${storeKey}» does not exist`);
+    }
+    checkStoreKey(storeKey);
+    checkStoreValue(element);
+    this._map.set(storeKey, element);
   }
 
 };

@@ -7,3 +7,4 @@ export { MemoryStore } from './store/MemoryStore';
 
 export { MaestrozoStore, StoreKey, StoreValue } from './store/MaestrozoStore';
 export { checkStoreKey, checkStoreValue } from './store/storeUtils';
+export * from './path';

@@ -6,6 +6,8 @@ import { readFile, writeFile, access, constants } from "node:fs/promises";
 
 import { MaestrozoStore, StoreKey, StoreValue } from './MaestrozoStore';
 import { checkStoreKey, checkStoreValue } from './storeUtils';
+import { ElementPath, MtzElement } from "../Element";
+import { getElementPath, pathToString } from "../path";
 
 const encoding = 'utf-8';
 
@@ -99,6 +101,42 @@ class FileStore implements MaestrozoStore{
   get initialized(): boolean {
     return this._initialized;
   }
+
+  async getElement(elementPath: ElementPath): Promise<MtzElement | null> {
+    await this.initialize();
+    const storeKey = pathToString(elementPath) as StoreKey;
+    checkStoreKey(storeKey);
+    const element:MtzElement = this._map.get(storeKey) ?? null;
+    return element;
+  }
+
+  async setElement(element: MtzElement): Promise<void> {
+    await this.initialize();
+    const elementPath = getElementPath(element);
+    const storeKey = pathToString(elementPath) as StoreKey;
+    if (element.revision === 1) {
+      if (this._map.has(storeKey))
+        throw new Error(`Element «${storeKey}» already exists`);
+    }
+    else {
+      if (! this._map.has(storeKey))
+        throw new Error(`Element «${storeKey}» does not exist`);
+    }
+    checkStoreKey(storeKey);
+    checkStoreValue(element);
+    // convert object to JSON object by removing properties witch have function as item
+    // (ATTENTION : properties with undefined item are removed)
+    let cleanElement: Element;
+    try {
+      cleanElement = JSON.parse(JSON.stringify(element));
+    }
+    catch (err) {
+      throw new Error("Value is not JSON serializable", { cause: err });
+    }
+    this._map.set(storeKey, cleanElement);
+    await this.saveFile();
+  }
+
 };
 
 export { FileStore };
