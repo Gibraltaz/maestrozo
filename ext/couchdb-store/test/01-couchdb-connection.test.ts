@@ -8,6 +8,7 @@ import nconf from 'nconf';
 
 import { CouchDbStore } from '../src/CouchDbStore.js';
 import { StoreKey } from "maestrozo-core";
+import { ElementName, ElementPath, MtzElement } from 'node_modules/maestrozo-core/dist/Element.js';
 
 
 const loadConfig = () => {
@@ -19,6 +20,7 @@ describe("Maestrozo CouchDB store", () => {
   let couchDbStore: CouchDbStore | null = null;
 
   const newItemKey = `/#-${Date.now()}`  as StoreKey;
+  const firstElementName = `element-${Date.now()}`  as StoreKey;
 
   const config = loadConfig();
 
@@ -107,6 +109,71 @@ describe("Maestrozo CouchDB store", () => {
     assert(couchDbStore !== null);
     const obj = await couchDbStore.getItem('NON_EXISTENT_KEY' as StoreKey);
     expect(obj).to.equal(null);
+  });
+
+  it("should store a new element", async ({skip}) => {
+    skip(couchDbStore === null, "Store not initialized");
+    assert(couchDbStore !== null);
+    const element: MtzElement = {
+      elementName: firstElementName as ElementName,
+      parentPath: [ '#' ] as ElementPath,
+      revision: 1,
+      elementType: [ '#', 'types', 'xxx' ] as ElementPath,
+      isContainer: false,
+      isVolatile: false,
+      data: { value: 'abc' },
+      childNames: null
+    };
+    await couchDbStore.setElement(element);
+  });
+
+  it("should retrieve newly stored element", async ({skip}) => {
+    skip(couchDbStore === null, "Store not initialized");
+    assert(couchDbStore !== null);
+    const element = await couchDbStore.getElement([ '#', firstElementName ] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
+    expect(element).to.be.instanceOf(Object);
+    expect(element).to.have.property('elementName', firstElementName);
+    expect(element).to.have.property('revision', 1);
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal([ '#' ]);
+    expect(element).to.have.property('data');
+    expect(element.data).to.have.property('value', 'abc');
+  });
+
+  it("should update newly stored element", async ({skip}) => {
+    skip(couchDbStore === null, "Store not initialized");
+    assert(couchDbStore !== null);
+    const element = await couchDbStore.getElement([ '#', firstElementName ] as ElementPath);
+    assert(element !== null);
+    assert(element.data !== null);
+    element.data.value = 'ABC';
+    element.revision++;
+    await couchDbStore.setElement(element);
+    expect(element.revision).to.equal(2);
+  });
+
+  it("should retrieve change in element", async ({skip}) => {
+    skip(couchDbStore === null, "Store not initialized");
+    assert(couchDbStore !== null);
+    const element = await couchDbStore.getElement([ '#', firstElementName ] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
+    expect(element).to.be.instanceOf(Object);
+    expect(element).to.have.property('elementName', firstElementName);
+    expect(element).to.have.property('revision', 2);
+    expect(element).to.have.property('parentPath');
+    expect(element.parentPath).to.deep.equal([ '#' ]);
+    expect(element).to.have.property('data');
+    expect(element.data).to.have.property('value', 'ABC');
+  });
+
+  it("should not find an non existent element", async ({skip}) => {
+    skip(couchDbStore === null, "Store not initialized");
+    assert(couchDbStore !== null);
+    const element = await couchDbStore.getElement([ '#', 'non-existent-element' ] as ElementPath);
+    expect(element).to.equal(null);
   });
 
 });
