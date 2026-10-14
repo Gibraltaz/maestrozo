@@ -2,9 +2,8 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  * Copyright (C) 2026 Executive Gibraltaz
  */
-//@ts-ignore
-import NodeCouchDb from 'node-couchdb';
 
+import Nano from 'nano';
 
 import {
   MaestrozoStore, StoreKey, StoreValue,
@@ -14,7 +13,8 @@ import {
 
 class CouchDbStore implements MaestrozoStore{
 
-  private _couchDb: NodeCouchDb | null = null;
+  private _couchDb: any | null = null;
+  private _db: any = null;
   private _initialized = false;
 
   constructor (
@@ -28,15 +28,10 @@ class CouchDbStore implements MaestrozoStore{
 
   private async initialize() {
 
-    this._couchDb = new NodeCouchDb({
-      host: this._host,
-      port: this._port,
-      protocol: 'http',
-      auth: {
-        user: this._user,
-        pass: this._password 
-      }
+    this._couchDb = Nano({
+      url: `http://${encodeURIComponent(this._user)}:${encodeURIComponent(this._password)}@${this._host}:${this._port}`,
     });
+    this._db = this._couchDb.use(this._database);
   }
 
   get initialized(): boolean {
@@ -46,21 +41,26 @@ class CouchDbStore implements MaestrozoStore{
   async getItem(key: StoreKey) : Promise<StoreValue | null> {
     await this.initialize();
     checkStoreKey(key);
-    let result;
     try {
-      result = await this._couchDb.get(this._database, key);
+      const result = await this._db.get(key);
+      if (! result.value)
+        throw new Error("CouchDb value not found");
+      const couchDbId = result._id;
+      const couchDbRev = result._rev;
+      if (couchDbId === undefined)
+          throw new Error("CouchDb id not set");
+      if (couchDbRev === undefined)
+          throw new Error("CouchDb rev not set");
+      const value = result.value;
+      value.storeData = { couchDbId, couchDbRev };
+      return value;
     }
     catch (error: any) {
-      if (error.code === 'EDOCMISSING')
+      if (error.error === 'not_found')
         return null;
-      throw new Error(error);
+      throw new Error(`CouchDB get error : ${error.description}`);
     }
-    const value = result.data.value;
-    value.storeData = {
-      couchDbId: result.data._id,
-      couchDbRev: result.data._rev 
-    };
-    return value;
+
   }
 
   async createItem(key: StoreKey, value:  StoreValue): Promise<void> {
@@ -78,21 +78,21 @@ class CouchDbStore implements MaestrozoStore{
     }
 
     try {
-      const result = await this._couchDb.insert(this._database, {
-        '_id': key,
-        'value':value 
-      });
-      if (result.data === undefined)
-          throw new Error("CouchDb data not set");
-      value.storeData = {
-        couchDbId: result.data.id,
-        couchDbRev: result.data.rev 
-      };
+      const result = await this._db.insert({ value: cleanValue }, key);
+      if (! result.ok)
+        throw new Error("CouchDb insertion is not OK");
+      const couchDbId = result.id;
+      const couchDbRev = result.rev;
+      if (couchDbId === undefined)
+          throw new Error("CouchDb id not set");
+      if (couchDbRev === undefined)
+          throw new Error("CouchDb rev not set");
+      value.storeData = { couchDbId, couchDbRev };
     }
-    catch (exception:any) {
-      if (exception.code === 'EDOCCONFLICT')
+    catch (error:any) {
+      if (error.code === 'EDOCCONFLICT')
         throw new Error(`Element «${key}» already exists`)
-      throw new Error(exception.message);
+      throw new Error(error.message);
     }
   }
 
@@ -111,17 +111,20 @@ class CouchDbStore implements MaestrozoStore{
     }
 
     try {
-      const result = await this._couchDb.update(this._database, {
-        '_id':  value.storeData.couchDbId,
-        '_rev': value.storeData.couchDbRev,
-        'value':value 
-      });
-      if (result.data === undefined)
-          throw new Error("CouchDb data not set");
-      value.storeData = {
-        couchDbId: result.data.id,  // FIXME pourquoi «id» et pas «_id» ?
-        couchDbRev: result.data.rev // FIXME pourquoi «rev» et pas «_rev» ?
-      };
+      const couchDbId = value.storeData.couchDbId;
+      const couchDbRev = value.storeData.couchDbRev;
+      if (couchDbId === undefined)
+          throw new Error("CouchDb id not set in value");
+      if (couchDbRev === undefined)
+          throw new Error("CouchDb rev not set in value");
+      const result = await this._db.insert({ _id: couchDbId, _rev: couchDbRev, value: cleanValue });
+      if (! result.ok)
+        throw new Error("CouchDb update is not OK");
+      if (result.id === undefined)
+          throw new Error("CouchDb id not set");
+      if (result.rev === undefined)
+          throw new Error("CouchDb rev not set");
+      value.storeData.couchDbRev = result.rev;
     }
     catch (exception:any) {
       if (exception.code === 'EDOCCONFLICT')
@@ -129,7 +132,6 @@ class CouchDbStore implements MaestrozoStore{
       throw new Error(exception.message);
     }
   }
-
 
 };
 

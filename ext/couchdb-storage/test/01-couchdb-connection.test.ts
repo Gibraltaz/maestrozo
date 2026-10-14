@@ -17,7 +17,8 @@ const loadConfig = () => {
 
 describe("Maestrozo CouchDB store", () => {
   let couchDbStore: CouchDbStore | null = null;
-  const newItemKey = "k" + Date.now() as StoreKey;
+
+  const newItemKey = `/#-${Date.now()}`  as StoreKey;
 
   const config = loadConfig();
 
@@ -42,12 +43,6 @@ describe("Maestrozo CouchDB store", () => {
     expect(couchDbStore).to.be.have.property('initialized', false);
   });
 
-  it("should connect database", async ({skip}) => {
-    skip(couchDbStore === null, "Store not initialized");
-    assert(couchDbStore !== null);
-    const obj = await couchDbStore.getItem('NON_EXISTENT_KEY' as StoreKey);
-    expect(obj).to.equal(null);
-  });
 
   it("should create an item", async ({skip}) => {
     skip(couchDbStore === null, "Store not initialized");
@@ -94,6 +89,24 @@ describe("Maestrozo CouchDB store", () => {
     expect (newRev).not.to.equal(oldRev);
   });
 
+  it("should retrieve changed item", async ({skip}) => {
+    skip(couchDbStore === null, "Store not initialized");
+    assert(couchDbStore !== null);
+    const item = await couchDbStore.getItem(newItemKey);
+    expect (item).to.be.instanceOf(Object);
+    expect (item).to.have.property('name', 'ABC');
+    expect (item).to.have.property('age', 2);
+    expect (item).to.have.property('storeData');
+    expect (item.storeData).to.be.instanceOf(Object);
+    expect (item.storeData).to.have.property('couchDbId', newItemKey);
+    expect (item.storeData).to.have.property('couchDbRev');
+  });
 
+  it("should not find non existent key", async ({skip}) => {
+    skip(couchDbStore === null, "Store not initialized");
+    assert(couchDbStore !== null);
+    const obj = await couchDbStore.getItem('NON_EXISTENT_KEY' as StoreKey);
+    expect(obj).to.equal(null);
+  });
 
 });
