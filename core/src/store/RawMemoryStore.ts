@@ -17,28 +17,6 @@ class RawMemoryStore implements MaestrozoStore{
 
   private _map = new Map<StoreKey, StoreValue>();
 
-  async getItem(key: StoreKey) : Promise<StoreValue | null> {
-    checkStoreKey(key);
-    return this._map.get(key) ?? null;
-  }
-
-  async createItem(key: StoreKey, item:  StoreValue): Promise<void> {
-    checkStoreKey(key);
-    checkStoreValue(item);
-    if (this._map.has(key))
-      throw new Error(`Item «${key}» already exists`);
-    this._map.set(key, item);
-  }
-
-  async updateItem(key: StoreKey, item:  StoreValue): Promise<void> {
-    checkStoreKey(key);
-    checkStoreValue(item);
-    if (!this._map.has(key))
-      throw new Error(`Item «${key}» does not exist`);
-    this._map.set(key, item);
-  }
-
-
   async getElement(elementPath: ElementPath): Promise<MtzElement | null> {
     const storeKey = pathToString(elementPath) as StoreKey;
     checkStoreKey(storeKey);

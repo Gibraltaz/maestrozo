@@ -347,7 +347,7 @@ describe("Parallel pin connection with three components", () => {
     const sinkComponent = await engine.getElement(['#', 'runtime', 'sink-component-1'] as ElementPath);
     expect(sinkComponent).not.to.equal(null);
     expect(sinkComponent).to.be.instanceOf(Object);
-    expect(sinkComponent).to.have.property('revision', 2);
+    expect(sinkComponent).to.have.property('revision', 3);
     expect(sinkComponent).to.have.property('data');
     const componentData = sinkComponent.data;
     expect(componentData).to.be.instanceOf(Object);
@@ -373,7 +373,7 @@ describe("Parallel pin connection with three components", () => {
     const sinkComponent = await engine.getElement(['#', 'runtime', 'sink-component-2'] as ElementPath);
     expect(sinkComponent).not.to.equal(null);
     expect(sinkComponent).to.be.instanceOf(Object);
-    expect(sinkComponent).to.have.property('revision', 2);
+    expect(sinkComponent).to.have.property('revision', 3);
     expect(sinkComponent).to.have.property('data');
     const componentData = sinkComponent.data;
     expect(componentData).to.be.instanceOf(Object);

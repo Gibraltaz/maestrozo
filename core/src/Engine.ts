@@ -94,14 +94,12 @@ class MtzEngine {
   }
 
   private async updateElementInStore(element: MtzElement): Promise<void> {
-    const elementPath = getElementPath(element);
-    const storeKey = pathToString(elementPath) as StoreKey;
     if (element.isVolatile)
-      await this.volatileStore.updateItem(storeKey , element);
+      await this.volatileStore.setElement(element);
     else {
       if (this.persistentStore === null)
         throw new Error("Persistent store is null");
-      await this.persistentStore.updateItem(storeKey , element);
+      await this.persistentStore.setElement(element);
     }
   }
 
@@ -148,13 +146,14 @@ class MtzEngine {
       if (parentElement.childNames === null)
         throw new Error(`Child name list not initialized in element «${parentStoreKey}»`);
       parentElement.childNames.push(element.elementName);
+      parentElement.revision++;
       if (parentElement.isVolatile) {
-        await this.volatileStore.updateItem(parentStoreKey , parentElement);
+        await this.volatileStore.setElement(parentElement);
       }
       else {
         if (this.persistentStore === null)
           throw new Error("Persistent store is null");
-        await this.persistentStore.updateItem(parentStoreKey , parentElement);
+        await this.persistentStore.setElement(parentElement);
       }
     }
   };

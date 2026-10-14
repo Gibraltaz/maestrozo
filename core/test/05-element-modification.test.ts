@@ -26,7 +26,7 @@ describe("Maestrozo core", () => {
       }
     );
     expect(component).to.be.instanceof(Object);
-    expect(component).to.have.property('revision', 1);
+    expect(component).to.have.property('revision', 2);
     expect(component).to.have.property('childNames');
     expect(component.childNames).to.deep.equal([ 'out:value' ]);
   });

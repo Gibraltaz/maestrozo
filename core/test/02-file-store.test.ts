@@ -5,7 +5,6 @@
 
 import { describe, it, expect, assert, beforeAll, afterAll } from "vitest";
 
-import { StoreKey, StoreValue } from "../src/store/MaestrozoStore";
 import { FileStore } from "../src/store/FileStore";
 
 import { tmpdir } from 'node:os';
@@ -48,59 +47,6 @@ describe("File store", () => {
     assert (fileStore1 !== null);
     expect(fileStore1).to.have.property('initialized', true);
   });
-
-  it("should write a first value", async () => {
-    assert (fileStore1 !== null);
-    await fileStore1.createItem('abc' as StoreKey, 'ABC' as StoreValue);
-  });
-
-  it("should write a second value", async () => {
-    assert (fileStore1 !== null);
-    await fileStore1.createItem('def' as StoreKey, 'DEF' as StoreValue);
-  });
-
-  it("should read an existing value from store", async () => {
-    assert (fileStore1 !== null);
-    const value = await fileStore1.getItem('abc' as StoreKey);
-    expect(value).to.equal('ABC');
-  });
-
-  it("should free first instance of file store", () => {
-    fileStore1 = null;
-  });
-
-  it("should create create a second instance of file store with same file", () => {
-    fileStore2 = new FileStore(storePath);
-  });
-
-  it("should not be initialized", () => {
-    assert (fileStore2 !== null);
-    expect(fileStore2).to.have.property('initialized', false);
-  });
-
-  it("should initialize file store", async () => {
-    assert (fileStore2 !== null);
-    await fileStore2.initialize();
-  });
-
-  it("should be initialized", () => {
-    assert (fileStore2 !== null);
-    expect(fileStore2).to.have.property('initialized', true);
-  });
-
-  it("should retrieve the first value from store", async () => {
-    assert (fileStore2 !== null);
-    const value = await fileStore2.getItem('abc' as StoreKey);
-    expect(value).to.equal('ABC');
-  });
-
-  it("should retrieve the second value from store", async () => {
-    assert (fileStore2 !== null);
-    const value = await fileStore2.getItem('def' as StoreKey);
-    expect(value).to.equal('DEF');
-  });
-
-  // nouveaux tests
 
   describe("Initialize first file store", () => {
     it("should create a first instance of file store", () => {

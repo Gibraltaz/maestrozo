@@ -29,7 +29,7 @@ describe("Maestrozo core", () => {
       }
     );
     expect(component).to.be.instanceof(Object);
-    expect(component).to.have.property('revision', 1);
+    expect(component).to.have.property('revision', 2);
   });
 
   it("should obtain a first reference to the component", async () => {
@@ -50,7 +50,7 @@ describe("Maestrozo core", () => {
     if (componentRef1 === null || componentRef1.data === null) throw new Error();
     componentRef1.data.value = 456;
     await engine.modifyElement(componentRef1);
-    expect(componentRef1.revision).to.equal(2);
+    expect(componentRef1.revision).to.equal(3);
   });
 
   it("should detect conflict edition when trying to change second instance", async () => {

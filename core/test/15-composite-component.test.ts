@@ -241,7 +241,7 @@ describe("Composite component", () => {
     const C1 = await engine.getElement(['#', 'runtime', 'C1'] as ElementPath);
     expect(C1).not.to.equal(null);
     expect(C1).to.be.instanceOf(Object);
-    expect(C1).to.have.property('revision', 1);
+    expect(C1).to.have.property('revision', 2);
 
     expect(C1).to.have.property('childNames');
     expect(C1.childNames).to.be.instanceOf(Array);
@@ -265,7 +265,7 @@ describe("Composite component", () => {
     const R1 = await engine.getElement(['#', 'runtime', 'C1', 'R1'] as ElementPath);
     expect(R1).not.to.equal(null);
     expect(R1).to.be.instanceOf(Object);
-    expect(R1).to.have.property('revision', 1);
+    expect(R1).to.have.property('revision', 3);
 
     expect(R1).to.have.property('elementName', 'R1');
 
@@ -293,7 +293,7 @@ describe("Composite component", () => {
         const C1 = await engine.getElement(['#', 'runtime', 'C1'] as ElementPath);
         expect(C1).not.to.equal(null);
         expect(C1).to.be.instanceOf(Object);
-        expect(C1).to.have.property('revision', 1);
+        expect(C1).to.have.property('revision', 3);
 
         expect(C1).to.have.property('childNames');
         expect(C1.childNames).to.be.instanceOf(Array);
@@ -348,7 +348,7 @@ describe("Composite component", () => {
         const C1 = await engine.getElement(['#', 'runtime', 'C1'] as ElementPath);
         expect(C1).not.to.equal(null);
         expect(C1).to.be.instanceOf(Object);
-        expect(C1).to.have.property('revision', 1);
+        expect(C1).to.have.property('revision', 4);
 
         expect(C1).to.have.property('childNames');
         expect(C1.childNames).to.be.instanceOf(Array);
@@ -435,7 +435,7 @@ describe("Composite component", () => {
         const C1 = await engine.getElement(['#', 'runtime', 'C1'] as ElementPath);
         expect(C1).not.to.equal(null);
         expect(C1).to.be.instanceOf(Object);
-        expect(C1).to.have.property('revision', 1);
+        expect(C1).to.have.property('revision', 5);
 
         expect(C1).to.have.property('childNames');
         expect(C1.childNames).to.be.instanceOf(Array);
@@ -503,7 +503,7 @@ describe("Composite component", () => {
         const C1 = await engine.getElement(['#', 'runtime', 'C1'] as ElementPath);
         expect(C1).not.to.equal(null);
         expect(C1).to.be.instanceOf(Object);
-        expect(C1).to.have.property('revision', 1);
+        expect(C1).to.have.property('revision', 6);
 
         expect(C1).to.have.property('childNames');
         expect(C1.childNames).to.be.instanceOf(Array);
@@ -735,7 +735,7 @@ describe("Composite component", () => {
     it("should have updated the relay internal value ", async () => {
       const component = await engine.getElement([ '#', 'runtime', 'C1', 'R1' ] as ElementPath);
       expect(component).to.be.instanceOf(Object);
-      expect(component).to.have.property('revision', 2);
+      expect(component).to.have.property('revision', 4);
       expect(component).to.have.property('data');
       expect(component.data).to.have.property('internalValue', 123);
     });
@@ -808,7 +808,7 @@ describe("Composite component", () => {
       expect(sink).to.have.property('elementName', 'O1');
       expect(sink).to.have.property('data');
       expect(sink.data).to.have.property('internalValue', 123);
-      expect(sink).to.have.property('revision', 2);
+      expect(sink).to.have.property('revision', 3);
     });
 
     it("should have no waiting messages", async () => {

@@ -20,31 +20,6 @@ class MemoryStore implements MaestrozoStore{
 
   private _map = new Map<StoreKey, StoreValue>();
 
-  async getItem(key: StoreKey) : Promise<StoreValue | null> {
-    checkStoreKey(key);
-    const strValue = this._map.get(key) ?? null;
-    const item = (strValue === null) ? null : JSON.parse(strValue);
-    return item;
-  }
-
-  async createItem(key: StoreKey, item:  StoreValue): Promise<void> {
-    checkStoreKey(key);
-    checkStoreValue(item);
-    if (this._map.has(key))
-      throw new Error(`Item «${key}» already exists`);
-    const strValue = JSON.stringify(item);
-    this._map.set(key, strValue);
-  }
-
-  async updateItem(key: StoreKey, item:  StoreValue): Promise<void> {
-    checkStoreKey(key);
-    checkStoreValue(item);
-    if (!this._map.has(key))
-      throw new Error(`Item «${key}» does not exist`);
-    const strValue = JSON.stringify(item);
-    this._map.set(key, strValue);
-  }
-
   async getElement(elementPath: ElementPath): Promise<MtzElement | null> {
     const storeKey = pathToString(elementPath) as StoreKey;
     checkStoreKey(storeKey);
@@ -79,7 +54,6 @@ class MemoryStore implements MaestrozoStore{
     const strValue = JSON.stringify(cleanElement);
     this._map.set(storeKey, strValue);
   }
-
 
 };
 

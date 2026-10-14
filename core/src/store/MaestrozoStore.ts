@@ -10,11 +10,6 @@ type StoreKey = string & { __brand: 'store-key' };
 type StoreValue = any & { __brand: 'store-value' }; 
 
 interface MaestrozoStore {
-
-  getItem(key: StoreKey) : Promise<StoreValue | null>;
-  createItem(key: StoreKey, item:  StoreValue): Promise<void>;
-  updateItem(key: StoreKey, item:  StoreValue): Promise<void>;
-
   getElement(elementPath: ElementPath) : Promise<MtzElement | null>;
   setElement(element: MtzElement) : Promise<void>;
 };

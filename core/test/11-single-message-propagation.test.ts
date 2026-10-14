@@ -251,7 +251,7 @@ describe("Single pin connection with two components", () => {
     const targetComponent = await engine.getElement(['#', 'runtime', 'target-component-1'] as ElementPath);
     expect(targetComponent).not.to.equal(null);
     expect(targetComponent).to.be.instanceOf(Object);
-    expect(targetComponent).to.have.property('revision', 2);
+    expect(targetComponent).to.have.property('revision', 3);
     expect(targetComponent).to.have.property('data');
     const componentData = targetComponent.data;
     expect(componentData).to.be.instanceOf(Object);
