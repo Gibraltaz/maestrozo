@@ -365,11 +365,12 @@ class MtzEngine {
   }
 
 
-  public async getElement(elementPath: ElementPath): Promise<MtzElement> {
+  public async getElement(elementPath: ElementPath): Promise<MtzElement|null> {
     if (! this._initialized)
       throw new Error("Engine not initialized");
     const element = await this.getStoredElement(elementPath);
-
+    if (element === null)
+      return null;
     // FIXME code en double avec createElementInternal
     const typePath = element.elementType;
     const typeElement = await this.getStoredElement(typePath);
@@ -386,7 +387,6 @@ class MtzEngine {
         throw new Error(`Invalid initialize element callback a function`);
       await initializeElementFunction(element, capabilities );
     }
-
     return element;
   }
 
@@ -451,10 +451,10 @@ class MtzEngine {
       let buildElementDataHelpersActive = true; // contrôle de la réutilisation des fonctions helper
 
       const buildElementDataHelpers: BuildElementDataHelpers = {
-        getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
+        getElement: async (elementPath:ElementPath): Promise<MtzElement|null> => {
           if (! buildElementDataHelpersActive)
             throw new Error(`Build element data helper «getChild» can no longer be used (element «${elementName}»)`);
-          return await this.getStoredElement(elementPath)
+          return await this.getStoredElement(elementPath);
         },
         // TODO retirer createChildElement du build data !
         createChildElement: async (
@@ -481,7 +481,7 @@ class MtzEngine {
       buildElementDataHelpersActive = false; // interdire la réutilisation des fonctions helper
     }
 
-    let element: MtzElement = {
+    let element: MtzElement | null = {
       revision: 0,
       elementName,
       parentPath,
@@ -509,10 +509,10 @@ class MtzEngine {
       let buildComponentHelpersActive = true; // contrôle de la réutilisation des fonctions helper
 
       const buildComponentHelpers: BuildComponentHelpers = {
-        getElement: async (elementPath:ElementPath): Promise<MtzElement> => {
+        getElement: async (elementPath:ElementPath): Promise<MtzElement|null> => {
           if (! buildComponentHelpersActive)
             throw new Error(`Build element data helper «getChild» can no longer be used (element «${elementName}»)`);
-          return await this.getStoredElement(elementPath)
+          return await this.getStoredElement(elementPath);
         },
         createChildElement: async (
           childElementName: ElementName,
@@ -537,6 +537,8 @@ class MtzEngine {
       await buildComponentFunction(element, params, buildComponentHelpers);
       // relire l'élément car sa propriété childNames a changé si des éléments enfants ont été créés dans cet élément
       element = await this.getStoredElement(elementPath);
+      if (element === null)
+        throw new Error(`Element not found after creation`);
     }
     return element;
   }
@@ -576,6 +578,8 @@ class MtzEngine {
       throw new Error("Engine not initialized");
 
     const messageQueueElement = await this.getElement(messageQueuePath);
+    if (messageQueueElement === null)
+      throw new Error("Message queue not found");
     if (messageQueueElement.data === null)
       throw new Error("Message queue data should not be null");
 
@@ -608,6 +612,7 @@ class MtzEngine {
     const componentName = componentElement.elementName;
     const containerPath = componentElement.parentPath;
     const containerElement = await this.getElement(containerPath);
+    assert (containerElement !== null); // FIXME comment gérer l'erreur ?
     const data = message.data;
 
     switch (message.messageType) {
@@ -627,7 +632,7 @@ class MtzEngine {
 
         const evaluateComponentHelpers: EvaluateComponentHelpers = {
           // TODO autotest helper getChild
-          getChild : async (childName:ElementName): Promise<MtzElement> => {
+          getChild : async (childName:ElementName): Promise<MtzElement|null> => {
             if (! evaluateComponentHelpersActive)
               throw new Error(`Evalute component helper «getChild» can no longer be used (element «${componentName}»)`);
             const childPath = [...componentPath, childName];
@@ -658,7 +663,9 @@ class MtzEngine {
 
           // mise à jour de la valeur de l'entrée ou de la sortie du composant composite
           const pinPath: ElementPath = [...componentPath, data.pin];
-          const pin = await this.getElement(pinPath)
+          const pin = await this.getElement(pinPath);
+          if (pin === null) // FIXME comment gérer l'erreur ?
+            throw new Error(`Pin «${pathToString(pinPath)}» not found`);
           if (pin.data === null)
             pin.data = {};
           pin.data.value = data.value;
@@ -666,16 +673,18 @@ class MtzEngine {
 
           // pour une sortie, propager le changement aux composants externes liés
           if (pathEquals(pin.elementType, outputPinTypePath)) {
+            assert(containerElement !== null);
             assert(containerElement.childNames !== null);
             for (const childName of containerElement.childNames) {
               const childElement = await this.getElement([...containerPath, childName]);
+              assert(childElement !== null); // FIXME comment gérer l'erreur ?
 
               // ne traiter que les connexions
               if (! pathEquals(childElement.elementType, connectionTypePath))
                 continue;
 
               const connection = childElement.data;
-              assert(connection !== null);
+              assert(connection !== null); // FIXME comment gérer l'erreur ?
 
               // ne traiter que les connexions liées à la sortie du composant composite
               if (connection.sourceComponent !== componentElement.elementName)
@@ -820,6 +829,8 @@ class MtzEngine {
     };
 
     const messageQueueElement = await this.getElement(messageQueuePath);
+    if (messageQueueElement === null)
+      throw new Error("Message queue not found");
     if (messageQueueElement.data === null)
       throw new Error("Message queue data should not be null");
 

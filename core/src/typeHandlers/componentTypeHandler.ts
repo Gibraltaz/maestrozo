@@ -150,6 +150,8 @@ const connectComponents = async (
       };
 
       const messageQueueElement = await engine.getElement(messageQueuePath);
+      if (messageQueueElement === null)
+        throw new Error("Message queue not found");
       if (messageQueueElement.data === null)
         throw new Error("Message queue data should not be null");
       const messageQueue = {
