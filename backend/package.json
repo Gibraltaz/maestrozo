@@ -13,8 +13,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "maestrozo-core": "file:../core",
     "express": "^5.2.1",
+    "maestrozo-core": "file:../core",
+    "maestrozo-couchdb-store": "file:../ext/couchdb-store",
     "nconf": "^0.13.0"
   },
   "devDependencies": {
@@ -25,6 +26,6 @@
     "typescript": "^7.0.2"
   },
   "allowScripts": {
-    "esbuild@0.28.2": true
+    "esbuild": true
   }
 }

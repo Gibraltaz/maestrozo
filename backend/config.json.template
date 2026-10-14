@@ -2,12 +2,12 @@
   "server": {
     "port":9101
   },
-  "storage": {
-    "type": "couchdb",
-    "name":"maestrozo",
+  "store": {
+    "type": "couch-db", // «couch-db» or «memory» for self tests
+    "database":"maestrozo",
     "host":"127.0.0.1",
     "port":5984,
-    "account":"admin",
-    "password":"<REPLACE>" 
+    "user":"admin",
+    "password":"<TO REPLACE>"
   }
 }

@@ -2,16 +2,21 @@ import * as fs from 'node:fs/promises';
 import { Stats }  from 'node:fs';
 import nconf from 'nconf';
 
+enum StoreType  {
+  MEMORY   = 'memory',
+  COUCH_DB = 'couch-db',
+};
+
 type Config = {
   server: {
     port: number;
   },
-  storage: {
-    type: string,
-    name: string,
+  store: {
+    type: StoreType,
+    database: string,
     host: string,
     port: number,
-    account: string,
+    user: string,
     password: string
   }
 };
@@ -79,15 +84,15 @@ const loadConfig = async(configPath: string): Promise<Config> => {
     },
     configPath
   );
-  const storageConfig = loadConfigSection(
+  const storeConfig = loadConfigSection(
     {
-      name: 'storage', 
+      name: 'store', 
       parameters: [ 
-        { name: 'type', type: 'string'},
-        { name: 'name', type: 'string'},
-        { name: 'host', type: 'string'},
-        { name: 'port', type: 'number'},
-        { name: 'account', type: 'string'},
+        { name: 'type',     type: 'string'},
+        { name: 'database', type: 'string'},
+        { name: 'host',     type: 'string'},
+        { name: 'port',     type: 'number'},
+        { name: 'user',     type: 'string'},
         { name: 'password', type: 'string'},
       ]
     },
@@ -98,17 +103,17 @@ const loadConfig = async(configPath: string): Promise<Config> => {
     server: {
       port: serverConfig.port
     },
-    storage: {
-      type: storageConfig.type, // couchstorage or memory (selftests)
-      name: storageConfig.name,
-      host: storageConfig.host,
-      port: storageConfig.port,
-      account: storageConfig.account,
-      password: storageConfig.password
+    store: {
+      type:     storeConfig.type, // couchdb or memory (selftests)
+      database: storeConfig.database,
+      host:     storeConfig.host,
+      port:     storeConfig.port,
+      user:     storeConfig.user,
+      password: storeConfig.password
     }
   }
   return config;
 }
 
-export { loadConfig };
+export { loadConfig, StoreType };
 export type { Config };
