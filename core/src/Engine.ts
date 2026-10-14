@@ -69,16 +69,16 @@ type ContainerDeclaration = {
 
 class MtzEngine {
   private _initialized = false;
-  private persistentStorage: MaestrozoStore| null = null;
+  private persistentStore: MaestrozoStore| null = null;
   private volatileStore: MaestrozoStore = new RawMemoryStore;
   public timeFunction: MtzTimeFunction = () => Date.now() as MtzMessageTime;
 
   private async getStoredElement(elementPath: ElementPath): Promise<MtzElement|null> {
     let element = await this.volatileStore.getElement(elementPath);
     if (element === null) {
-      if (this.persistentStorage === null)
-        throw new Error("Persistent storage is null");
-      element = await this.persistentStorage.getElement(elementPath);
+      if (this.persistentStore === null)
+        throw new Error("Persistent store is null");
+      element = await this.persistentStore.getElement(elementPath);
     }
     return element;
   }
@@ -87,9 +87,9 @@ class MtzEngine {
     if (element.isVolatile)
       await this.volatileStore.setElement(element);
     else {
-      if (this.persistentStorage === null)
-        throw new Error("Persistent storage is null");
-      await this.persistentStorage.setElement(element);
+      if (this.persistentStore === null)
+        throw new Error("Persistent store is null");
+      await this.persistentStore.setElement(element);
     }
   }
 
@@ -99,9 +99,9 @@ class MtzEngine {
     if (element.isVolatile)
       await this.volatileStore.updateItem(storeKey , element);
     else {
-      if (this.persistentStorage === null)
-        throw new Error("Persistent storage is null");
-      await this.persistentStorage.updateItem(storeKey , element);
+      if (this.persistentStore === null)
+        throw new Error("Persistent store is null");
+      await this.persistentStore.updateItem(storeKey , element);
     }
   }
 
@@ -152,9 +152,9 @@ class MtzEngine {
         await this.volatileStore.updateItem(parentStoreKey , parentElement);
       }
       else {
-        if (this.persistentStorage === null)
-          throw new Error("Persistent storage is null");
-        await this.persistentStorage.updateItem(parentStoreKey , parentElement);
+        if (this.persistentStore === null)
+          throw new Error("Persistent store is null");
+        await this.persistentStore.updateItem(parentStoreKey , parentElement);
       }
     }
   };
@@ -257,10 +257,10 @@ class MtzEngine {
     return this.declareTypeInternal(typeDeclaration, false);
   }
 
-  public async initialize (storage: MaestrozoStore) {
+  public async initialize (store: MaestrozoStore) {
 
     this.volatileStore = new RawMemoryStore();
-    this.persistentStorage = storage;
+    this.persistentStore = store;
 
     // mise en place de root «#/»
     const rootElement = await this.declareContainer({
