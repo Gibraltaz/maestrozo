@@ -73,26 +73,23 @@ class MtzEngine {
   private volatileStore: MaestrozoStore = new RawMemoryStore;
   public timeFunction: MtzTimeFunction = () => Date.now() as MtzMessageTime;
 
-  private async getStoredElement(elementPath: ElementPath): Promise<MtzElement> {
-    const storeKey = pathToString(elementPath) as StoreKey;
-    let element = await this.volatileStore.getItem(storeKey);
+  private async getStoredElement(elementPath: ElementPath): Promise<MtzElement|null> {
+    let element = await this.volatileStore.getElement(elementPath);
     if (element === null) {
       if (this.persistentStorage === null)
         throw new Error("Persistent storage is null");
-      element = await this.persistentStorage.getItem(storeKey);
+      element = await this.persistentStorage.getElement(elementPath);
     }
     return element;
   }
 
   private async createElementInStore(element: MtzElement): Promise<void> {
-    const elementPath = getElementPath(element);
-    const storeKey = pathToString(elementPath) as StoreKey;
     if (element.isVolatile)
-      await this.volatileStore.createItem(storeKey , element);
+      await this.volatileStore.setElement(element);
     else {
       if (this.persistentStorage === null)
         throw new Error("Persistent storage is null");
-      await this.persistentStorage.createItem(storeKey , element);
+      await this.persistentStorage.setElement(element);
     }
   }
 

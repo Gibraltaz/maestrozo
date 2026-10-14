@@ -48,7 +48,8 @@ class MemoryStore implements MaestrozoStore{
   async getElement(elementPath: ElementPath): Promise<MtzElement | null> {
     const storeKey = pathToString(elementPath) as StoreKey;
     checkStoreKey(storeKey);
-    const element:MtzElement = this._map.get(storeKey) ?? null;
+    const strValue = this._map.get(storeKey) ?? null;
+    const element:MtzElement= (strValue === null) ? null : JSON.parse(strValue);
     return element;
   }
 
@@ -75,6 +76,8 @@ class MemoryStore implements MaestrozoStore{
       throw new Error("Value is not JSON serializable", { cause: err });
     }
     this._map.set(storeKey, cleanElement);
+    const strValue = JSON.stringify(cleanElement);
+    this._map.set(storeKey, strValue);
   }
 
 
