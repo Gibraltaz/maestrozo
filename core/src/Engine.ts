@@ -3,8 +3,9 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { MaestrozoStore, StoreKey } from './store/MaestrozoStore';
-import { RawMemoryStore } from './store/RawMemoryStore';
+import { MaestrozoStore } from 'maestrozo-kernel';
+import { RawMemoryStore } from 'maestrozo-kernel';
+import { MtzElement, ElementName, ElementPath, checkElement, ElementData } from 'maestrozo-kernel';
 import {
   checkElementName,
   checkElementPath,
@@ -14,8 +15,8 @@ import {
   getElementPath,
   elementPathAreEquals,
   pathEquals,
-} from './path';
-import { MtzElement, ElementName, ElementPath, checkElement, ElementData } from './Element';
+} from 'maestrozo-kernel';
+
 import {
   containerTypeName,
   rootTypeContainerName,
@@ -142,9 +143,8 @@ class MtzEngine {
     await this.createElementInStore(element);
 
     if (parentElement) {
-      const parentStoreKey = pathToString(element.parentPath) as StoreKey;
       if (parentElement.childNames === null)
-        throw new Error(`Child name list not initialized in element «${parentStoreKey}»`);
+        throw new Error("Parent element childNames array is null");
       parentElement.childNames.push(element.elementName);
       parentElement.revision++;
       if (parentElement.isVolatile) {
@@ -415,9 +415,8 @@ class MtzEngine {
       throw new Error(`Parent element «${pathToString(parentPath)}» is not a container`);
 
     const elementPath = [...parentPath, elementName];
-    const elementStoreKey = pathToString([...parentPath, elementName]) as StoreKey;
     if (await this.getStoredElement(elementPath) !== null)
-      throw new Error(`Element «${elementStoreKey}» already exists`);
+      throw new Error(`Element «${pathToString([...parentPath, elementName])}» already exists`);
 
     const typeElement = await this.getStoredElement(typePath);
     if (typeElement === null)

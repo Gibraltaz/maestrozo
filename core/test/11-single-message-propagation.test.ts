@@ -4,9 +4,11 @@
  */
 
 import { describe, it, expect } from "vitest";
+
+import { ElementData, MtzElement } from 'maestrozo-kernel';
+import { MemoryStore } from 'maestrozo-kernel';
+
 import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
-import { ElementData, MtzElement } from "../src/Element";
-import { MemoryStore } from "../src/store/MemoryStore";
 import { MtzMessageTime } from "../src/MessageQueue";
 import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "../src/typeHandlers/componentTypeHandler";
 import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";
@@ -213,6 +215,8 @@ describe("Single pin connection with two components", () => {
 
   it("should find a message in messages queue", async () => {
     const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+    expect(messageQueueElement).not.to.equal(null);
+    assert(messageQueueElement !== null);
     expect(messageQueueElement).to.be.instanceof(Object);
     expect(messageQueueElement).to.have.property('data')
     expect(messageQueueElement.data).to.have.property('messages')
@@ -238,6 +242,8 @@ describe("Single pin connection with two components", () => {
 
   it("should find no message in messages queue", async () => {
     const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+    expect(messageQueueElement).not.to.equal(null);
+    assert(messageQueueElement !== null);
     expect(messageQueueElement).to.be.instanceof(Object);
     expect(messageQueueElement).to.have.property('data')
     expect(messageQueueElement.data).to.have.property('messages')
@@ -249,6 +255,8 @@ describe("Single pin connection with two components", () => {
 
   it("should control target component internal value", async () => {
     const targetComponent = await engine.getElement(['#', 'runtime', 'target-component-1'] as ElementPath);
+    expect(targetComponent).not.to.equal(null);
+    assert(targetComponent !== null);
     expect(targetComponent).not.to.equal(null);
     expect(targetComponent).to.be.instanceOf(Object);
     expect(targetComponent).to.have.property('revision', 3);

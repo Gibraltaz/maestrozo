@@ -8,7 +8,9 @@ import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { rm } from "node:fs/promises";
 
-import { ElementName, ElementPath, MtzElement } from "../src/Element";
+import { ElementName, ElementPath, MtzElement } from 'maestrozo-kernel';
+import { FileStore } from 'maestrozo-kernel';
+
 import { 
   MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, 
   mtzMessageQueueGetMessageCount, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime
@@ -16,7 +18,6 @@ import {
 
 const tmpFilePath = (prefix:string) =>join( tmpdir(), `${prefix}-${randomUUID()}.tmp`);
 
-import { FileStore } from '../src/store/FileStore';
 import { MtzEngine } from '../src/Engine';
 
 let storePath: string;

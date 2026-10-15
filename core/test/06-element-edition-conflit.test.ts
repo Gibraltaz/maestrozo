@@ -4,15 +4,17 @@
  */
 
 import { describe, it, expect } from "vitest";
+
+import { MemoryStore } from 'maestrozo-kernel';
+import { MtzElement } from 'maestrozo-kernel';
+
 import { ElementName, ElementPath, MtzEngine } from "../src/Engine";
-import { MemoryStore } from "../src/store/MemoryStore";
-import { MtzElement } from "../src/Element";
 
 describe("Maestrozo core", () => {
   const memoryStore = new MemoryStore();
   let engine = new MtzEngine();
-  let componentRef1: MtzElement;
-  let componentRef2: MtzElement;
+  let componentRef1: MtzElement | null;
+  let componentRef2: MtzElement | null;
 
   it("should be initialized", async() => {
     await engine.initialize(memoryStore);
@@ -34,11 +36,15 @@ describe("Maestrozo core", () => {
 
   it("should obtain a first reference to the component", async () => {
     componentRef1 = await engine.getElement(['#' as ElementName, 'runtime' as ElementName, 'constantA' as ElementName]);
+    expect(componentRef1 ).not.to.equal(null);
+    assert(componentRef1  !== null);
     expect(componentRef1).to.be.instanceof(Object);
   });
 
   it("should obtain a second reference to the component", async () => {
     componentRef2 = await engine.getElement(['#' as ElementName, 'runtime' as ElementName, 'constantA' as ElementName]);
+    expect(componentRef1).not.to.equal(null);
+    assert(componentRef1 !== null);
     expect(componentRef1).to.be.instanceof(Object);
   });
 

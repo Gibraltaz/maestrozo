@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementName } from "../src/Element";
+import { ElementName } from 'maestrozo-kernel';
 import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueueCreate, mtzMessageQueueGetMessageCount, mtzMessageQueuePopMessage, mtzMessageQueuePushMessage, MtzMessageTime } from "../src/MessageQueue";
 
 

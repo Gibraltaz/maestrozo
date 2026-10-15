@@ -4,9 +4,11 @@
  */
 
 import { describe, it, expect } from "vitest";
+
+import { ElementData, MtzElement } from 'maestrozo-kernel';
+import { MemoryStore } from 'maestrozo-kernel';
+
 import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
-import { ElementData, MtzElement } from "../src/Element";
-import { MemoryStore } from "../src/store/MemoryStore";
 import { MtzElementCapabilities } from "../src/elementCapabilities";
 import { MtzMessageTime } from "../src/MessageQueue";
 import {

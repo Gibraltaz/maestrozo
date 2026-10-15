@@ -5,8 +5,10 @@
 
 import { ElementPath, MtzElement } from "../Element";
 
+// TODO encore utilisé
 type StoreKey = string & { __brand: 'store-key' }; 
 
+// TODO encore utilisé
 type StoreValue = any & { __brand: 'store-value' }; 
 
 interface MaestrozoStore {

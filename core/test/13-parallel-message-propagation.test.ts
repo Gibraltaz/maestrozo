@@ -4,9 +4,9 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { ElementData, MtzElement } from 'maestrozo-kernel';
+import { MemoryStore } from 'maestrozo-kernel';
 import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
-import { ElementData, MtzElement } from "../src/Element";
-import { MemoryStore } from "../src/store/MemoryStore";
 import { MtzMessageTime } from "../src/MessageQueue";
 import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "../src/typeHandlers/componentTypeHandler";
 import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";

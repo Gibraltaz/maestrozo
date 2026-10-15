@@ -5,8 +5,8 @@
 
 import { describe, it, expect } from "vitest";
 import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
-import { ElementData, MtzElement } from "../src/Element";
-import { MemoryStore } from "../src/store/MemoryStore";
+import { ElementData, MtzElement } from 'maestrozo-kernel';
+import { MemoryStore } from 'maestrozo-kernel';
 import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "../src/typeHandlers/componentTypeHandler";
 import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";
 import { MtzMessageTime } from "../src/MessageQueue";
@@ -240,6 +240,7 @@ describe("Composite component", () => {
   it("should find the relay component as a child of the composite component", async () => {
     const C1 = await engine.getElement(['#', 'runtime', 'C1'] as ElementPath);
     expect(C1).not.to.equal(null);
+    assert(C1 !== null);
     expect(C1).to.be.instanceOf(Object);
     expect(C1).to.have.property('revision', 2);
 
@@ -264,6 +265,7 @@ describe("Composite component", () => {
   it("should find the relay component", async () => {
     const R1 = await engine.getElement(['#', 'runtime', 'C1', 'R1'] as ElementPath);
     expect(R1).not.to.equal(null);
+    assert(R1 !== null);
     expect(R1).to.be.instanceOf(Object);
     expect(R1).to.have.property('revision', 3);
 
@@ -292,6 +294,7 @@ describe("Composite component", () => {
       it("should find the input pin in the composite component", async () => {
         const C1 = await engine.getElement(['#', 'runtime', 'C1'] as ElementPath);
         expect(C1).not.to.equal(null);
+        assert(C1 !== null);
         expect(C1).to.be.instanceOf(Object);
         expect(C1).to.have.property('revision', 3);
 
@@ -310,6 +313,7 @@ describe("Composite component", () => {
         expect(e1).to.have.property('elementName', 'e1');
 
         expect(e1).to.have.property('parentPath');
+        assert(e1 !== null);
         expect(e1.parentPath).to.be.instanceOf(Array);
         expect(e1.parentPath).to.deep.equal(['#', 'runtime', 'C1']);
 
@@ -347,6 +351,7 @@ describe("Composite component", () => {
       it("should find the output pin in the composite component", async () => {
         const C1 = await engine.getElement(['#', 'runtime', 'C1'] as ElementPath);
         expect(C1).not.to.equal(null);
+        assert(C1 !== null);
         expect(C1).to.be.instanceOf(Object);
         expect(C1).to.have.property('revision', 4);
 
@@ -359,6 +364,7 @@ describe("Composite component", () => {
       it("should find the output pin", async () => {
         const o1 = await engine.getElement(['#', 'runtime', 'C1', 'o1'] as ElementPath);
         expect(o1).not.to.equal(null);
+        assert(o1 !== null);
         expect(o1).to.be.instanceOf(Object);
         expect(o1).to.have.property('revision', 1);
 
@@ -420,6 +426,7 @@ describe("Composite component", () => {
       it("should find the connection", async () => {
         const connection = await engine.getElement(['#', 'runtime', 'C1', 'e1|R1|in'] as ElementPath);
         expect(connection).not.to.equal(null);
+        assert(connection !== null);
         expect(connection).to.be.instanceOf(Object);
         expect(connection).to.have.property('revision', 1);
         expect(connection).to.have.property('elementName', 'e1|R1|in');
@@ -434,6 +441,7 @@ describe("Composite component", () => {
       it("should find the connection in the composite component", async () => {
         const C1 = await engine.getElement(['#', 'runtime', 'C1'] as ElementPath);
         expect(C1).not.to.equal(null);
+        assert(C1 !== null);
         expect(C1).to.be.instanceOf(Object);
         expect(C1).to.have.property('revision', 5);
 
@@ -488,6 +496,7 @@ describe("Composite component", () => {
       it("should find the connection", async () => {
         const connection = await engine.getElement(['#', 'runtime', 'C1', 'R1|out|o1'] as ElementPath);
         expect(connection).not.to.equal(null);
+        assert(connection !== null);
         expect(connection).to.be.instanceOf(Object);
         expect(connection).to.have.property('revision', 1);
         expect(connection).to.have.property('elementName', 'R1|out|o1');
@@ -502,6 +511,7 @@ describe("Composite component", () => {
       it("should find the connection in the composite component", async () => {
         const C1 = await engine.getElement(['#', 'runtime', 'C1'] as ElementPath);
         expect(C1).not.to.equal(null);
+        assert(C1 !== null);
         expect(C1).to.be.instanceOf(Object);
         expect(C1).to.have.property('revision', 6);
 
@@ -654,6 +664,8 @@ describe("Composite component", () => {
 
     it("should have no value in composite input pin", async () => {
       const inputPin = await engine.getElement([ '#', 'runtime', 'C1', 'e1' ] as ElementPath);
+      expect(inputPin).not.to.equal(null);
+      assert(inputPin !== null);
       expect(inputPin).to.be.instanceOf(Object);
       expect(inputPin).to.have.property('elementName', 'e1');
       expect(inputPin).to.have.property('data');
@@ -663,6 +675,8 @@ describe("Composite component", () => {
 
     it("should have no value in composite output pin", async () => {
       const inputPin = await engine.getElement([ '#', 'runtime', 'C1', 'o1' ] as ElementPath);
+      expect(inputPin).not.to.equal(null);
+      assert(inputPin !== null);
       expect(inputPin).to.be.instanceOf(Object);
       expect(inputPin).to.have.property('elementName', 'o1');
       expect(inputPin).to.have.property('data');
@@ -673,10 +687,13 @@ describe("Composite component", () => {
 
     it("should find a first message in message queue", async () => {
       const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+      expect(messageQueueElement).not.to.equal(null);
+      assert(messageQueueElement !== null);
       expect(messageQueueElement).to.be.instanceof(Object);
       expect(messageQueueElement).to.have.property('data')
       expect(messageQueueElement.data).to.have.property('messages')
       const messages = messageQueueElement?.data?.messages ?? null;
+      expect(messages).not.to.equal(null);
       assert(messages !== null);
       expect(messages).to.be.instanceOf(Array);
       expect(messages.length).to.equal(1);
@@ -698,6 +715,8 @@ describe("Composite component", () => {
 
     it("should have updated the composite input pin", async () => {
       const inputPin = await engine.getElement([ '#', 'runtime', 'C1', 'e1' ] as ElementPath);
+      expect(inputPin).not.to.equal(null);
+      assert(inputPin !== null);
       expect(inputPin).to.be.instanceOf(Object);
       expect(inputPin).to.have.property('elementName', 'e1');
       expect(inputPin).to.have.property('data');
@@ -707,10 +726,13 @@ describe("Composite component", () => {
 
     it("should find a second message in message queue", async () => {
       const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+      expect(messageQueueElement).not.to.equal(null);
+      assert(messageQueueElement !== null);
       expect(messageQueueElement).to.be.instanceof(Object);
       expect(messageQueueElement).to.have.property('data')
       expect(messageQueueElement.data).to.have.property('messages')
       const messages = messageQueueElement?.data?.messages ?? null;
+      expect(messages).not.to.equal(null);
       assert(messages !== null);
       expect(messages).to.be.instanceOf(Array);
       expect(messages.length).to.equal(1);
@@ -734,6 +756,8 @@ describe("Composite component", () => {
 
     it("should have updated the relay internal value ", async () => {
       const component = await engine.getElement([ '#', 'runtime', 'C1', 'R1' ] as ElementPath);
+      expect(component).not.to.equal(null);
+      assert(component !== null);
       expect(component).to.be.instanceOf(Object);
       expect(component).to.have.property('revision', 4);
       expect(component).to.have.property('data');
@@ -742,10 +766,13 @@ describe("Composite component", () => {
 
     it("should find a third message in message queue", async () => {
       const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+      expect(messageQueueElement).not.to.equal(null);
+      assert(messageQueueElement !== null);
       expect(messageQueueElement).to.be.instanceof(Object);
       expect(messageQueueElement).to.have.property('data')
       expect(messageQueueElement.data).to.have.property('messages')
       const messages = messageQueueElement?.data?.messages ?? null;
+      expect(messages).not.to.equal(null);
       assert(messages !== null);
       expect(messages).to.be.instanceOf(Array);
       expect(messages.length).to.equal(1);
@@ -769,6 +796,8 @@ describe("Composite component", () => {
 
     it("should have updated the composite output pin", async () => {
       const inputPin = await engine.getElement([ '#', 'runtime', 'C1', 'o1' ] as ElementPath);
+      expect(inputPin).not.to.equal(null);
+      assert(inputPin !== null);
       expect(inputPin).to.be.instanceOf(Object);
       expect(inputPin).to.have.property('elementName', 'o1');
       expect(inputPin).to.have.property('data');
@@ -778,6 +807,8 @@ describe("Composite component", () => {
 
     it("should find a fourth message in message queue", async () => {
       const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+      expect(messageQueueElement).not.to.equal(null);
+      assert(messageQueueElement !== null);
       expect(messageQueueElement).to.be.instanceof(Object);
       expect(messageQueueElement).to.have.property('data')
       expect(messageQueueElement.data).to.have.property('messages')
@@ -804,6 +835,8 @@ describe("Composite component", () => {
 
     it("should have updated the shink", async () => {
       const sink = await engine.getElement([ '#', 'runtime', 'O1' ] as ElementPath);
+      expect(sink).not.to.equal(null);
+      assert(sink !== null);
       expect(sink).to.be.instanceOf(Object);
       expect(sink).to.have.property('elementName', 'O1');
       expect(sink).to.have.property('data');
@@ -813,6 +846,8 @@ describe("Composite component", () => {
 
     it("should have no waiting messages", async () => {
       const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+      expect(messageQueueElement).not.to.equal(null);
+      assert(messageQueueElement !== null);
       expect(messageQueueElement).to.be.instanceof(Object);
       expect(messageQueueElement).to.have.property('data')
       expect(messageQueueElement.data).to.have.property('messages')

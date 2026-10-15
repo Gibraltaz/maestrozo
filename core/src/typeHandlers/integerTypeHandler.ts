@@ -3,9 +3,10 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "../Element";
+import { pathToString } from 'maestrozo-kernel'
+import { ElementData, ElementName, ElementPath } from 'maestrozo-kernel';
+
 import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '../global';
-import { pathToString } from "../path";
 import { TypeDeclaration } from './TypeHandler';
 import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
 

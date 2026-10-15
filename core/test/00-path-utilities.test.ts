@@ -12,7 +12,7 @@ import {
   isRootName,
   ElementPath,
   pathEquals
-} from "../src/path";
+} from 'maestrozo-kernel';
 
 describe("Path utilities", () => {
 

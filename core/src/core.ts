@@ -3,9 +3,8 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
+import { MaestrozoStore, RawMemoryStore } from 'maestrozo-kernel';
 import { MtzEngine } from './Engine';
-import { MaestrozoStore } from './store/MaestrozoStore';
-import { RawMemoryStore } from './store/RawMemoryStore';
 
 const VERSION = '0.0.1';
 

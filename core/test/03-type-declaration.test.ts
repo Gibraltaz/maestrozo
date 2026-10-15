@@ -4,8 +4,10 @@
  */
 
 import { describe, it, expect } from "vitest";
+
+import { MemoryStore } from 'maestrozo-kernel';
+
 import { ElementPath, MtzEngine } from "../src/Engine";
-import { MemoryStore } from "../src/store/MemoryStore";
 
 
 describe("Maestrozo core", () => {
@@ -18,6 +20,8 @@ describe("Maestrozo core", () => {
 
   it("should find root «/» element", async () => {
     const element = await engine.getElement(['#'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 4);
     expect(element).to.have.property('elementName', '#');
@@ -33,6 +37,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types element", async () => {
     const element = await engine.getElement(['#', 'types'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 10);
     expect(element).to.have.property('elementName', 'types');
@@ -52,6 +58,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/type", async () => {
     const element = await engine.getElement(['#', 'types', 'type'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'type');
@@ -68,6 +76,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/element", async () => {
     const element = await engine.getElement(['#', 'types', 'element'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'element');
@@ -83,6 +93,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/container", async () => {
     const element = await engine.getElement(['#', 'types', 'container'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'container');
@@ -98,6 +110,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/data", async () => {
     const element = await engine.getElement(['#', 'types', 'data'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 4);
     expect(element).to.have.property('elementName', 'data');
@@ -113,6 +127,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/data/integer", async () => {
     const element = await engine.getElement(['#', 'types', 'data', 'integer'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'integer');
@@ -128,6 +144,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/data/string", async () => {
     const element = await engine.getElement(['#', 'types', 'data', 'string'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'string');
@@ -143,6 +161,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/data/boolean", async () => {
     const element = await engine.getElement(['#', 'types', 'data', 'boolean'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'boolean');
@@ -158,6 +178,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/pins", async () => {
     const element = await engine.getElement(['#', 'types', 'pins'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 3);
     expect(element).to.have.property('elementName', 'pins');
@@ -173,6 +195,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/pins/input-pin", async () => {
     const element = await engine.getElement(['#', 'types', 'pins', 'input-pin'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'input-pin');
@@ -188,6 +212,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/pins/output-pin", async () => {
     const element = await engine.getElement(['#', 'types', 'pins', 'output-pin'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'output-pin');
@@ -203,6 +229,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/links", async () => {
     const element = await engine.getElement(['#', 'types', 'links'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 2);
     expect(element).to.have.property('elementName', 'links');
@@ -218,6 +246,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/links/connection", async () => {
     const element = await engine.getElement(['#', 'types', 'links', 'connection'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'connection');
@@ -235,6 +265,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/component", async () => {
     const element = await engine.getElement(['#', 'types', 'component'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 4);
     expect(element).to.have.property('elementName', 'component');
@@ -250,6 +282,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/component/composite", async () => {
     const element = await engine.getElement(['#', 'types', 'component', 'composite'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'composite');
@@ -265,6 +299,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/component/constant", async () => {
     const element = await engine.getElement(['#', 'types', 'component', 'constant'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'constant');
@@ -280,6 +316,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/component/variable", async () => {
     const element = await engine.getElement(['#', 'types', 'component', 'variable'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'variable');
@@ -295,6 +333,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/message", async () => {
     const element = await engine.getElement(['#', 'types', 'message'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'message');
@@ -308,6 +348,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/message-queue", async () => {
     const element = await engine.getElement(['#', 'types', 'message-queue'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'message-queue');
@@ -321,6 +363,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/runtime", async () => {
     const element = await engine.getElement(['#', 'runtime'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'runtime');
@@ -336,6 +380,8 @@ describe("Maestrozo core", () => {
 
   it("should find /types/system", async () => {
     const element = await engine.getElement(['#', 'system'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 2);
     expect(element).to.have.property('elementName', 'system');
@@ -352,6 +398,7 @@ describe("Maestrozo core", () => {
   it("should find /system/message-queue", async () => {
     const element = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
     expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'message-queue');

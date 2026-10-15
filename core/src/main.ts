@@ -3,4 +3,5 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
+// FIXME utile d'avoir main.ts ?
 console.log("Maestrozo core lib");

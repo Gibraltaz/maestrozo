@@ -4,8 +4,10 @@
  */
 
 import { describe, it, expect } from "vitest";
+
+import { MemoryStore } from 'maestrozo-kernel';
+
 import { ElementName, ElementPath, MtzEngine } from "../src/Engine";
-import { MemoryStore } from "../src/store/MemoryStore";
 
 describe("Maestrozo core", () => {
   let engine = new MtzEngine();
@@ -42,6 +44,8 @@ describe("Maestrozo core", () => {
 
   it("should find newly created component in runtime", async () => {
     const component = await engine.getElement(['#' as ElementName, 'runtime' as ElementName, 'constantA' as ElementName]);
+    expect(component).not.to.equal(null);
+    assert(component !== null);
     expect(component).to.be.instanceof(Object);
     expect(component).to.have.property('revision', 2);
     expect(component).to.have.property('elementName', 'constantA');
@@ -59,6 +63,8 @@ describe("Maestrozo core", () => {
 
   it("should find newly created component as a child of runtime", async () => {
     const runtimeContainer = await engine.getElement(['#' as ElementName, 'runtime' as ElementName]);
+    expect(runtimeContainer).not.to.equal(null);
+    assert(runtimeContainer !== null);
     expect(runtimeContainer).to.have.property('childNames');
     expect(runtimeContainer.childNames).to.deep.equal(['constantA']);
   });

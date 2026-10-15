@@ -14,9 +14,11 @@ const checkStoreKey = (storeKey: StoreKey): void => {
     throw new Error("Store key could not be empty");
 }
 
+// TODO à renommer en checkStoreElement
 const checkStoreValue = (storeValue: StoreValue): void => {
   if (storeValue === undefined)
     throw new Error("Store value must be defined");
+  // TODO tester que c'est un objet Element
 }
 
 export { checkStoreKey, checkStoreValue };

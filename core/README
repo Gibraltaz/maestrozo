@@ -1,0 +1,20 @@
+
+
+INSTALLATION :
+──────────────
+
+Installer les modules nécessaires :
+
+  $ npm install
+  $ npm install-scripts approve esbuild
+
+
+Lancer l'exécution des tests : 
+
+  $ npm run test
+
+Construire la librairie : 
+
+  $ npm run build
+
+

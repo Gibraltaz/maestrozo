@@ -1,7 +1,8 @@
-import { ElementName, ElementPath, pathEquals, pathToString, rootName } from "../path";
+import { ElementName, ElementPath, pathEquals, pathToString, rootName } from 'maestrozo-kernel'
+import { ElementData } from 'maestrozo-kernel';
+
 import { TypeDeclaration } from "./TypeHandler";
 import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath, systemContainerPath, messageQueueName } from "../global";
-import { ElementData } from "../Element";
 import { mtzMessageQueueCreate } from "../MessageQueue";
 import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "./elementTypeHandler";
 

@@ -4,9 +4,9 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
-import { MemoryStore } from "../src/store/MemoryStore";
 
+import { MemoryStore } from 'maestrozo-kernel';
+import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
 
 describe("Component type", () => {
   const engine = new MtzEngine();

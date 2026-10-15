@@ -3,7 +3,8 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from "../Element";
+import { ElementData, ElementName, ElementPath } from 'maestrozo-kernel';
+
 import { linkTypeContainerPath, rootName, rootTypeContainerName, typeElementName } from '../global';
 import { rootTypeContainerPath, linkTypeContainerName } from '../global';
 import { TypeDeclaration } from './TypeHandler';

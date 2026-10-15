@@ -3,9 +3,10 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath, MtzElement } from "../Element";
+import { pathStartsWith, pathToString } from 'maestrozo-kernel'
+import { ElementData, ElementName, ElementPath, MtzElement } from 'maestrozo-kernel';
+
 import { componentTypeName, componentTypePath, inputPinTypePath, linkTypeContainerPath, messageQueuePath, outputPinTypePath, rootName, rootTypeContainerName, typeElementName } from '../global';
-import { pathStartsWith, pathToString } from "../path";
 import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from './TypeHandler';
 import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
 import { MtzEngine } from "../Engine";
