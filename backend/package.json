@@ -16,6 +16,7 @@
     "express": "^5.2.1",
     "maestrozo-core": "file:../core",
     "maestrozo-couchdb-store": "file:../ext/couchdb-store",
+    "maestrozo-kernel": "file:../kernel",
     "nconf": "^0.13.0"
   },
   "devDependencies": {

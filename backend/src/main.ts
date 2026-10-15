@@ -3,12 +3,12 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { maestrozoCore, MemoryStore } from 'maestrozo-core';
-import type { MaestrozoStore } from 'maestrozo-core';
+import { maestrozoCore } from 'maestrozo-core';
 import { CouchDbStore } from 'maestrozo-couchdb-store';
 
 import { loadConfig, StoreType } from './config.js';
 import { server } from './server.js';
+import { MemoryStore, type MaestrozoStore } from 'maestrozo-kernel';
 
 const main = async () => {
   let configPath = './config.json';
@@ -21,7 +21,6 @@ const main = async () => {
 
     case StoreType.MEMORY:
       store = new MemoryStore();
-      await store.initialize();
       break;
 
     case StoreType.COUCH_DB:
