@@ -50,7 +50,6 @@ class MemoryStore implements MaestrozoStore{
     catch (err) {
       throw new Error("Value is not JSON serializable", { cause: err });
     }
-    this._map.set(storeKey, cleanElement);
     const strValue = JSON.stringify(cleanElement);
     this._map.set(storeKey, strValue);
   }

@@ -4,9 +4,9 @@
  */
 
 import { MtzElement, ElementName, ElementPath } from './Element';
+import { rootName } from './global';
 
 const pathSeparator = '/';
-const rootName = '#' as ElementName;
 
 const invalidCharacters = [ pathSeparator, rootName ];
 
@@ -124,9 +124,9 @@ function isRootName(elementName: ElementName): boolean {
 }
 
 export {
-  ElementName,
-  ElementPath,
-  rootName,
+  ElementName, // TODO migration kernel réexport
+  ElementPath, // TODO migration kernel réexport
+  rootName, // TODO migration kernel réexport
   getElementPath,
   elementPathAreEquals,
   parentElementPath,

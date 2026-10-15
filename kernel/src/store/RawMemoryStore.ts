@@ -21,6 +21,7 @@ class RawMemoryStore implements MaestrozoStore{
     const storeKey = pathToString(elementPath) as StoreKey;
     checkStoreKey(storeKey);
     const element:MtzElement = this._map.get(storeKey) ?? null;
+    // do not clone element because has references on functions
     return element;
   }
 
@@ -37,7 +38,8 @@ class RawMemoryStore implements MaestrozoStore{
     }
     checkStoreKey(storeKey);
     checkStoreValue(element);
-    this._map.set(storeKey, element);
+    // create a copy to imit persistent storage behavior
+    this._map.set(storeKey, {... element});
   }
 
 };
