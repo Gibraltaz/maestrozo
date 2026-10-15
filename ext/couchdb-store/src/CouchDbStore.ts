@@ -3,14 +3,9 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
+import { checkStoreValue, getElementPath, MaestrozoStore, pathToString } from 'maestrozo-kernel';
 import Nano from 'nano';
 
-import {
-  MaestrozoStore, StoreKey, StoreValue,
-  checkStoreKey, checkStoreValue,
-  getElementPath,
-  pathToString
-} from 'maestrozo-core';
 import { ElementPath, MtzElement } from 'node_modules/maestrozo-core/dist/Element';
 
 
@@ -44,8 +39,7 @@ class CouchDbStore implements MaestrozoStore{
 
   async getElement(elementPath: ElementPath): Promise<MtzElement | null> {
     await this.initialize();
-    const storeKey = pathToString(elementPath) as StoreKey;
-    checkStoreKey(storeKey);
+    const storeKey = pathToString(elementPath);
     try {
       const result = await this._db.get(storeKey);
       if (! result.value)
@@ -70,9 +64,8 @@ class CouchDbStore implements MaestrozoStore{
   async setElement(element: MtzElement): Promise<void> {
     await this.initialize();
     const elementPath = getElementPath(element);
-    const storeKey = pathToString(elementPath) as StoreKey;
-
-    checkStoreKey(storeKey);
+    const storeKey = pathToString(elementPath);
+    //checkStoreKey(storeKey);
     checkStoreValue(element);
     // convert object to JSON object by removing properties witch have function as item
     // (ATTENTION : properties with undefined item are removed)
@@ -85,7 +78,6 @@ class CouchDbStore implements MaestrozoStore{
     }
 
     if (element.revision === 1) {
-      //throw new Error(`Element «${storeKey}» already exists`);
 
       try {
         const result = await this._db.insert({ value: cleanElement }, storeKey);

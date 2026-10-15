@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "maestrozo-core": "file:../../core",
+    "maestrozo-kernel": "file:../../kernel",
     "nano": "^11.0.7",
     "undici": "^8.11.2"
   }
