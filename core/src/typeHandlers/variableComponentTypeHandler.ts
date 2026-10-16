@@ -3,11 +3,12 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from 'maestrozo-kernel';
+import {
+  rootName, ElementData, ElementName, ElementPath, rootTypeContainerName, typeElementName,
+  TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction
+} from 'maestrozo-kernel';
 
-import { rootName, rootTypeContainerName, typeElementName, componentTypeName } from '../global';
-import { TypeDeclaration } from './TypeHandler';
-import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
+import { componentTypeName } from '../global';
 
 const variableComponentTypeName = 'variable' as ElementName;
 

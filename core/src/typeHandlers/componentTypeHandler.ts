@@ -3,12 +3,16 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { pathStartsWith, pathToString } from 'maestrozo-kernel'
+import {
+  rootName, pathStartsWith, pathToString, rootTypeContainerName, typeElementName,
+  TypeDeclaration, CallbackName, CreateChildElementHelper, GetElementHelper, 
+  BuildElementDataCallback, BuildElementDataFunction
+} from 'maestrozo-kernel'
 import { ElementData, ElementName, ElementPath, MtzElement } from 'maestrozo-kernel';
 
-import { componentTypeName, componentTypePath, inputPinTypePath, linkTypeContainerPath, messageQueuePath, outputPinTypePath, rootName, rootTypeContainerName, typeElementName } from '../global';
-import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from './TypeHandler';
-import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
+import { componentTypeName, componentTypePath, inputPinTypePath, linkTypeContainerPath, messageQueuePath, outputPinTypePath } from '../global';
+
+
 import { MtzEngine } from "../Engine";
 import { connectionTypeName } from "./connectionTypeHandler";
 import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMessage } from "../MessageQueue";

@@ -3,13 +3,14 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { checkElementPath, getElementPath, pathStartsWith, pathToString } from 'maestrozo-kernel'
-import { ElementData, ElementName, ElementPath, MtzElement } from 'maestrozo-kernel';
+import {
+  rootName, checkElementPath, getElementPath, pathStartsWith, pathToString, rootTypeContainerName, typeElementName,
+  ElementData, ElementName, ElementPath, MtzElement, TypeDeclaration, TypeHandler,
+  BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers
+} from 'maestrozo-kernel'
 
-import { rootName, rootTypeContainerName, componentTypeName, typeElementName, outputPinTypePath } from '../global';
-import { TypeDeclaration, TypeHandler } from './TypeHandler';
+import { componentTypeName, outputPinTypePath } from '../global';
 import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers } from "./componentTypeHandler";
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "./elementTypeHandler";
 
 const constantComponentTypeName = 'constant' as ElementName;
 

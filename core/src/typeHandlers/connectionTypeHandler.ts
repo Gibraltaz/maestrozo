@@ -3,12 +3,13 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath } from 'maestrozo-kernel';
+import {
+  rootName, ElementData, ElementName, ElementPath, rootTypeContainerName, rootTypeContainerPath, typeElementName,
+  TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction 
+} from 'maestrozo-kernel';
 
-import { linkTypeContainerPath, rootName, rootTypeContainerName, typeElementName } from '../global';
-import { rootTypeContainerPath, linkTypeContainerName } from '../global';
-import { TypeDeclaration } from './TypeHandler';
-import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
+import { linkTypeContainerPath } from '../global';
+import { linkTypeContainerName } from '../global';
 
 
 // name of element «#/types/links/connection»

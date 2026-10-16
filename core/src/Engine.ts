@@ -3,8 +3,13 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { MaestrozoStore } from 'maestrozo-kernel';
-import { RawMemoryStore } from 'maestrozo-kernel';
+import { MaestrozoStore, RawMemoryStore  } from 'maestrozo-kernel';
+import {
+  containerTypeName,
+  rootTypeContainerName,
+} from 'maestrozo-kernel';
+import { buildComponentCapabilities } from './componentCapabilities';
+
 import { MtzElement, ElementName, ElementPath, checkElement, ElementData } from 'maestrozo-kernel';
 import {
   checkElementName,
@@ -17,9 +22,8 @@ import {
   pathEquals,
 } from 'maestrozo-kernel';
 
+
 import {
-  containerTypeName,
-  rootTypeContainerName,
   dataTypeName,
   pinTypeContainerName,
   linkTypeContainerName,
@@ -32,9 +36,13 @@ import {
   outputPinTypePath,
 } from './global';
 
-import { TypeDeclaration, TypeHandler } from './typeHandlers/TypeHandler';
+import {
+  TypeDeclaration, TypeHandler, containerTypeDeclaration,
+  BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, 
+  elementTypeDeclaration, InitializeElementCallback, InitializeElementFunction,
+  typeTypeDeclaration 
+} from 'maestrozo-kernel';
 
-import { containerTypeDeclaration} from './typeHandlers/containerTypeHandler';
 import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
 import { stringTypeDeclaration } from './typeHandlers/stringTypeHandler';
 import { booleanTypeDeclaration } from './typeHandlers/booleanTypeHandler';
@@ -49,8 +57,6 @@ import {
 import { compositeComponentTypeDeclaration, compositeComponentTypePath } from './typeHandlers/compositeComponentTypeHandler';
 import { constantComponentTypeDeclaration } from './typeHandlers/constantComponentTypeHandler';
 import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler';
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, elementTypeDeclaration, InitializeElementCallback, InitializeElementFunction } from './typeHandlers/elementTypeHandler';
-import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
 import { connectionTypeDeclaration, connectionTypePath } from './typeHandlers/connectionTypeHandler';
 import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
 
@@ -58,7 +64,7 @@ import {
   MESSAGE_TYPE_CHANGE, MessageType, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage,
   mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction
 } from './MessageQueue';
-import { buildElementCapabilities } from './elementCapabilities';
+
 
 
 type ContainerDeclaration = {
@@ -74,6 +80,7 @@ class MtzEngine {
   private volatileStore: MaestrozoStore = new RawMemoryStore;
   public timeFunction: MtzTimeFunction = () => Date.now() as MtzMessageTime;
 
+  // TODO migration kernel doublon
   private async getStoredElement(elementPath: ElementPath): Promise<MtzElement|null> {
     let element = await this.volatileStore.getElement(elementPath);
     if (element === null) {
@@ -84,6 +91,7 @@ class MtzEngine {
     return element;
   }
 
+  // TODO migration kernel doublon
   private async createElementInStore(element: MtzElement): Promise<void> {
     if (element.isVolatile)
       await this.volatileStore.setElement(element);
@@ -94,6 +102,7 @@ class MtzEngine {
     }
   }
 
+  // TODO migration kernel doublon
   private async updateElementInStore(element: MtzElement): Promise<void> {
     if (element.isVolatile)
       await this.volatileStore.setElement(element);
@@ -105,6 +114,7 @@ class MtzEngine {
   }
 
 
+  // TODO migration kernel doublon
   private async storeNewElement(element: MtzElement): Promise<void> {
 
     checkElement(element);
@@ -159,6 +169,7 @@ class MtzEngine {
   };
 
 
+  // TODO migration kernel
   private async declareContainer(containerDeclaration: ContainerDeclaration): Promise<MtzElement> {
 
     const containerPath = [...containerDeclaration.parentPath, containerDeclaration.elementName] as ElementPath;
@@ -201,6 +212,7 @@ class MtzEngine {
   }
 
 
+  // TODO migration kernel doublon
   private async declareTypeInternal(typeDeclaration: TypeDeclaration, force: boolean): Promise<MtzElement> {
 
     if (! force) {
@@ -258,9 +270,11 @@ class MtzEngine {
 
   public async initialize (store: MaestrozoStore) {
 
+    // TODO migration kernel appeler tree.initialize
     this.volatileStore = new RawMemoryStore();
     this.persistentStore = store;
 
+    // TODO migration kernel à supprimer
     // mise en place de root «#/»
     const rootElement = await this.declareContainer({
       elementName: rootName,
@@ -268,6 +282,7 @@ class MtzEngine {
       isVolatile: false
     });
 
+    // TODO migration kernel à supprimer
     // mise en place de «#/types»
     await this.declareContainer({
       elementName: rootTypeContainerName,
@@ -312,13 +327,16 @@ class MtzEngine {
       }
     );
 
+    // TODO migration kernel
     // mise en place de «#/types/type»
     // (type spécial qui représente le type de tous les éléments de type dans «/types»)
     await this.declareTypeInternal(typeTypeDeclaration, true);
 
+    // TODO migration kernel
     // mise en place de «#/types/element»
     await this.declareTypeInternal(elementTypeDeclaration, false);
 
+    // TODO migration kernel
     // mise en place de «#/types/container»
     await this.declareTypeInternal(containerTypeDeclaration, false);
 
@@ -365,6 +383,7 @@ class MtzEngine {
   }
 
 
+  // TODO migration kernel doublon
   public async getElement(elementPath: ElementPath): Promise<MtzElement|null> {
     if (! this._initialized)
       throw new Error("Engine not initialized");
@@ -381,7 +400,7 @@ class MtzEngine {
       throw new Error(`Type handler not defined in type «${pathToString(getElementPath(typeElement))}»`);
     const initializeElementCallback = typeHandler.callbacks.find(callback => callback.name === InitializeElementCallback);
     if (initializeElementCallback !== undefined) {
-      const capabilities = buildElementCapabilities(element, this);
+      const capabilities = buildComponentCapabilities(element, this);
       const initializeElementFunction = initializeElementCallback.function as InitializeElementFunction;
       if (typeof(initializeElementFunction) !== 'function')
         throw new Error(`Invalid initialize element callback a function`);
@@ -391,6 +410,7 @@ class MtzEngine {
   }
 
 
+  // TODO migration kernel doublon MAIS cas spécial callback componentBuild
   public async createElementInternal(
     elementName: ElementName,
     parentPath: ElementPath,
@@ -494,7 +514,7 @@ class MtzEngine {
 
     const initializeElementCallback = typeHandler.callbacks.find(callback => callback.name === InitializeElementCallback);
     if (initializeElementCallback !== undefined) {
-      const capabilities = buildElementCapabilities(element, this);
+      const capabilities = buildComponentCapabilities(element, this);
       const initializeElementFunction = initializeElementCallback.function as InitializeElementFunction;
       if (typeof(initializeElementFunction) !== 'function')
         throw new Error(`Invalid initialize element callback a function`);
@@ -542,6 +562,7 @@ class MtzEngine {
     return element;
   }
 
+  // TODO migration kernel doublon
   public async createElement(
     elementName: ElementName,
     parentPath: ElementPath,
@@ -551,6 +572,7 @@ class MtzEngine {
     return await this.createElementInternal(elementName, parentPath, typePath, params, false);
   }
 
+  // TODO migration kernel doublon
   public async modifyElement(element: MtzElement): Promise<void> {
     const originalElement = await this.getStoredElement(getElementPath(element));
     if (originalElement === null)

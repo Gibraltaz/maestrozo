@@ -1,10 +1,11 @@
-import { ElementName, ElementPath, pathEquals, pathToString, rootName } from 'maestrozo-kernel'
+import {
+  rootName, ElementName, ElementPath, pathEquals, pathToString, rootTypeContainerName, rootTypeContainerPath, typeElementName,
+  TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers
+} from 'maestrozo-kernel'
 import { ElementData } from 'maestrozo-kernel';
 
-import { TypeDeclaration } from "./TypeHandler";
-import { messageTypeName, messageQueueTypeName, rootTypeContainerName, typeElementName, rootTypeContainerPath, systemContainerPath, messageQueueName } from "../global";
+import { messageTypeName, messageQueueTypeName, systemContainerPath, messageQueueName } from "../global";
 import { mtzMessageQueueCreate } from "../MessageQueue";
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "./elementTypeHandler";
 
 const buildElementDataFunction: BuildElementDataFunction = async (
   elementName: ElementName,

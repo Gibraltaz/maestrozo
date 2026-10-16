@@ -5,23 +5,24 @@
 
 import { describe, it, expect } from "vitest";
 
-import { ElementData, MtzElement } from 'maestrozo-kernel';
-import { MemoryStore } from 'maestrozo-kernel';
+import {
+  ElementData, MtzElement, MemoryStore,
+  BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers,
+  InitializeElementFunction,
+  InitializeElementCallback,
+} from 'maestrozo-kernel';
 
 import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
-import { MtzElementCapabilities } from "../src/elementCapabilities";
+import { MtzElementCapabilities } from 'maestrozo-kernel';
 import { MtzMessageTime } from "../src/MessageQueue";
-import {
-  BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers,
-  InitializeElementCallback, InitializeElementFunction
-} from "../src/typeHandlers/elementTypeHandler";
 import {
   EvaluateComponentCallback, EvaluateComponentFunction, 
   EvaluateComponentHelpers, EvaluteComponentResult
 } from "../src/typeHandlers/componentTypeHandler";
+import { MtzComponentCapabilities } from "../src/componentCapabilities";
 
 let containerCapabilities: MtzElementCapabilities|null = null;
-let sinkCapabilities: MtzElementCapabilities|null = null;
+let sinkCapabilities: MtzComponentCapabilities|null = null;
 let customTime = -1;
 let evaluationData: any = null;
 
@@ -61,7 +62,7 @@ const sinkCustomComponentInitializeFunction : InitializeElementFunction = async 
   _element: MtzElement,
   elementCapabilities: MtzElementCapabilities
 ): Promise <void> => {
-    sinkCapabilities = elementCapabilities;
+    sinkCapabilities = elementCapabilities as MtzComponentCapabilities;
 };
 
 
@@ -245,6 +246,8 @@ describe("Element capabilities", () => {
 
   it("should find the schedule evaluation message", async () => {
     const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+    expect(messageQueueElement).not.to.equal(null);
+    assert(messageQueueElement !== null);
     expect(messageQueueElement).to.be.instanceof(Object);
     expect(messageQueueElement).to.have.property('data')
     expect(messageQueueElement.data).to.have.property('messages')
@@ -267,6 +270,8 @@ describe("Element capabilities", () => {
 
   it("should have not waiting message", async () => {
     const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+    expect(messageQueueElement).not.to.equal(null);
+    assert(messageQueueElement !== null);
     expect(messageQueueElement).to.be.instanceof(Object);
     expect(messageQueueElement).to.have.property('data')
     expect(messageQueueElement.data).to.have.property('messages')

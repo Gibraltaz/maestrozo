@@ -1,9 +1,12 @@
-import { ElementData } from 'maestrozo-kernel';
-import { ElementName, ElementPath, pathToString, rootName } from 'maestrozo-kernel'
+import {
+  ElementName, ElementPath, pathToString, rootName,
+  ElementData, rootTypeContainerName, typeElementName,
+  TypeDeclaration, BuildElementDataCallback, 
+  BuildElementDataFunction, BuildElementDataHelpers
+} from 'maestrozo-kernel';
+import { } from 'maestrozo-kernel'
 
-import { TypeDeclaration } from "./TypeHandler";
-import { inputPinTypeName, outputPinTypeName, pinTypeContainerPath, rootTypeContainerName, typeElementName } from "../global";
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "./elementTypeHandler";
+import { inputPinTypeName, outputPinTypeName, pinTypeContainerPath } from "../global";
 
 const buildElementDataFunction: BuildElementDataFunction = async (
   elementName: ElementName,

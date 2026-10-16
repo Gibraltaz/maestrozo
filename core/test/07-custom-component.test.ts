@@ -5,12 +5,14 @@
 
 import { describe, it, expect } from "vitest";
 
-import { ElementData, MtzElement } from 'maestrozo-kernel';
+import {
+  ElementData, MtzElement,
+  BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers
+} from 'maestrozo-kernel';
 import { MemoryStore } from 'maestrozo-kernel';
 
 import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
 import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers } from "../src/typeHandlers/componentTypeHandler";
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";
 
 const customComponentBuildElementDataFunction1: BuildElementDataFunction = async (
   _elementName: ElementName,
@@ -62,6 +64,8 @@ describe("Custom component without pin", () => {
 
   it("should find custom component type in /types/component", async () => {
     const element = await engine.getElement(['#', 'types', 'component'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('childNames');
     expect(element.childNames).to.deep.equal(['composite', 'constant', 'variable', 'custom-component-A']);
@@ -69,6 +73,8 @@ describe("Custom component without pin", () => {
 
   it("should find /types/component/custom-component-A", async () => {
     const element = await engine.getElement(['#', 'types', 'component', 'custom-component-A'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 1);
     expect(element).to.have.property('elementName', 'custom-component-A');
@@ -129,6 +135,8 @@ describe("Custom component without pin", () => {
       'runtime' as ElementName,
       'component-A-1' as ElementName,
     ]);
+    expect(component).not.to.equal(null);
+    assert(component !== null);
     expect(component).to.be.instanceof(Object);
     expect(component).to.have.property('elementName', 'component-A-1');
     expect(component).to.have.property('revision', 1);
@@ -142,6 +150,8 @@ describe("Custom component without pin", () => {
       'runtime' as ElementName,
       'component-A-2' as ElementName,
     ]);
+    expect(component).not.to.equal(null);
+    assert(component !== null);
     expect(component).to.be.instanceof(Object);
     expect(component).to.have.property('elementName', 'component-A-2');
     expect(component).to.have.property('revision', 1);

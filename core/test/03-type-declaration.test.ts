@@ -9,6 +9,7 @@ import { MemoryStore } from 'maestrozo-kernel';
 
 import { ElementPath, MtzEngine } from "../src/Engine";
 
+// TODO migration kernel nettoyage tests redondants
 
 describe("Maestrozo core", () => {
   let engine = new MtzEngine()

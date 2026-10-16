@@ -3,33 +3,16 @@ import { pathToString } from 'maestrozo-kernel';
 import { MtzEngine } from './Engine';
 import { MESSAGE_TYPE_CHANGE, MtzMessageTime } from './MessageQueue';
 
-type GetElementFunction = (elementPath: ElementPath) => Promise<MtzElement | null>;
-type GetChildFunction = (childName: ElementName) => Promise<MtzElement | null>;
-type GetParentFunction = () => Promise<MtzElement | null>;
-type GetPathFunction = () => ElementPath;
+import { MtzElementCapabilities } from 'maestrozo-kernel';
+
 type ScheduleEvaluation = (data: any, at?: MtzMessageTime) => Promise<void>;
-/*
-type postMessage = (
-      elementPath: ElementPath,
-      messageType:MessageType,
-      data: any,
-      at?: MtzMessageTime
-) => Promise<void>;
-*/
 
-
-type MtzElementCapabilities = {
-  getPath: GetPathFunction,
-  getElement: GetElementFunction,
-  getChild: GetChildFunction,
-  getParent: GetParentFunction,
+type MtzComponentCapabilities = MtzElementCapabilities & {
   scheduleEvaluation: ScheduleEvaluation
 };
 
 
-
-
-const buildElementCapabilities = (element: MtzElement, engine: MtzEngine) : MtzElementCapabilities => {
+const buildComponentCapabilities = (element: MtzElement, engine: MtzEngine) : MtzComponentCapabilities => {
   return {
 
     getPath: () => [...element.parentPath, element.elementName],
@@ -73,7 +56,7 @@ const buildElementCapabilities = (element: MtzElement, engine: MtzEngine) : MtzE
 };
 
 export {
-  MtzElementCapabilities,
-  buildElementCapabilities
+  MtzComponentCapabilities,
+  buildComponentCapabilities
 }
 

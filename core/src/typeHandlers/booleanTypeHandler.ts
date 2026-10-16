@@ -3,12 +3,14 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { pathToString } from 'maestrozo-kernel';
-import { ElementData, ElementName, ElementPath } from 'maestrozo-kernel';
+import {
+  rootName, pathToString, rootTypeContainerName, typeElementName ,
+  ElementData, ElementName, ElementPath,
+  TypeDeclaration 
+} from 'maestrozo-kernel';
 
-import { rootName, rootTypeContainerName, dataTypeName, typeElementName } from '../global';
-import { TypeDeclaration } from './TypeHandler';
-import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
+import { dataTypeName } from '../global';
+import { BuildElementDataCallback, BuildElementDataFunction } from 'maestrozo-kernel';
 
 const booleanTypeName = 'boolean' as ElementName;
 

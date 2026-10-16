@@ -40,6 +40,8 @@ describe("Maestrozo core", () => {
       'constantA' as ElementName,
       'out:value' as ElementName,
     ]);
+    expect(outputValue).not.to.equal(null);
+    assert(outputValue !== null);
     expect(outputValue).to.be.instanceOf(Object);
     expect(outputValue).to.have.property('elementName', 'out:value');
     expect(outputValue).to.have.property('parentPath');
@@ -59,6 +61,8 @@ describe("Maestrozo core", () => {
       'constantA' as ElementName,
       'out:value' as ElementName,
     ]);
+    expect(output).not.to.equal(null);
+    assert(output !== null);
     expect(output).to.be.instanceof(Object);
     expect(output).to.have.property('revision', 1);
     expect(output.data).to.have.property('value', 123);
@@ -71,6 +75,8 @@ describe("Maestrozo core", () => {
       'constantA' as ElementName,
       'out:value' as ElementName,
     ]);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     if (element.data === null) throw new Error("Component not found");
     element.data.value = 456;
     await engine.modifyElement(element);
@@ -84,6 +90,8 @@ describe("Maestrozo core", () => {
       'constantA' as ElementName,
       'out:value' as ElementName,
     ]);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 2);
     expect(element.data).to.have.property('value', 456);
@@ -96,6 +104,8 @@ describe("Maestrozo core", () => {
       'constantA' as ElementName,
       'out:value' as ElementName,
     ]);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     if (element.data === null) throw new Error("Component not found");
     element.data.value = 789;
     await engine.modifyElement(element);
@@ -109,6 +119,8 @@ describe("Maestrozo core", () => {
       'constantA' as ElementName,
       'out:value' as ElementName,
     ]);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
     expect(element).to.be.instanceof(Object);
     expect(element).to.have.property('revision', 3);
     expect(element.data).to.have.property('value', 789);

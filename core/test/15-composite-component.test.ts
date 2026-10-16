@@ -4,13 +4,19 @@
  */
 
 import { describe, it, expect } from "vitest";
+
+import {
+  ElementData, MtzElement, MemoryStore,
+  BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers,
+} from 'maestrozo-kernel';
+
 import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
-import { ElementData, MtzElement } from 'maestrozo-kernel';
-import { MemoryStore } from 'maestrozo-kernel';
-import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "../src/typeHandlers/componentTypeHandler";
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";
 import { MtzMessageTime } from "../src/MessageQueue";
 import { connectComponentToOutput, connectInputToComponent } from "../src/typeHandlers/compositeComponentTypeHandler";
+import { 
+  BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents,
+  EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult
+} from "../src/typeHandlers/componentTypeHandler";
 
 let customTime = 10000 as MtzMessageTime; 
 const customTimeFunction = () => {

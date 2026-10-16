@@ -5,13 +5,13 @@
 
 import { describe, it, expect } from "vitest";
 
-import { ElementData, MtzElement } from 'maestrozo-kernel';
-import { MemoryStore } from 'maestrozo-kernel';
+import {
+  ElementData, MtzElement, MemoryStore,
+  BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers
+} from 'maestrozo-kernel';
 
 import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
 import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents } from "../src/typeHandlers/componentTypeHandler";
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";
-
 
 const customComponentBuildDataFunction: BuildElementDataFunction = async (
   _elementName: ElementName,

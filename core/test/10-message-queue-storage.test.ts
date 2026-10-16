@@ -27,7 +27,7 @@ describe("Control message queue storing", () => {
 
     let fileStore: FileStore | null;
     let engine: MtzEngine;
-    let messageQueueElement: MtzElement;
+    let messageQueueElement: MtzElement|null;
     let messageQueue: MtzMessageQueue;
 
 
@@ -41,6 +41,8 @@ describe("Control message queue storing", () => {
     it("message-queue should be empty", async () => {
       const element = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
       messageQueueElement = element;
+      expect(element).not.to.equal(null);
+      assert(element !== null);
       expect(element).not.to.equal(null);
       expect(element).to.be.instanceof(Object);
       expect(element).to.have.property('elementName', 'message-queue');
@@ -82,6 +84,7 @@ describe("Control message queue storing", () => {
     });
 
     it("should store message queue", async () => {
+      assert(messageQueueElement !== null);
       await engine.modifyElement(messageQueueElement);
     });
   });
@@ -105,6 +108,7 @@ describe("Control message queue storing", () => {
 
     it("message-queue should be loaded", async () => {
       const element = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+      assert(element !== null);
       expect(element).not.to.equal(null);
       expect(element).to.be.instanceof(Object);
       expect(element).to.have.property('elementName', 'message-queue');

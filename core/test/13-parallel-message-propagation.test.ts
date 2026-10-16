@@ -4,12 +4,17 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { ElementData, MtzElement } from 'maestrozo-kernel';
-import { MemoryStore } from 'maestrozo-kernel';
+import {
+  ElementData, MtzElement, MemoryStore,
+  BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers
+} from 'maestrozo-kernel';
+
 import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
 import { MtzMessageTime } from "../src/MessageQueue";
-import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "../src/typeHandlers/componentTypeHandler";
-import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";
+import {
+  BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, connectComponents, 
+  EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult
+} from "../src/typeHandlers/componentTypeHandler";
 
 let customTime = -1;
 const customTimeFunction = () => customTime as MtzMessageTime;
@@ -232,6 +237,8 @@ describe("Parallel pin connection with three components", () => {
 
   it("should find a message to update first sink", async () => {
     const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+    expect(messageQueueElement).not.to.equal(null);
+    assert(messageQueueElement !== null);
     expect(messageQueueElement).to.be.instanceof(Object);
     expect(messageQueueElement).to.have.property('data')
     expect(messageQueueElement.data).to.have.property('messages')
@@ -285,6 +292,8 @@ describe("Parallel pin connection with three components", () => {
 
   it("should find a message to update second sink", async () => {
     const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+    expect(messageQueueElement).not.to.equal(null);
+    assert(messageQueueElement !== null);
     expect(messageQueueElement).to.be.instanceof(Object);
     expect(messageQueueElement).to.have.property('data')
     expect(messageQueueElement.data).to.have.property('messages')
@@ -323,6 +332,8 @@ describe("Parallel pin connection with three components", () => {
 
   it("should find one message in message queue to update second sink", async () => {
     const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+    expect(messageQueueElement).not.to.equal(null);
+    assert(messageQueueElement !== null);
     expect(messageQueueElement).to.be.instanceof(Object);
     expect(messageQueueElement).to.have.property('data')
     expect(messageQueueElement.data).to.have.property('messages')
@@ -346,6 +357,8 @@ describe("Parallel pin connection with three components", () => {
   it("should control first sink component internal value", async () => {
     const sinkComponent = await engine.getElement(['#', 'runtime', 'sink-component-1'] as ElementPath);
     expect(sinkComponent).not.to.equal(null);
+    assert(sinkComponent !== null);
+    expect(sinkComponent).not.to.equal(null);
     expect(sinkComponent).to.be.instanceOf(Object);
     expect(sinkComponent).to.have.property('revision', 3);
     expect(sinkComponent).to.have.property('data');
@@ -360,6 +373,8 @@ describe("Parallel pin connection with three components", () => {
 
   it("should find no message in message queue", async () => {
     const messageQueueElement = await engine.getElement(['#', 'system', 'message-queue'] as ElementPath);
+    expect(messageQueueElement).not.to.equal(null);
+    assert(messageQueueElement !== null);
     expect(messageQueueElement).to.be.instanceof(Object);
     expect(messageQueueElement).to.have.property('data')
     expect(messageQueueElement.data).to.have.property('messages')
@@ -371,6 +386,8 @@ describe("Parallel pin connection with three components", () => {
 
   it("should control second sink component internal value", async () => {
     const sinkComponent = await engine.getElement(['#', 'runtime', 'sink-component-2'] as ElementPath);
+    expect(sinkComponent).not.to.equal(null);
+    assert(sinkComponent !== null);
     expect(sinkComponent).not.to.equal(null);
     expect(sinkComponent).to.be.instanceOf(Object);
     expect(sinkComponent).to.have.property('revision', 3);
