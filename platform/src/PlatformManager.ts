@@ -3,10 +3,11 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { maestrozoCore, MaestrozoCore } from "maestrozo-core";
-import { MaestrozoStore } from "maestrozo-kernel";
+import { maestrozoCore, MaestrozoCore, rootName } from "maestrozo-core";
+import { ElementPath, MaestrozoStore } from "maestrozo-kernel"; // FIXME import direct de core
 
 import { userTypeDeclaration } from './typeHandlers/userTypeHandler';
+import { registryContainerName } from "./global";
 
 class MtzPlatformManager {
 
@@ -32,14 +33,15 @@ class MtzPlatformManager {
     // mise en place de «#/types/users»
     await this._core.declareType(userTypeDeclaration);
 
-    // mise en place de «#/types/data»
-    /*
+    // mise en place de «#/registry»
     await this._core.declareContainer({
-      elementName: dataTypeName,
-      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      isVolatile: true
-    });
-    */
+        elementName: registryContainerName,
+        parentPath: [rootName] as ElementPath,
+        isVolatile: false
+      }
+    );
+
+
   }
 
 
