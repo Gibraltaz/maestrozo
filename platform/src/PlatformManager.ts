@@ -7,7 +7,7 @@ import { maestrozoCore, MaestrozoCore, rootName } from "maestrozo-core";
 import { ElementPath, MaestrozoStore } from "maestrozo-kernel"; // FIXME import direct de core
 
 import { userTypeDeclaration } from './typeHandlers/userTypeHandler';
-import { registryContainerName } from "./global";
+import { registryContainerName, registryContainerPath, userRegistryContainerName } from "./global";
 
 class MtzPlatformManager {
 
@@ -40,6 +40,15 @@ class MtzPlatformManager {
         isVolatile: false
       }
     );
+
+    // mise en place de «#/registry/users»
+    await this._core.declareContainer({
+        elementName: userRegistryContainerName,
+        parentPath: registryContainerPath,
+        isVolatile: false
+      }
+    );
+
 
 
   }

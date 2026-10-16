@@ -41,12 +41,29 @@ describe("Maestrozo platform", async () => {
     expect(element).not.to.equal(null);
     assert(element !== null);
     expect(element).to.be.instanceOf(Object);
-    expect(element).to.have.property('revision', 1);
+    expect(element).to.have.property('revision', 2);
     expect(element).to.have.property('elementName', 'registry');
     expect(element).to.have.property('isContainer', true);
     expect(element).to.have.property('isVolatile', false);
     expect(element).to.have.property('parentPath')
     expect(element.parentPath).to.deep.equal([ '#' ]);
+    expect(element).to.have.property('elementType')
+    expect(element.elementType).to.deep.equal([ '#', 'types', 'container' ]);
+  });
+
+  it("should find /registry/users", async ({skip}) => {
+    skip(platform === null, "Platform not initialized");
+    assert(platform !== null);
+    const element = await platform.getElement([ '#', 'registry', 'users'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
+    expect(element).to.be.instanceOf(Object);
+    expect(element).to.have.property('revision', 1);
+    expect(element).to.have.property('elementName', 'users');
+    expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', false);
+    expect(element).to.have.property('parentPath')
+    expect(element.parentPath).to.deep.equal([ '#', 'registry' ]);
     expect(element).to.have.property('elementType')
     expect(element.elementType).to.deep.equal([ '#', 'types', 'container' ]);
   });
