@@ -12,10 +12,14 @@ import { ElementPath, MtzEngine } from "../src/Engine";
 // TODO migration kernel nettoyage tests redondants
 
 describe("Maestrozo core", () => {
-  let engine = new MtzEngine()
+  console.log("dOm test - instanciation engine avant ");
+  let engine = new MtzEngine();
+  console.log("dOm test - instanciation engine après");
 
   it("should be initialized", async () => {
+    console.log("dOm test - avant initialize");
     await engine.initialize(new MemoryStore());
+    console.log("dOm test - après initialize");
     expect(engine).to.have.property('initialized', true)
   });
 
@@ -51,9 +55,9 @@ describe("Maestrozo core", () => {
     expect(element).to.have.property('isVolatile', true);
     expect(element).to.have.property('childNames');
     expect(element.childNames).to.deep.equal([
+      'type', 'element', 'container', 
       'data', 'pins', 'links', 
-      'type', 'element', 'container', 'component',
-      'message-queue', 'message'
+      'component', 'message-queue', 'message'
     ]);
   });
 

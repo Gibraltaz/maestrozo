@@ -3,14 +3,11 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { MaestrozoStore, RawMemoryStore  } from 'maestrozo-kernel';
-import {
-  containerTypeName,
-  rootTypeContainerName,
-} from 'maestrozo-kernel';
+import { maestrozoKernel, MaestrozoStore } from 'maestrozo-kernel';
+import { rootTypeContainerName, } from 'maestrozo-kernel';
 import { buildComponentCapabilities } from './componentCapabilities';
 
-import { MtzElement, ElementName, ElementPath, checkElement, ElementData } from 'maestrozo-kernel';
+import { MtzElement, ElementName, ElementPath, ElementData } from 'maestrozo-kernel';
 import {
   checkElementName,
   checkElementPath,
@@ -37,11 +34,11 @@ import {
 } from './global';
 
 import {
-  TypeDeclaration, TypeHandler, containerTypeDeclaration,
-  BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, 
-  elementTypeDeclaration, InitializeElementCallback, InitializeElementFunction,
-  typeTypeDeclaration 
+  TypeHandler, BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, 
+  InitializeElementCallback, InitializeElementFunction,
 } from 'maestrozo-kernel';
+
+import type { MaestrozoKernel, TypeDeclaration } from 'maestrozo-kernel';
 
 import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
 import { stringTypeDeclaration } from './typeHandlers/stringTypeHandler';
@@ -67,138 +64,116 @@ import {
 
 
 
-type ContainerDeclaration = {
-  elementName: ElementName,
-  parentPath: ElementPath,
-  isVolatile: boolean
-};
+// TODO migration kernel ménage
+//type ContainerDeclaration = {
+//  elementName: ElementName,
+//  parentPath: ElementPath,
+//  isVolatile: boolean
+//};
 
 
 class MtzEngine {
   private _initialized = false;
-  private persistentStore: MaestrozoStore| null = null;
-  private volatileStore: MaestrozoStore = new RawMemoryStore;
+  private _kernel: MaestrozoKernel|null = null;
   public timeFunction: MtzTimeFunction = () => Date.now() as MtzMessageTime;
 
-  // TODO migration kernel doublon
-  private async getStoredElement(elementPath: ElementPath): Promise<MtzElement|null> {
-    let element = await this.volatileStore.getElement(elementPath);
-    if (element === null) {
-      if (this.persistentStore === null)
-        throw new Error("Persistent store is null");
-      element = await this.persistentStore.getElement(elementPath);
-    }
-    return element;
+  // la plupart dess auto-tests instancient la classe sans passer de kernel en argument
+  constructor(kernel?: MaestrozoKernel) {
+    if (kernel !== undefined)
+      this._kernel = kernel;
   }
 
-  // TODO migration kernel doublon
-  private async createElementInStore(element: MtzElement): Promise<void> {
-    if (element.isVolatile)
-      await this.volatileStore.setElement(element);
-    else {
-      if (this.persistentStore === null)
-        throw new Error("Persistent store is null");
-      await this.persistentStore.setElement(element);
-    }
-  }
+  public async initialize (store: MaestrozoStore) {
+    if (this._initialized)
+      throw new Error("Maestrozo Engine already initialized");
 
-  // TODO migration kernel doublon
-  private async updateElementInStore(element: MtzElement): Promise<void> {
-    if (element.isVolatile)
-      await this.volatileStore.setElement(element);
-    else {
-      if (this.persistentStore === null)
-        throw new Error("Persistent store is null");
-      await this.persistentStore.setElement(element);
-    }
-  }
+    // cas des auto-tests qui n'ont pas passé de kernel
+    if (this._kernel === null)
+      this._kernel = await maestrozoKernel(store);
 
+    // mise en place de «#/types/data»
+    await this._kernel.declareContainer({
+      elementName: dataTypeName,
+      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
+      isVolatile: true
+    });
 
-  // TODO migration kernel doublon
-  private async storeNewElement(element: MtzElement): Promise<void> {
+    // mise en place de «#/types/pins»
+    await this._kernel.declareContainer({
+      elementName: pinTypeContainerName,
+      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
+      isVolatile: true
+    });
 
-    checkElement(element);
+    // mise en place de «#/types/links»
+    await this._kernel.declareContainer({
+      elementName: linkTypeContainerName,
+      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
+      isVolatile: true
+    });
 
-    const elementPath = getElementPath(element);
-    if (await this.getStoredElement(elementPath))
-      throw new Error(`Element «${elementPath}» already exists`);
-
-    let parentElement;
-    if (element.elementName === rootName && element.parentPath.length === 0) {
-      parentElement = null; // l'élément racine n'a pas de parent
-    }
-    else {
-      const parentPath = element.parentPath;
-      parentElement = await this.getStoredElement(parentPath);
-      if (parentElement === null)
-        throw new Error(`Parent of element «${pathToString(elementPath)}» does not exist`);
-      if (! parentElement.isContainer)
-        throw new Error(`Parent of element «${pathToString(elementPath)}» is not a container`);
-    }
-
-    if (element.isContainer) {
-      if (element.childNames === null)
-        throw new Error(`Child name list not initialized in container «${pathToString(elementPath)}»`);
-    }
-    else {
-      if (element.childNames !== null)
-        throw new Error(`Child name list initialized in non-container «${pathToString(elementPath)}»`);
-    }
-
-    if (element.revision !== 0)
-      throw new Error(`Revision of new element «${pathToString(elementPath)}» must be zero`);
-    element.revision = 1;
-
-
-    await this.createElementInStore(element);
-
-    if (parentElement) {
-      if (parentElement.childNames === null)
-        throw new Error("Parent element childNames array is null");
-      parentElement.childNames.push(element.elementName);
-      parentElement.revision++;
-      if (parentElement.isVolatile) {
-        await this.volatileStore.setElement(parentElement);
+    // mise en place de «#/runtime»
+    await this._kernel.declareContainer({
+        elementName: runtimeContainerName,
+        parentPath: [rootName] as ElementPath,
+        isVolatile: false
       }
-      else {
-        if (this.persistentStore === null)
-          throw new Error("Persistent store is null");
-        await this.persistentStore.setElement(parentElement);
+    );
+
+    // mise en place de «#/system»
+    await this._kernel.declareContainer({
+        elementName: systemContainerName,
+        parentPath: [rootName] as ElementPath,
+        isVolatile: false
       }
-    }
-  };
+    );
 
+    // mise en place de «#/types/data/integer»
+    await this._kernel.declareType(integerTypeDeclaration);
 
-  // TODO migration kernel
-  private async declareContainer(containerDeclaration: ContainerDeclaration): Promise<MtzElement> {
+    // mise en place de «#/types/data/string»
+    await this._kernel.declareType(stringTypeDeclaration);
 
-    const containerPath = [...containerDeclaration.parentPath, containerDeclaration.elementName] as ElementPath;
+    // mise en place de «#/types/data/boolean»
+    await this._kernel.declareType(booleanTypeDeclaration);
 
-    let containerElement = await this.getStoredElement(containerPath);
-    if (containerElement !== null) {
-      if (containerDeclaration.isVolatile)
-        throw new Error(`Container «${pathToString(containerPath)}» already exists`);
-      return containerElement;
-    }
+    // mise en place de «#/types/pins/input-pin»
+    await this._kernel.declareType(inputPinTypeDeclaration);
 
-    containerElement = {
-      revision: 0,
-      elementName: containerDeclaration.elementName,
-      parentPath: containerDeclaration.parentPath,
-      elementType: [rootName, rootTypeContainerName, containerTypeName],
-      isContainer: true,
-      isVolatile: containerDeclaration.isVolatile,
-      childNames: [],
-      data: null,
-    } as MtzElement;
+    // mise en place de «#/types/pins/output-pin»
+    await this._kernel.declareType(outputPinTypeDeclaration);
 
-    await this.storeNewElement(containerElement);
-    return containerElement;
+    // mise en place de «#/types/components»
+    await this._kernel.declareType(componentTypeDeclaration);
+
+    // mise en place de «#/types/components/composite»
+    await this._kernel.declareType(compositeComponentTypeDeclaration);
+
+    // mise en place de «#/types/components/constant»
+    await this._kernel.declareType(constantComponentTypeDeclaration);
+
+    // mise en place de «#/types/components/variable»
+    await this._kernel.declareType(variableComponentTypeDeclaration);
+
+    // mise en place de «#/types/links/connection»
+    await this._kernel.declareType(connectionTypeDeclaration);
+
+    // mise en place de «#/types/message-queue»
+    await this._kernel.declareType(messageQueueTypeDeclaration);
+
+    // mise en place de «#/types/message»
+    await this._kernel.declareType(messageTypeDeclaration);
+
+    // mise en place de «#/system/message-queue»
+    await this.declareMessageQueue();
+
+    this._initialized = true;
   }
 
 
   private async declareMessageQueue(): Promise<MtzElement> {
-    let messageQueueElement = await this.getStoredElement(messageQueuePath);
+    assert(this._kernel !== null);
+    let messageQueueElement = await this._kernel.getStoredElement(messageQueuePath);
     if (messageQueueElement === null) {
       messageQueueElement = await this.createElementInternal(
         messageQueueName,
@@ -212,187 +187,22 @@ class MtzEngine {
   }
 
 
-  // TODO migration kernel doublon
-  private async declareTypeInternal(typeDeclaration: TypeDeclaration, force: boolean): Promise<MtzElement> {
-
-    if (! force) {
-      if (await this.getStoredElement(typeDeclaration.parentPath) === null)
-        throw new Error(`Parent «${pathToString(typeDeclaration.parentPath)}» does not exist`);
-
-      if (await this.getStoredElement(typeDeclaration.elementType) === null)
-        throw new Error(`Type «${pathToString(typeDeclaration.elementType)}» does not exist`);
-
-      const isType = pathStartsWith(typeDeclaration.parentPath, [rootName, rootTypeContainerName]);
-      if (! isType)
-        throw new Error(`Type «${typeDeclaration.elementName}» should be declare in ${pathToString([rootName, rootTypeContainerName])}`);
-    }
-
-    const typePath = pathToString([...typeDeclaration.parentPath, typeDeclaration.elementName]);
-
-    const isDerivable = typeDeclaration?.isDerivable ?? null;
-    if (isDerivable === null)
-      throw new Error(`Type «${typePath}» declaration has no «isDerivable» property`);
-
-    const isContainer = typeDeclaration?.isContainer ?? null;
-    if (isContainer === null)
-      throw new Error(`Type «${typePath}» declaration has no «isContainer» property`);
-
-    const isVolatile = typeDeclaration?.isVolatile ?? null;
-    if (isVolatile === null)
-      throw new Error(`Type «${typePath}» declaration has no «isVolatile» property`);
-
-    const typeHandler: TypeHandler = {
-      isContainer,
-      isVolatile,
-      callbacks: [...typeDeclaration?.callbacks ?? []]
-    };
-
-    const element = {
-      revision: 0,
-      elementName: typeDeclaration.elementName,
-      parentPath: typeDeclaration.parentPath,
-      elementType: typeDeclaration.elementType,
-      isContainer: isDerivable ? true : false,
-      isVolatile: true,
-      childNames: isDerivable ? [] as Array<ElementName> : null,
-      data: {
-        typeHandler
-      }
-    } as MtzElement;
-
-    await this.storeNewElement(element);
-    return element;
-  }
-
   public async declareType(typeDeclaration: TypeDeclaration): Promise<MtzElement> {
-    return this.declareTypeInternal(typeDeclaration, false);
+    assert(this._kernel !== null);
+    return this._kernel.declareType(typeDeclaration);
   }
-
-  public async initialize (store: MaestrozoStore) {
-
-    // TODO migration kernel appeler tree.initialize
-    this.volatileStore = new RawMemoryStore();
-    this.persistentStore = store;
-
-    // TODO migration kernel à supprimer
-    // mise en place de root «#/»
-    const rootElement = await this.declareContainer({
-      elementName: rootName,
-      parentPath: [] as ElementPath, // empty path exception because root as no parent
-      isVolatile: false
-    });
-
-    // TODO migration kernel à supprimer
-    // mise en place de «#/types»
-    await this.declareContainer({
-      elementName: rootTypeContainerName,
-      parentPath: getElementPath(rootElement),
-      isVolatile: true
-    });
-
-    // mise en place de «#/types/data»
-    await this.declareContainer({
-      elementName: dataTypeName,
-      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      isVolatile: true
-    });
-
-    // mise en place de «#/types/pins»
-    await this.declareContainer({
-      elementName: pinTypeContainerName,
-      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      isVolatile: true
-    });
-
-    // mise en place de «#/types/links»
-    await this.declareContainer({
-      elementName: linkTypeContainerName,
-      parentPath: [rootName, rootTypeContainerName ] as ElementPath,
-      isVolatile: true
-    });
-
-    // mise en place de «#/runtime»
-    await this.declareContainer({
-        elementName: runtimeContainerName,
-        parentPath: [rootName] as ElementPath,
-        isVolatile: false
-      }
-    );
-
-    // mise en place de «#/system»
-    await this.declareContainer({
-        elementName: systemContainerName,
-        parentPath: [rootName] as ElementPath,
-        isVolatile: false
-      }
-    );
-
-    // TODO migration kernel
-    // mise en place de «#/types/type»
-    // (type spécial qui représente le type de tous les éléments de type dans «/types»)
-    await this.declareTypeInternal(typeTypeDeclaration, true);
-
-    // TODO migration kernel
-    // mise en place de «#/types/element»
-    await this.declareTypeInternal(elementTypeDeclaration, false);
-
-    // TODO migration kernel
-    // mise en place de «#/types/container»
-    await this.declareTypeInternal(containerTypeDeclaration, false);
-
-    // mise en place de «#/types/data/integer»
-    await this.declareTypeInternal(integerTypeDeclaration, false);
-
-    // mise en place de «#/types/data/string»
-    await this.declareTypeInternal(stringTypeDeclaration, false);
-
-    // mise en place de «#/types/data/boolean»
-    await this.declareTypeInternal(booleanTypeDeclaration, false);
-
-    // mise en place de «#/types/pins/input-pin»
-    await this.declareTypeInternal(inputPinTypeDeclaration, false);
-
-    // mise en place de «#/types/pins/output-pin»
-    await this.declareTypeInternal(outputPinTypeDeclaration, false);
-
-    // mise en place de «#/types/components»
-    await this.declareTypeInternal(componentTypeDeclaration, false);
-
-    // mise en place de «#/types/components/composite»
-    await this.declareTypeInternal(compositeComponentTypeDeclaration, false);
-
-    // mise en place de «#/types/components/constant»
-    await this.declareTypeInternal(constantComponentTypeDeclaration, false);
-
-    // mise en place de «#/types/components/variable»
-    await this.declareTypeInternal(variableComponentTypeDeclaration, false);
-
-    // mise en place de «#/types/links/connection»
-    await this.declareTypeInternal(connectionTypeDeclaration, false);
-
-    // mise en place de «#/types/message-queue»
-    await this.declareTypeInternal(messageQueueTypeDeclaration, false);
-
-    // mise en place de «#/types/message»
-    await this.declareTypeInternal(messageTypeDeclaration, false);
-
-    // mise en place de «#/system/message-queue»
-    await this.declareMessageQueue();
-
-    this._initialized = true;
-  }
-
 
   // TODO migration kernel doublon
   public async getElement(elementPath: ElementPath): Promise<MtzElement|null> {
     if (! this._initialized)
       throw new Error("Engine not initialized");
-    const element = await this.getStoredElement(elementPath);
+    assert(this._kernel !== null);
+    const element = await this._kernel.getStoredElement(elementPath);
     if (element === null)
       return null;
     // FIXME code en double avec createElementInternal
     const typePath = element.elementType;
-    const typeElement = await this.getStoredElement(typePath);
+    const typeElement = await this._kernel.getStoredElement(typePath);
     if (typeElement === null)
       throw new Error(`Can not find parent «${pathToString(typePath)}»`);
     const typeHandler: TypeHandler | null = typeElement?.data?.typeHandler as TypeHandler ?? null;
@@ -418,6 +228,7 @@ class MtzEngine {
     params: Record<string, any>,
     force: boolean
   ): Promise<MtzElement> {
+    assert(this._kernel !== null);
 
     if (! force && ! this._initialized)
       throw new Error("Engine not initialized");
@@ -427,7 +238,7 @@ class MtzEngine {
     checkElementPath(parentPath);
     checkElementPath(typePath);
 
-    const parentElement = await this.getStoredElement(parentPath);
+    const parentElement = await this._kernel.getStoredElement(parentPath);
     if (parentElement === null)
       throw new Error(`Parent element «${pathToString(parentPath)}» does not exist`);
 
@@ -435,10 +246,10 @@ class MtzEngine {
       throw new Error(`Parent element «${pathToString(parentPath)}» is not a container`);
 
     const elementPath = [...parentPath, elementName];
-    if (await this.getStoredElement(elementPath) !== null)
+    if (await this._kernel.getStoredElement(elementPath) !== null)
       throw new Error(`Element «${pathToString([...parentPath, elementName])}» already exists`);
 
-    const typeElement = await this.getStoredElement(typePath);
+    const typeElement = await this._kernel.getStoredElement(typePath);
     if (typeElement === null)
       throw new Error(`Can not find parent «${pathToString(typePath)}»`);
 
@@ -471,9 +282,10 @@ class MtzEngine {
 
       const buildElementDataHelpers: BuildElementDataHelpers = {
         getElement: async (elementPath:ElementPath): Promise<MtzElement|null> => {
+          assert(this._kernel !== null);
           if (! buildElementDataHelpersActive)
             throw new Error(`Build element data helper «getChild» can no longer be used (element «${elementName}»)`);
-          return await this.getStoredElement(elementPath);
+          return await this._kernel.getStoredElement(elementPath);
         },
         // TODO retirer createChildElement du build data !
         createChildElement: async (
@@ -510,7 +322,7 @@ class MtzEngine {
       childNames: isContainer ? [] : null,
       data: elementData,
     };
-    await this.storeNewElement(element);
+    await this._kernel.storeNewElement(element);
 
     const initializeElementCallback = typeHandler.callbacks.find(callback => callback.name === InitializeElementCallback);
     if (initializeElementCallback !== undefined) {
@@ -529,9 +341,10 @@ class MtzEngine {
 
       const buildComponentHelpers: BuildComponentHelpers = {
         getElement: async (elementPath:ElementPath): Promise<MtzElement|null> => {
+          assert(this._kernel !== null);
           if (! buildComponentHelpersActive)
             throw new Error(`Build element data helper «getChild» can no longer be used (element «${elementName}»)`);
-          return await this.getStoredElement(elementPath);
+          return await this._kernel.getStoredElement(elementPath);
         },
         createChildElement: async (
           childElementName: ElementName,
@@ -555,7 +368,7 @@ class MtzEngine {
       // TODO tester que l'élément est bien un composant
       await buildComponentFunction(element, params, buildComponentHelpers);
       // relire l'élément car sa propriété childNames a changé si des éléments enfants ont été créés dans cet élément
-      element = await this.getStoredElement(elementPath);
+      element = await this._kernel.getStoredElement(elementPath);
       if (element === null)
         throw new Error(`Element not found after creation`);
     }
@@ -574,7 +387,8 @@ class MtzEngine {
 
   // TODO migration kernel doublon
   public async modifyElement(element: MtzElement): Promise<void> {
-    const originalElement = await this.getStoredElement(getElementPath(element));
+    assert(this._kernel !== null);
+    const originalElement = await this._kernel.getStoredElement(getElementPath(element));
     if (originalElement === null)
       throw new Error(`Element «${pathToString(getElementPath(element))}» does not exist`);
 
@@ -582,7 +396,7 @@ class MtzEngine {
       throw new Error(`Conflict in edition of element «${pathToString(getElementPath(element))}»`);
 
     element.revision++;
-    await this.updateElementInStore(element);
+    await this._kernel.modifyElement(element);
   }
 
   public get initialized() : boolean {
@@ -654,10 +468,11 @@ class MtzEngine {
         const evaluateComponentHelpers: EvaluateComponentHelpers = {
           // TODO autotest helper getChild
           getChild : async (childName:ElementName): Promise<MtzElement|null> => {
+            assert(this._kernel !== null);
             if (! evaluateComponentHelpersActive)
               throw new Error(`Evalute component helper «getChild» can no longer be used (element «${componentName}»)`);
             const childPath = [...componentPath, childName];
-            return await this.getStoredElement(childPath);
+            return await this._kernel.getStoredElement(childPath);
           },
           // TODO à transformer en fonction helper
           postInputChangedToChild: async (childComponentName: ElementName, childPinName: ElementName, newValue: any): Promise<void> => {
@@ -864,6 +679,11 @@ class MtzEngine {
     await this.modifyElement(messageQueueElement);
   }
 
+  get kernel():MaestrozoKernel {
+    if (this._kernel === null)
+      throw new Error("Kernel is null");
+    return this._kernel;
+  }
 }
 
 export { MtzEngine, ElementName, ElementPath };

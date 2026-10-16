@@ -30,6 +30,8 @@ class MtzTree {
   private volatileStore: MaestrozoStore = new RawMemoryStore;
 
   public async initialize (store: MaestrozoStore) {
+    if (this._initialized)
+      throw new Error("Maestrozo's Tree already initialized");
 
     this.volatileStore = new RawMemoryStore();
     this.persistentStore = store;
@@ -62,7 +64,7 @@ class MtzTree {
 
   }
 
-  private async declareContainer(containerDeclaration: ContainerDeclaration): Promise<MtzElement> {
+  public async declareContainer(containerDeclaration: ContainerDeclaration): Promise<MtzElement> {
 
     const containerPath = [...containerDeclaration.parentPath, containerDeclaration.elementName] as ElementPath;
 
@@ -88,7 +90,7 @@ class MtzTree {
     return containerElement;
   }
 
-  private async getStoredElement(elementPath: ElementPath): Promise<MtzElement|null> {
+  public async getStoredElement(elementPath: ElementPath): Promise<MtzElement|null> {
     let element = await this.volatileStore.getElement(elementPath);
     if (element === null) {
       if (this.persistentStore === null)
@@ -109,7 +111,7 @@ class MtzTree {
   }
 
   
-  private async updateElementInStore(element: MtzElement): Promise<void> {
+  public async updateElementInStore(element: MtzElement): Promise<void> {
     if (element.isVolatile)
       await this.volatileStore.setElement(element);
     else {
@@ -119,7 +121,8 @@ class MtzTree {
     }
   }
 
-private async storeNewElement(element: MtzElement): Promise<void> {
+// TODO migration kernel : à mettre en private
+public async storeNewElement(element: MtzElement): Promise<void> {
 
     checkElement(element);
 
@@ -390,9 +393,10 @@ private async storeNewElement(element: MtzElement): Promise<void> {
     return await this.createElementInternal(elementName, parentPath, typePath, params, false);
   }
 
-
-
 }
 
-export { MtzTree };
+export { 
+  MtzTree,
+  ContainerDeclaration
+};
 

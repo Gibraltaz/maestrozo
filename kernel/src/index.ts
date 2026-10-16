@@ -1,4 +1,5 @@
 export { maestrozoKernel } from './kernel.js';
+export type { MaestrozoKernel } from './kernel.js';
 export * from './path.js';
 export {
   MtzElement,
@@ -9,6 +10,7 @@ export {
 } from './Element.js';
 
 export { MtzTree } from './Tree.js'; // TODO do not export Tree
+
 export { MtzElementCapabilities, buildElementCapabilities } from './elementCapabilities.js';
 export { MaestrozoStore } from './store/MaestrozoStore.js';
 export { FileStore } from './store/FileStore.js';
