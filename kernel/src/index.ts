@@ -35,3 +35,4 @@ export {
 } from './typeHandlers/elementTypeHandler.js';
 export { containerTypeDeclaration } from './typeHandlers/containerTypeHandler.js';
 export { typeTypeDeclaration } from './typeHandlers/typeTypeHandler.js';
+export { ContainerDeclaration } from './Tree.js';

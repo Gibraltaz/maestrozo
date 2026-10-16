@@ -9,16 +9,12 @@ import { buildComponentCapabilities } from './componentCapabilities';
 
 import { MtzElement, ElementName, ElementPath, ElementData } from 'maestrozo-kernel';
 import {
-  checkElementName,
-  checkElementPath,
-  rootName,
-  pathStartsWith,
-  pathToString,
-  getElementPath,
-  elementPathAreEquals,
-  pathEquals,
+  checkElementName, checkElementPath, rootName, pathStartsWith,
+  pathToString, getElementPath, elementPathAreEquals, pathEquals,
+  MaestrozoKernel, TypeDeclaration, TypeHandler, 
+  BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, 
+  InitializeElementCallback, InitializeElementFunction,
 } from 'maestrozo-kernel';
-
 
 import {
   dataTypeName,
@@ -33,12 +29,6 @@ import {
   outputPinTypePath,
 } from './global';
 
-import {
-  TypeHandler, BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, 
-  InitializeElementCallback, InitializeElementFunction,
-} from 'maestrozo-kernel';
-
-import type { MaestrozoKernel, TypeDeclaration } from 'maestrozo-kernel';
 
 import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
 import { stringTypeDeclaration } from './typeHandlers/stringTypeHandler';
@@ -83,13 +73,18 @@ class MtzEngine {
       this._kernel = kernel;
   }
 
-  public async initialize (store: MaestrozoStore) {
+  public async initialize (store?: MaestrozoStore) {
     if (this._initialized)
       throw new Error("Maestrozo Engine already initialized");
 
     // cas des auto-tests qui n'ont pas passé de kernel
-    if (this._kernel === null)
+    if (store !== undefined) {
+      if (this._kernel !== null)
+        throw new Error("Maestrozo Engine already initialized");
       this._kernel = await maestrozoKernel(store);
+    }
+
+    assert(this._kernel !== null);
 
     // mise en place de «#/types/data»
     await this._kernel.declareContainer({
@@ -228,10 +223,11 @@ class MtzEngine {
     params: Record<string, any>,
     force: boolean
   ): Promise<MtzElement> {
-    assert(this._kernel !== null);
 
     if (! force && ! this._initialized)
       throw new Error("Engine not initialized");
+
+    assert(this._kernel !== null);
 
     // TODO à remonter dans MtzCore
     checkElementName(elementName);

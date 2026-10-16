@@ -4,11 +4,11 @@
  */
 
 import {
+  ElementData, ElementName, ElementPath, MtzElement,
   rootName, pathStartsWith, pathToString, rootTypeContainerName, typeElementName,
   TypeDeclaration, CallbackName, CreateChildElementHelper, GetElementHelper, 
   BuildElementDataCallback, BuildElementDataFunction
-} from 'maestrozo-kernel'
-import { ElementData, ElementName, ElementPath, MtzElement } from 'maestrozo-kernel';
+} from 'maestrozo-kernel';
 
 import { componentTypeName, componentTypePath, inputPinTypePath, linkTypeContainerPath, messageQueuePath, outputPinTypePath } from '../global';
 

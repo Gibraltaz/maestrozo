@@ -9,7 +9,7 @@ import { MaestrozoCore, maestrozoCore } from "../src/core";
 describe("Maestrozo core", async () => {
   let core: MaestrozoCore | null = null;
 
-  it("should check engine version", async () => {
+  it("should instanciate platform", async () => {
     core = await maestrozoCore();
     expect(core).to.be.instanceOf(Object);
   });

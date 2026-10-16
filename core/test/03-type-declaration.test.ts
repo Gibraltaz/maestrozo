@@ -12,14 +12,10 @@ import { ElementPath, MtzEngine } from "../src/Engine";
 // TODO migration kernel nettoyage tests redondants
 
 describe("Maestrozo core", () => {
-  console.log("dOm test - instanciation engine avant ");
   let engine = new MtzEngine();
-  console.log("dOm test - instanciation engine après");
 
   it("should be initialized", async () => {
-    console.log("dOm test - avant initialize");
     await engine.initialize(new MemoryStore());
-    console.log("dOm test - après initialize");
     expect(engine).to.have.property('initialized', true)
   });
 
