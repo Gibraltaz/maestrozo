@@ -7,7 +7,11 @@ import { maestrozoCore, MaestrozoCore, rootName } from "maestrozo-core";
 import { ElementPath, MaestrozoStore } from "maestrozo-kernel"; // FIXME import direct de core
 
 import { userTypeDeclaration } from './typeHandlers/userTypeHandler';
-import { registryContainerName, registryContainerPath, userRegistryContainerName } from "./global";
+import {
+  registryContainerName, registryContainerPath, userRegistryContainerName,
+  platformContainerName, platformContainerPath,
+  authenticatorContainerName, authenticatorContainerPath
+} from "./global";
 
 class MtzPlatformManager {
 
@@ -49,7 +53,21 @@ class MtzPlatformManager {
       }
     );
 
+    // mise en place de «#/platform»
+    await this._core.declareContainer({
+        elementName: platformContainerName,
+        parentPath: [rootName] as ElementPath,
+        isVolatile: true
+      }
+    );
 
+    // mise en place de «#/platform/authenticators»
+    await this._core.declareContainer({
+        elementName: authenticatorContainerName ,
+        parentPath: platformContainerPath ,
+        isVolatile: true
+      }
+    );
 
   }
 

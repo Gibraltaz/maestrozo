@@ -12,8 +12,19 @@ const registryContainerPath = [...rootName, registryContainerName ] as ElementPa
 const userRegistryContainerName = 'users' as ElementName;
 const userRegistryContainerPath = [...registryContainerPath, userRegistryContainerName ] as ElementPath;
 
+
+// name of element «#/platform»
+const platformContainerName = 'platform' as ElementName;
+const platformContainerPath = [...rootName, platformContainerName ] as ElementPath;
+
+// name of element «#/platform/authenticators»
+const authenticatorContainerName = 'authenticators' as ElementName;
+const authenticatorContainerPath = [...platformContainerPath, authenticatorContainerName ] as ElementPath;
+
 export {
   userTypeName, userTypePath,
   registryContainerName, registryContainerPath,
-  userRegistryContainerName, userRegistryContainerPath
+  userRegistryContainerName, userRegistryContainerPath,
+  platformContainerName, platformContainerPath,
+  authenticatorContainerName, authenticatorContainerPath
 };

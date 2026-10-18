@@ -68,5 +68,40 @@ describe("Maestrozo platform", async () => {
     expect(element.elementType).to.deep.equal([ '#', 'types', 'container' ]);
   });
 
+  it("should find /platform", async ({skip}) => {
+    skip(platform === null, "Platform not initialized");
+    assert(platform !== null);
+    const element = await platform.getElement([ '#', 'platform'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
+    expect(element).to.be.instanceOf(Object);
+    expect(element).to.have.property('revision', 2);
+    expect(element).to.have.property('elementName', 'platform');
+    expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', true);
+    expect(element).to.have.property('parentPath')
+    expect(element.parentPath).to.deep.equal([ '#' ]);
+    expect(element).to.have.property('elementType')
+    expect(element.elementType).to.deep.equal([ '#', 'types', 'container' ]);
+  });
+
+  it("should find /platform/authenticators", async ({skip}) => {
+    skip(platform === null, "Platform not initialized");
+    assert(platform !== null);
+    const element = await platform.getElement([ '#', 'platform', 'authenticators'] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
+    expect(element).to.be.instanceOf(Object);
+    expect(element).to.have.property('revision', 1);
+    expect(element).to.have.property('elementName', 'authenticators');
+    expect(element).to.have.property('isContainer', true);
+    expect(element).to.have.property('isVolatile', true);
+    expect(element).to.have.property('parentPath')
+    expect(element.parentPath).to.deep.equal([ '#', 'platform' ]);
+    expect(element).to.have.property('elementType')
+    expect(element.elementType).to.deep.equal([ '#', 'types', 'container' ]);
+  });
+
+
 
 });
