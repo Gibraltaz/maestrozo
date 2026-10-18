@@ -75,7 +75,7 @@ class MtzEngine {
       this._kernel = await maestrozoKernel(store);
     }
 
-    assert(this._kernel !== null);
+    if (this._kernel === null) throw new Error("Kernel is not initialized");
 
     // mise en place de «#/types/data»
     await this._kernel.declareContainer({
@@ -158,7 +158,7 @@ class MtzEngine {
 
 
   private async declareMessageQueue(): Promise<MtzElement> {
-    assert(this._kernel !== null);
+    if (this._kernel === null) throw new Error("Kernel is not initialized");
     let messageQueueElement = await this._kernel.getStoredElement(messageQueuePath);
     if (messageQueueElement === null) {
       messageQueueElement = await this.createElementInternal(
@@ -174,7 +174,7 @@ class MtzEngine {
 
 
   public async declareType(typeDeclaration: TypeDeclaration): Promise<MtzElement> {
-    assert(this._kernel !== null);
+    if (this._kernel === null) throw new Error("Kernel is not initialized");
     return this._kernel.declareType(typeDeclaration);
   }
 
@@ -182,7 +182,7 @@ class MtzEngine {
   public async getElement(elementPath: ElementPath): Promise<MtzElement|null> {
     if (! this._initialized)
       throw new Error("Engine not initialized");
-    assert(this._kernel !== null);
+    if (this._kernel === null) throw new Error("Kernel is not initialized");
     const element = await this._kernel.getStoredElement(elementPath);
     if (element === null)
       return null;
@@ -218,7 +218,7 @@ class MtzEngine {
     if (! force && ! this._initialized)
       throw new Error("Engine not initialized");
 
-    assert(this._kernel !== null);
+    if (this._kernel === null) throw new Error("Kernel is not initialized");
 
     // TODO à remonter dans MtzCore
     checkElementName(elementName);
@@ -269,7 +269,7 @@ class MtzEngine {
 
       const buildElementDataHelpers: BuildElementDataHelpers = {
         getElement: async (elementPath:ElementPath): Promise<MtzElement|null> => {
-          assert(this._kernel !== null);
+          if (this._kernel === null) throw new Error("Kernel is not initialized");
           if (! buildElementDataHelpersActive)
             throw new Error(`Build element data helper «getChild» can no longer be used (element «${elementName}»)`);
           return await this._kernel.getStoredElement(elementPath);
@@ -328,7 +328,7 @@ class MtzEngine {
 
       const buildComponentHelpers: BuildComponentHelpers = {
         getElement: async (elementPath:ElementPath): Promise<MtzElement|null> => {
-          assert(this._kernel !== null);
+          if (this._kernel === null) throw new Error("Kernel is not initialized");
           if (! buildComponentHelpersActive)
             throw new Error(`Build element data helper «getChild» can no longer be used (element «${elementName}»)`);
           return await this._kernel.getStoredElement(elementPath);
@@ -374,7 +374,7 @@ class MtzEngine {
 
   // TODO migration kernel doublon
   public async modifyElement(element: MtzElement): Promise<void> {
-    assert(this._kernel !== null);
+    if (this._kernel === null) throw new Error("Kernel is not initialized");
     const originalElement = await this._kernel.getStoredElement(getElementPath(element));
     if (originalElement === null)
       throw new Error(`Element «${pathToString(getElementPath(element))}» does not exist`);
@@ -434,7 +434,8 @@ class MtzEngine {
     const componentName = componentElement.elementName;
     const containerPath = componentElement.parentPath;
     const containerElement = await this.getElement(containerPath);
-    assert (containerElement !== null); // FIXME comment gérer l'erreur ?
+    if (containerElement === null) // FIXME comment gérer l'erreur ?
+      throw new Error("Container element is null");
     const data = message.data;
 
     switch (message.messageType) {
@@ -455,7 +456,7 @@ class MtzEngine {
         const evaluateComponentHelpers: EvaluateComponentHelpers = {
           // TODO autotest helper getChild
           getChild : async (childName:ElementName): Promise<MtzElement|null> => {
-            assert(this._kernel !== null);
+            if (this._kernel === null) throw new Error("Kernel is not initialized");
             if (! evaluateComponentHelpersActive)
               throw new Error(`Evalute component helper «getChild» can no longer be used (element «${componentName}»)`);
             const childPath = [...componentPath, childName];
@@ -496,18 +497,18 @@ class MtzEngine {
 
           // pour une sortie, propager le changement aux composants externes liés
           if (pathEquals(pin.elementType, outputPinTypePath)) {
-            assert(containerElement !== null);
-            assert(containerElement.childNames !== null);
+            if (containerElement === null) throw new Error("Container element is null");
+            if (containerElement.childNames === null) throw new Error("Container child names is null");
             for (const childName of containerElement.childNames) {
               const childElement = await this.getElement([...containerPath, childName]);
-              assert(childElement !== null); // FIXME comment gérer l'erreur ?
+              if (childElement === null) throw new Error("Child is null");
 
               // ne traiter que les connexions
               if (! pathEquals(childElement.elementType, connectionTypePath))
                 continue;
 
               const connection = childElement.data;
-              assert(connection !== null); // FIXME comment gérer l'erreur ?
+              if (connection === null) throw new Error("Connection is null");
 
               // ne traiter que les connexions liées à la sortie du composant composite
               if (connection.sourceComponent !== componentElement.elementName)
@@ -667,8 +668,7 @@ class MtzEngine {
   }
 
   get kernel():MaestrozoKernel {
-    if (this._kernel === null)
-      throw new Error("Kernel is null");
+    if (this._kernel === null) throw new Error("Kernel is not initialized");
     return this._kernel;
   }
 }

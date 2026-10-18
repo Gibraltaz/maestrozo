@@ -47,18 +47,19 @@ const evaluateComponentFunction: EvaluateComponentFunction = async (
   data:Record<string, any>,
   helpers: EvaluateComponentHelpers
 ) : Promise<EvaluteComponentResult> => {
-  assert(element.childNames !== null);
+  if (element.childNames === null)
+    throw new Error("Child names array is null");
 
   for (const childName of element.childNames) {
     const childElement = await helpers.getChild(childName);
-    assert(childElement !== null);
+    if (childElement === null) throw new Error("Child not found");
 
     // ne traiter que les enfants de type connexion
     if (! pathEquals(childElement.elementType, connectionTypePath))
       continue;
 
     const connectionData = childElement.data;
-    assert(connectionData !== null);
+    if (connectionData === null) throw new Error("Connection data is null");
 
     // ne prendre en compte que les connexions liées au composant lui-même et à l'entrée concernée
     if (connectionData.sourceComponent !== null || connectionData.sourcePin !== data.pin)
