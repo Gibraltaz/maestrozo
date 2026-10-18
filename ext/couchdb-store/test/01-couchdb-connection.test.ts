@@ -7,7 +7,7 @@ import { describe, it, expect } from 'vitest';
 import nconf from 'nconf';
 
 import { CouchDbStore } from '../src/CouchDbStore.js';
-import { ElementName, ElementPath, MtzElement } from 'node_modules/maestrozo-core/dist/Element.js';
+import { ElementName, ElementPath, MtzElement } from '@maestrozo/kernel';
 
 
 const loadConfig = () => {

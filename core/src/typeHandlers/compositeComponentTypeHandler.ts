@@ -7,7 +7,7 @@ import {
   rootName, pathEquals, pathStartsWith, pathToString, rootTypeContainerName, typeElementName,
   TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers,
   ElementData, ElementName, ElementPath, MtzElement
-} from 'maestrozo-kernel';
+} from '@maestrozo/kernel';
 
 import { MtzEngine } from "../Engine.js";
 import {

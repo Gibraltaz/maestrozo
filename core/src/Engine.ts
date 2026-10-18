@@ -11,7 +11,7 @@ import {
   MaestrozoKernel, TypeDeclaration, TypeHandler, 
   BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, 
   InitializeElementCallback, InitializeElementFunction,
-} from 'maestrozo-kernel';
+} from '@maestrozo/kernel';
 
 import { buildComponentCapabilities } from './componentCapabilities.js';
 

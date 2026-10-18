@@ -3,7 +3,7 @@ import {
   ElementData, rootTypeContainerName, typeElementName,
   TypeDeclaration, BuildElementDataCallback, 
   BuildElementDataFunction, BuildElementDataHelpers
-} from 'maestrozo-kernel';
+} from '@maestrozo/kernel';
 
 import { inputPinTypeName, outputPinTypeName, pinTypeContainerPath } from "../global.js";
 

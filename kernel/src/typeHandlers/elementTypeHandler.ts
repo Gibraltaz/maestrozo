@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementData, ElementName, ElementPath, MtzElement } from 'maestrozo-kernel';
+import { ElementData, ElementName, ElementPath, MtzElement } from '@maestrozo/kernel';
 import { MtzElementCapabilities } from '../elementCapabilities.js';
 import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "../global.js";
 import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from "./TypeHandler.js";

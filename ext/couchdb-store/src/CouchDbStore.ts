@@ -3,11 +3,12 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { checkStoreValue, getElementPath, MaestrozoStore, pathToString } from 'maestrozo-kernel';
 import Nano from 'nano';
 
-import { ElementPath, MtzElement } from 'node_modules/maestrozo-core/dist/Element';
-
+import {
+  ElementPath, MtzElement,
+  checkStoreValue, getElementPath, MaestrozoStore, pathToString
+} from '@maestrozo/kernel';
 
 class CouchDbStore implements MaestrozoStore{
 

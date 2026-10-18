@@ -6,7 +6,7 @@
 import {
   rootName, ElementData, ElementName, ElementPath, rootTypeContainerName, typeElementName,
   TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction
-} from 'maestrozo-kernel';
+} from '@maestrozo/kernel';
 
 import { componentTypeName } from '../global.js';
 

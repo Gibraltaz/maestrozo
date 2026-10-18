@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from "vitest";
 
-import { MemoryStore } from 'maestrozo-kernel';
+import { MemoryStore } from '@maestrozo/kernel';
 
 import { ElementName, ElementPath, MtzEngine } from "../src/Engine";
 

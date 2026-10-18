@@ -3,7 +3,7 @@ import {
   rootTypeContainerName, rootTypeContainerPath, typeElementName,
   TypeDeclaration, ElementData, 
   BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers
-} from 'maestrozo-kernel';
+} from '@maestrozo/kernel';
 
 
 import { messageTypeName, messageQueueTypeName, systemContainerPath, messageQueueName } from "../global.js";

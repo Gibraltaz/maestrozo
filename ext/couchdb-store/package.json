@@ -1,9 +1,9 @@
 {
-  "name": "maestrozo-couchdb-store",
+  "name": "@maestrozo/couchdb-store",
   "version": "0.0.1",
-  "description": "",
+  "description": "Maestrozo CouchDB store library",
   "author": "Dominique Parisot <dominique@gibraltaz.fr>",
-  "license": "GPL-V3",
+  "license": "LGPL-3.0-or-later",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,8 +34,8 @@
     "esbuild@0.28.2": true
   },
   "dependencies": {
-    "maestrozo-core": "file:../../core",
-    "maestrozo-kernel": "file:../../kernel",
+    "@maestrozo/core": "file:../../core",
+    "@maestrozo/kernel": "file:../../kernel",
     "nano": "^11.0.7",
     "undici": "^8.11.2"
   }

@@ -8,8 +8,8 @@ import { describe, it, expect } from "vitest";
 import {
   ElementData, MtzElement,
   BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers
-} from 'maestrozo-kernel';
-import { MemoryStore } from 'maestrozo-kernel';
+} from '@maestrozo/kernel';
+import { MemoryStore } from '@maestrozo/kernel';
 
 import { MtzEngine, ElementName, ElementPath } from "../src/Engine";
 import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers } from "../src/typeHandlers/componentTypeHandler";

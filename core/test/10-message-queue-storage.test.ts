@@ -8,8 +8,7 @@ import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { rm } from "node:fs/promises";
 
-import { ElementName, ElementPath, MtzElement } from 'maestrozo-kernel';
-import { FileStore } from 'maestrozo-kernel';
+import { ElementName, ElementPath, MtzElement, FileStore } from '@maestrozo/kernel';
 
 import { 
   MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, 

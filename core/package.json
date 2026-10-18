@@ -1,9 +1,9 @@
 {
-  "name": "maestrozo-core",
+  "name": "@maestrozo/core",
   "version": "0.0.1",
-  "description": "",
+  "description": "Maestrozo core library",
   "author": "Dominique Parisot <dominique@gibraltaz.fr>",
-  "license": "GPL-V3",
+  "license": "LGPL-3.0-or-later",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,6 +32,6 @@
     "esbuild": true
   },
   "dependencies": {
-    "maestrozo-kernel": "file:../kernel"
+    "@maestrozo/kernel": "file:../kernel"
   }
 }

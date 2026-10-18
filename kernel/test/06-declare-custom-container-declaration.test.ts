@@ -5,8 +5,7 @@
 
 import { describe, it, expect } from "vitest";
 
-import { ElementData } from 'maestrozo-kernel';
-import { MemoryStore } from 'maestrozo-kernel';
+import { ElementData, MemoryStore } from '@maestrozo/kernel';
 
 import { MtzTree } from "../src/Tree";
 import { BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers } from "../src/typeHandlers/elementTypeHandler";

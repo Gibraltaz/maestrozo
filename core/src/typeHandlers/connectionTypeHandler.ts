@@ -6,7 +6,7 @@
 import {
   rootName, ElementData, ElementName, ElementPath, rootTypeContainerName, rootTypeContainerPath, typeElementName,
   TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction 
-} from 'maestrozo-kernel';
+} from '@maestrozo/kernel';
 
 import { linkTypeContainerPath, linkTypeContainerName } from '../global.js';
 

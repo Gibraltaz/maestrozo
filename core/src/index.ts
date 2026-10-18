@@ -7,5 +7,5 @@ export {
   typeElementName, typeElementPath,
   containerTypeName, containerTypePath,
   elementTypeName, elementTypePath,
-} from 'maestrozo-kernel';
+} from '@maestrozo/kernel';
 

@@ -1,4 +1,7 @@
-import { MtzElement, ElementPath, ElementName, pathToString, MtzElementCapabilities  } from 'maestrozo-kernel';
+import {
+  MtzElement, ElementPath, ElementName,
+  pathToString, MtzElementCapabilities
+} from '@maestrozo/kernel';
 import { MtzEngine } from './Engine.js';
 import { MESSAGE_TYPE_CHANGE, MtzMessageTime } from './MessageQueue.js';
 

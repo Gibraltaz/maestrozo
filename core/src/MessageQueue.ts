@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementPath } from "maestrozo-kernel";
+import { ElementPath } from "@maestrozo/kernel";
 
 type MtzMessageTime = number & { __brand: 'mtz-msg-time' };
 type MtzTimeFunction = () => MtzMessageTime;
