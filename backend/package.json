@@ -10,19 +10,21 @@
     "build": "tsc",
     "start": "node dist/main.js",
     "dev": "tsx watch src/main.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "test_watch": "vitest --watch"
   },
   "dependencies": {
     "express": "^5.2.1",
     "maestrozo-core": "file:../core",
     "maestrozo-couchdb-store": "file:../ext/couchdb-store",
     "maestrozo-kernel": "file:../kernel",
-    "nconf": "^0.13.0"
+    "nconf": "^0.13.0",
+    "vitest": "^5.0.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/nconf": "^0.10.7",
-    "@types/node": "^26.6.4",
+    "@types/node": "^26.6.5",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },

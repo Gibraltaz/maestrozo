@@ -9,11 +9,19 @@ Installer les modules nécessaires :
   $ npm install-scripts approve esbuild
 
 
-Créer un fichier «config.json» à partir du fichier «config.json.template».
+Pour exécuter le backend : 
 
+• Créer un fichier «config.json» à partir du fichier «config.json.template».
 
-Lancer l'exécution du backend : 
+• Lancer l'exécution du backend : 
 
   $ npm run dev
 
 
+Pour les auto-tests :
+
+• Créer un fichier «config-test.json.template» à partir du fichier «config-test.json.template".
+
+• Lancer l'exécution des auto-tests: 
+
+  $ npm run test

@@ -34,7 +34,7 @@ const main = async () => {
       break;
 
     default:
-      throw new Error(`Invalid store type «${config.store.type}»`);
+      throw new Error(`Invalid store type «${config.store.type}» in «${configPath}»`);
   }
 
   if (store === null)

@@ -1,0 +1,13 @@
+{
+  "server": {
+    "port":9102
+  },
+  "store": {
+    "type": "memory",
+    "host": "not used",
+    "port": 0,
+    "database": "not used",
+    "user": "not used",
+    "password": "not used" 
+  }
+}
