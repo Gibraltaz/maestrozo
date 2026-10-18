@@ -4,13 +4,21 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { startMaestrozoBackend, stopMaestrozoBackend } from './helpers/backend.js';
+import { backendJsonGet, startMaestrozoBackend, stopMaestrozoBackend } from './helpers/backend.js';
+
 
 describe("Maestrozo core", async () => {
 
   it("should start Maestrozo backend", async () => {
     await startMaestrozoBackend()
   }, 10000);
+
+  it("should request root API", async () => {
+    const res = await backendJsonGet('', {});
+    expect(res).not.to.equal(null);
+    expect(res).to.be.instanceOf(Object);
+    expect(res).to.have.property('name', 'Maestrozo Backend');
+  });
 
   it("should stop Maestrozo backend", async () => {
     await stopMaestrozoBackend()

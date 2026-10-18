@@ -1,12 +1,20 @@
+/*
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ * Copyright (C) 2026 Executive Gibraltaz
+ */
+
 import { spawn, type ChildProcess } from 'node:child_process';
 import { loadConfig } from '../../src/config.js';
 import type { Config } from '../../src/config.js';
+import { jsonGet, jsonPost } from './json-request.js';
+import type { JsonRequestOptions } from './json-request.js';
 
 const CONF_FILE ='./config-test.json';
 const START_TIMEOUT = 5000; // ms
 
 let backend: ChildProcess|null = null;
 let testConfig: Config|null = null;
+let baseUrl = "";
 
 const sleep = (delay: number) => {
   return new Promise( resolve => setTimeout(resolve , delay));
@@ -34,7 +42,7 @@ const startMaestrozoBackend = async() => {
     throw new Error("Node PID not defined (Node spawn error)");
 
   const dtMax = Date.now() + START_TIMEOUT;
-  const baseUrl = `http://localhost:${testConfig.server.port}`;
+  baseUrl = `http://localhost:${testConfig.server.port}`;
 
   let success = false;
   while (Date.now() < dtMax) {
@@ -64,4 +72,18 @@ const stopMaestrozoBackend = async () => {
   backend.kill();
 };
 
-export { startMaestrozoBackend, stopMaestrozoBackend };
+
+const backendJsonGet = async (url: string, options?:JsonRequestOptions, parameters?:Record<string, string>) => {
+  const fullUrl = `${baseUrl}/${url}`;
+  return await jsonGet(fullUrl, options, parameters);
+};
+
+const backendJsonPost = async (url:string , parameters: Record<string, string>, options:JsonRequestOptions={}) => {
+  const fullUrl = `${baseUrl}/${url}`;
+  return await jsonPost(fullUrl, options, parameters);
+}
+
+export {
+  startMaestrozoBackend, stopMaestrozoBackend,
+  backendJsonGet, backendJsonPost
+};
