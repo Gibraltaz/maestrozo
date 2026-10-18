@@ -1,9 +1,6 @@
-import { MtzElement, ElementPath, ElementName } from 'maestrozo-kernel';
-import { pathToString } from 'maestrozo-kernel';
-import { MtzEngine } from './Engine';
-import { MESSAGE_TYPE_CHANGE, MtzMessageTime } from './MessageQueue';
-
-import { MtzElementCapabilities } from 'maestrozo-kernel';
+import { MtzElement, ElementPath, ElementName, pathToString, MtzElementCapabilities  } from 'maestrozo-kernel';
+import { MtzEngine } from './Engine.js';
+import { MESSAGE_TYPE_CHANGE, MtzMessageTime } from './MessageQueue.js';
 
 type ScheduleEvaluation = (data: any, at?: MtzMessageTime) => Promise<void>;
 

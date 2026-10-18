@@ -4,13 +4,12 @@
  */
 
 import {
-  rootName, pathToString, rootTypeContainerName, typeElementName ,
-  ElementData, ElementName, ElementPath,
-  TypeDeclaration 
+  rootName, pathToString, rootTypeContainerName, typeElementName,
+  ElementData, ElementName, ElementPath, TypeDeclaration,
+  BuildElementDataCallback, BuildElementDataFunction
 } from 'maestrozo-kernel';
 
-import { dataTypeName } from '../global';
-import { BuildElementDataCallback, BuildElementDataFunction } from 'maestrozo-kernel';
+import { dataTypeName } from '../global.js';
 
 const booleanTypeName = 'boolean' as ElementName;
 

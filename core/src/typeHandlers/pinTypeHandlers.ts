@@ -4,9 +4,8 @@ import {
   TypeDeclaration, BuildElementDataCallback, 
   BuildElementDataFunction, BuildElementDataHelpers
 } from 'maestrozo-kernel';
-import { } from 'maestrozo-kernel'
 
-import { inputPinTypeName, outputPinTypeName, pinTypeContainerPath } from "../global";
+import { inputPinTypeName, outputPinTypeName, pinTypeContainerPath } from "../global.js";
 
 const buildElementDataFunction: BuildElementDataFunction = async (
   elementName: ElementName,

@@ -8,7 +8,7 @@ import {
   TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction
 } from 'maestrozo-kernel';
 
-import { componentTypeName } from '../global';
+import { componentTypeName } from '../global.js';
 
 const variableComponentTypeName = 'variable' as ElementName;
 

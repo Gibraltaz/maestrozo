@@ -10,12 +10,15 @@ import {
   BuildElementDataCallback, BuildElementDataFunction
 } from 'maestrozo-kernel';
 
-import { componentTypeName, componentTypePath, inputPinTypePath, linkTypeContainerPath, messageQueuePath, outputPinTypePath } from '../global';
+import {
+  componentTypeName, componentTypePath, inputPinTypePath,
+  linkTypeContainerPath, messageQueuePath, outputPinTypePath
+} from '../global.js';
 
 
-import { MtzEngine } from "../Engine";
-import { connectionTypeName } from "./connectionTypeHandler";
-import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMessage } from "../MessageQueue";
+import { MtzEngine } from "../Engine.js";
+import { connectionTypeName } from "./connectionTypeHandler.js";
+import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMessage } from "../MessageQueue.js";
 
 const EvaluateComponentCallback = 'evaluate-component' as CallbackName;
 const BuildComponentCallback = 'build-component' as CallbackName;

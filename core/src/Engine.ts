@@ -3,12 +3,9 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { maestrozoKernel, MaestrozoStore } from 'maestrozo-kernel';
-import { rootTypeContainerName, } from 'maestrozo-kernel';
-import { buildComponentCapabilities } from './componentCapabilities';
-
-import { MtzElement, ElementName, ElementPath, ElementData } from 'maestrozo-kernel';
 import {
+  maestrozoKernel, MaestrozoStore, rootTypeContainerName,
+  MtzElement, ElementName, ElementPath, ElementData,
   checkElementName, checkElementPath, rootName, pathStartsWith,
   pathToString, getElementPath, elementPathAreEquals, pathEquals,
   MaestrozoKernel, TypeDeclaration, TypeHandler, 
@@ -16,41 +13,35 @@ import {
   InitializeElementCallback, InitializeElementFunction,
 } from 'maestrozo-kernel';
 
+import { buildComponentCapabilities } from './componentCapabilities.js';
+
 import {
-  dataTypeName,
-  pinTypeContainerName,
-  linkTypeContainerName,
-  systemContainerName,
-  systemContainerPath,
-  runtimeContainerName,
-  messageQueueName,
-  messageQueuePath,
-  componentTypePath,
-  outputPinTypePath,
-} from './global';
+  dataTypeName, pinTypeContainerName, linkTypeContainerName, systemContainerName,
+  systemContainerPath, runtimeContainerName, messageQueueName, messageQueuePath,
+  componentTypePath, outputPinTypePath,
+} from './global.js';
 
-
-import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler';
-import { stringTypeDeclaration } from './typeHandlers/stringTypeHandler';
-import { booleanTypeDeclaration } from './typeHandlers/booleanTypeHandler';
-import { inputPinTypeDeclaration, outputPinTypeDeclaration } from './typeHandlers/pinTypeHandlers';
+import { integerTypeDeclaration } from './typeHandlers/integerTypeHandler.js';
+import { stringTypeDeclaration } from './typeHandlers/stringTypeHandler.js';
+import { booleanTypeDeclaration } from './typeHandlers/booleanTypeHandler.js';
+import { inputPinTypeDeclaration, outputPinTypeDeclaration } from './typeHandlers/pinTypeHandlers.js';
 
 import {
   BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers, componentTypeDeclaration, EvaluateComponentCallback,
   EvaluateComponentFunction, EvaluateComponentHelpers,
   EvaluteComponentResult
-} from './typeHandlers/componentTypeHandler';
+} from './typeHandlers/componentTypeHandler.js';
 
-import { compositeComponentTypeDeclaration, compositeComponentTypePath } from './typeHandlers/compositeComponentTypeHandler';
-import { constantComponentTypeDeclaration } from './typeHandlers/constantComponentTypeHandler';
-import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler';
-import { connectionTypeDeclaration, connectionTypePath } from './typeHandlers/connectionTypeHandler';
-import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers';
+import { compositeComponentTypeDeclaration, compositeComponentTypePath } from './typeHandlers/compositeComponentTypeHandler.js';
+import { constantComponentTypeDeclaration } from './typeHandlers/constantComponentTypeHandler.js';
+import { variableComponentTypeDeclaration } from './typeHandlers/variableComponentTypeHandler.js';
+import { connectionTypeDeclaration, connectionTypePath } from './typeHandlers/connectionTypeHandler.js';
+import { messageTypeDeclaration, messageQueueTypeDeclaration } from './typeHandlers/messageTypeHandlers.js';
 
 import {
   MESSAGE_TYPE_CHANGE, MessageType, MtzMessage, MtzMessageQueue, mtzMessageQueuePopMessage,
   mtzMessageQueuePushMessage, MtzMessageTime, MtzTimeFunction
-} from './MessageQueue';
+} from './MessageQueue.js';
 
 
 

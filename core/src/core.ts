@@ -4,7 +4,7 @@
  */
 
 import { maestrozoKernel, MaestrozoStore, MtzElement, RawMemoryStore, TypeDeclaration, ContainerDeclaration, ElementPath } from 'maestrozo-kernel';
-import { MtzEngine } from './Engine';
+import { MtzEngine } from './Engine.js';
 
 const VERSION = '0.0.1';
 

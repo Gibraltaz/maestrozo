@@ -4,12 +4,12 @@
  */
 
 import {
-  rootName,  ElementData, ElementName, ElementPath, 
+  rootName,  ElementData, ElementName, ElementPath, pathToString,
   rootTypeContainerName, TypeDeclaration, typeElementName,
   BuildElementDataCallback, BuildElementDataFunction,
 } from 'maestrozo-kernel';
-import { pathToString } from 'maestrozo-kernel';
-import { dataTypeName } from '../global';
+
+import { dataTypeName } from '../global.js';
 
 const stringTypeName = 'string' as ElementName;
 

@@ -8,8 +8,7 @@ import {
   TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction 
 } from 'maestrozo-kernel';
 
-import { linkTypeContainerPath } from '../global';
-import { linkTypeContainerName } from '../global';
+import { linkTypeContainerPath, linkTypeContainerName } from '../global.js';
 
 
 // name of element «#/types/links/connection»

@@ -5,11 +5,11 @@
 
 import {
   rootName, pathToString, rootTypeContainerName, typeElementName,
-  TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction
-} from 'maestrozo-kernel'
-import { ElementData, ElementName, ElementPath } from 'maestrozo-kernel';
+  TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction,
+  ElementData, ElementName, ElementPath
+} from 'maestrozo-kernel';
 
-import { dataTypeName } from '../global';
+import { dataTypeName } from '../global.js';
 
 const integerTypeName = 'integer' as ElementName;
 

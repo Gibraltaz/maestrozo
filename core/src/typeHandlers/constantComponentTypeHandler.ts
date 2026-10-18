@@ -7,10 +7,10 @@ import {
   rootName, checkElementPath, getElementPath, pathStartsWith, pathToString, rootTypeContainerName, typeElementName,
   ElementData, ElementName, ElementPath, MtzElement, TypeDeclaration, TypeHandler,
   BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers
-} from 'maestrozo-kernel'
+} from 'maestrozo-kernel';
 
-import { componentTypeName, outputPinTypePath } from '../global';
-import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers } from "./componentTypeHandler";
+import { componentTypeName, outputPinTypePath } from '../global.js';
+import { BuildComponentCallback, BuildComponentFunction, BuildComponentHelpers } from "./componentTypeHandler.js";
 
 const constantComponentTypeName = 'constant' as ElementName;
 

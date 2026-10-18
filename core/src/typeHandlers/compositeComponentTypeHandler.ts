@@ -5,15 +5,24 @@
 
 import { 
   rootName, pathEquals, pathStartsWith, pathToString, rootTypeContainerName, typeElementName,
-  TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers
-} from 'maestrozo-kernel'
-import { ElementData, ElementName, ElementPath, MtzElement } from 'maestrozo-kernel';
+  TypeDeclaration, BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers,
+  ElementData, ElementName, ElementPath, MtzElement
+} from 'maestrozo-kernel';
 
-import { componentTypeName, componentTypePath, inputPinTypePath, linkTypeContainerPath, messageQueuePath, outputPinTypePath } from '../global';
-import { EvaluateComponentCallback, EvaluateComponentFunction, EvaluateComponentHelpers, EvaluteComponentResult } from "./componentTypeHandler";
-import { connectionTypeName, connectionTypePath } from "./connectionTypeHandler";
-import { MtzEngine } from "../Engine";
-import { MESSAGE_TYPE_CHANGE, MtzMessage, MtzMessageQueue, mtzMessageQueuePushMessage } from "../MessageQueue";
+import { MtzEngine } from "../Engine.js";
+import {
+  componentTypeName, componentTypePath, inputPinTypePath,
+  linkTypeContainerPath, messageQueuePath, outputPinTypePath
+} from '../global.js';
+import { 
+  EvaluateComponentCallback, EvaluateComponentFunction,
+  EvaluateComponentHelpers, EvaluteComponentResult
+} from "./componentTypeHandler.js";
+import { connectionTypeName, connectionTypePath } from "./connectionTypeHandler.js";
+import {
+  MESSAGE_TYPE_CHANGE, MtzMessage, 
+  MtzMessageQueue, mtzMessageQueuePushMessage
+} from "../MessageQueue.js";
 
 const compositeComponentTypeName = 'composite' as ElementName;
 const compositeComponentTypePath: ElementPath = [...componentTypePath, compositeComponentTypeName];
