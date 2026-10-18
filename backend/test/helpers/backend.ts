@@ -85,5 +85,6 @@ const backendJsonPost = async (url:string , parameters: Record<string, string>, 
 
 export {
   startMaestrozoBackend, stopMaestrozoBackend,
-  backendJsonGet, backendJsonPost
+  backendJsonGet, backendJsonPost,
+  testConfig
 };

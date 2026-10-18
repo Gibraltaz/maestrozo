@@ -8,6 +8,10 @@ enum StoreType  {
 };
 
 type Config = {
+  general: {
+    name: string,
+    description: string,
+  },
   server: {
     port: number;
   },
@@ -74,6 +78,16 @@ const loadConfig = async(configPath: string): Promise<Config> => {
       throw new Error(`Can not parse JSON config file «${configPath}»`);
   }
 
+  const generalConfig = loadConfigSection(
+    {
+      name: 'general', 
+      parameters: [ 
+        { name: 'name', type: 'string'},
+        { name: 'description', type: 'string'}
+      ]
+    },
+    configPath
+  );
 
   const serverConfig = loadConfigSection(
     {
@@ -100,6 +114,10 @@ const loadConfig = async(configPath: string): Promise<Config> => {
   );
 
   const config: Config = {
+    general: {
+      name: generalConfig.name,
+      description: generalConfig.description,
+    },
     server: {
       port: serverConfig.port
     },

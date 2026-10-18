@@ -7,7 +7,8 @@ const server = async (config: Config) => {
   app.use(express.json());
   app.get('/', (_req, res) => {
       res.json({
-          name: 'Maestrozo Backend'
+          name: config.general.name,
+          description: config.general.description,
       });
   });
   app.listen(port, () => {

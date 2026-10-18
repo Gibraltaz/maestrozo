@@ -1,4 +1,8 @@
 {
+  "general": {
+    "name": "maestrozo-backend",
+    "description": "Maestrozo backend"
+  },
   "server": {
     "port":9102
   },
