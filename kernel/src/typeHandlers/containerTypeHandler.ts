@@ -4,9 +4,9 @@
  */
 
 import { ElementData, ElementName, ElementPath } from 'maestrozo-kernel';
-import { rootName, rootTypeContainerName, typeElementName } from '../global';
-import { TypeDeclaration } from './TypeHandler';
-import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler";
+import { rootName, rootTypeContainerName, typeElementName } from '../global.js';
+import { TypeDeclaration } from './TypeHandler.js';
+import { BuildElementDataCallback, BuildElementDataFunction } from "./elementTypeHandler.js";
 
 const containerTypeName = 'container' as ElementName;
 

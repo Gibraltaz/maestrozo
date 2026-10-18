@@ -3,12 +3,12 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementPath, MtzElement } from "./Element";
-import { MtzTree } from "./Tree";
-import { MaestrozoStore } from "./store/MaestrozoStore";
-import { RawMemoryStore } from "./store/RawMemoryStore";
-import { ContainerDeclaration } from './Tree';
-import { TypeDeclaration } from "./typeHandlers/TypeHandler";
+import { ElementPath, MtzElement } from "./Element.js";
+import { MtzTree } from "./Tree.js";
+import { MaestrozoStore } from "./store/MaestrozoStore.js";
+import { RawMemoryStore } from "./store/RawMemoryStore.js";
+import { ContainerDeclaration } from './Tree.js';
+import { TypeDeclaration } from "./typeHandlers/TypeHandler.js";
 
 const VERSION = '0.0.1';
 

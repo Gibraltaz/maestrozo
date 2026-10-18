@@ -1,4 +1,4 @@
-import { ElementName } from "./Element";
+import { ElementName } from "./Element.js";
 
 const rootName = '#' as ElementName;
 

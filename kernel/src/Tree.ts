@@ -11,11 +11,11 @@ import {
   BuildElementDataHelpers,
   //TODO migration kernel : BuildElementDataCallback, BuildElementDataFunction, BuildElementDataHelpers, 
   elementTypeDeclaration, InitializeElementCallback, InitializeElementFunction
-} from './typeHandlers/elementTypeHandler';
+} from './typeHandlers/elementTypeHandler.js';
 
 
-import { TypeDeclaration, TypeHandler } from './typeHandlers/TypeHandler';
-import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler';
+import { TypeDeclaration, TypeHandler } from './typeHandlers/TypeHandler.js';
+import { typeTypeDeclaration } from './typeHandlers/typeTypeHandler.js';
 
 type ContainerDeclaration = {
   elementName: ElementName,

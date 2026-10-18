@@ -4,9 +4,9 @@
  */
 
 import { ElementData, ElementName, ElementPath, MtzElement } from 'maestrozo-kernel';
-import { MtzElementCapabilities } from '../elementCapabilities';
-import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "../global";
-import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from "./TypeHandler";
+import { MtzElementCapabilities } from '../elementCapabilities.js';
+import { elementTypeName, rootName, rootTypeContainerName, typeElementName } from "../global.js";
+import { CallbackName, CreateChildElementHelper, GetElementHelper, TypeDeclaration } from "./TypeHandler.js";
 
 const BuildElementDataCallback = 'build-element-data' as CallbackName;
 

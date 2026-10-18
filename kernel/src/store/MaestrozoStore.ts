@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementPath, MtzElement } from "../Element";
+import { ElementPath, MtzElement } from "../Element.js";
 
 // TODO encore utilisé
 type StoreKey = string & { __brand: 'store-key' }; 

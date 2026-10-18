@@ -3,10 +3,10 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { ElementPath, MtzElement } from '../Element';
-import { getElementPath, pathToString } from '../path';
-import { MaestrozoStore, StoreKey, StoreValue } from './MaestrozoStore';
-import { checkStoreKey, checkStoreValue } from './storeUtils';
+import { ElementPath, MtzElement } from '../Element.js';
+import { getElementPath, pathToString } from '../path.js';
+import { MaestrozoStore, StoreKey, StoreValue } from './MaestrozoStore.js';
+import { checkStoreKey, checkStoreValue } from './storeUtils.js';
 
 /*
  * La classe «MemoryStore» stocke les valeurs sous forme de chaînes de caractères

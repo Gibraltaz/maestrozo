@@ -3,8 +3,8 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { MtzElement, ElementName, ElementPath } from './Element';
-import { rootName } from './global';
+import { MtzElement, ElementName, ElementPath } from './Element.js';
+import { rootName } from './global.js';
 
 const pathSeparator = '/';
 

@@ -4,10 +4,10 @@
  */
 import { readFile, writeFile, access, constants } from "node:fs/promises";
 
-import { MaestrozoStore, StoreKey, StoreValue } from './MaestrozoStore';
-import { checkStoreKey, checkStoreValue } from './storeUtils';
-import { ElementPath, MtzElement } from "../Element";
-import { getElementPath, pathToString } from "../path";
+import { MaestrozoStore, StoreKey, StoreValue } from './MaestrozoStore.js';
+import { checkStoreKey, checkStoreValue } from './storeUtils.js';
+import { ElementPath, MtzElement } from "../Element.js";
+import { getElementPath, pathToString } from "../path.js";
 
 const encoding = 'utf-8';
 
