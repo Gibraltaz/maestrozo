@@ -7,6 +7,7 @@ import { maestrozoCore } from "@maestrozo/core";
 import { ElementPath, MaestrozoStore, MtzElement } from "@maestrozo/kernel";
 
 import { MtzPlatformManagerImpl } from "./PlatformManagerImpl.js";
+import { MtzOperation } from "./execution.js";
 
 const VERSION = '0.0.1';
 
@@ -26,6 +27,7 @@ type MeaestrozoUserService = {
 type MaestrozoPlatform = {
   version: string,
   getElement: (elementPath: ElementPath) => Promise<MtzElement|null>;
+  execute: (what: MtzOperation|MtzOperation[]) => Promise<void>,
   runOnce: () => Promise<void>, 
   user: MeaestrozoUserService,
   //organization: MeaestrozoOrganizationService,
@@ -46,6 +48,7 @@ const maestrozoPlatform = async (store?: MaestrozoStore) : Promise<MaestrozoPlat
     version: VERSION,
     runOnce: async () => await core.runOnce(),
     getElement: async (elementPath: ElementPath) => await core.getElement(elementPath),
+    execute: async (what: MtzOperation|MtzOperation[]) => await platformManager.execute(what),
     user: {
       register: async (_email: string) => {
         return {} as MtzElement;

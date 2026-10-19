@@ -2,6 +2,7 @@ import { MaestrozoCore, maestrozoCore } from '@maestrozo/core';
 import { MaestrozoStore, rootName, ElementPath } from '@maestrozo/kernel';
 
 import { MtzPlatformManager } from './PlatformManager.js';
+import { execute as executeOp, MtzOperation } from "./execution.js";
 import { 
   registryContainerName, userRegistryContainerName, registryContainerPath,
   platformContainerName, authenticatorContainerName, platformContainerPath
@@ -70,6 +71,10 @@ class MtzPlatformManagerImpl extends MtzPlatformManager  {
 
   public get core(): MaestrozoCore {
     return this._core;
+  }
+
+  public async execute(what: MtzOperation|MtzOperation[]) {
+    executeOp(this, what);
   }
 
 }
