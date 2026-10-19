@@ -4,8 +4,9 @@
  */
 
 import { maestrozoCore } from "@maestrozo/core";
-import { MtzPlatformManager } from "./PlatformManager";
 import { ElementPath, MaestrozoStore, MtzElement } from "@maestrozo/kernel";
+
+import { MtzPlatformManagerImpl } from "./PlatformManagerImpl.js";
 
 const VERSION = '0.0.1';
 
@@ -38,7 +39,7 @@ const maestrozoPlatform = async (store?: MaestrozoStore) : Promise<MaestrozoPlat
 
   const core = await maestrozoCore(store);
 
-  const platformManager = new MtzPlatformManager(core);
+  const platformManager = new MtzPlatformManagerImpl(core);
   await platformManager.initialize();
 
   return {
