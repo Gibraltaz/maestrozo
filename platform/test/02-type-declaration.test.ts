@@ -4,8 +4,10 @@
  */
 
 import { describe, it, expect } from "vitest";
+
+import { ElementPath } from "@maestrozo/kernel";
+
 import { MaestrozoPlatform, maestrozoPlatform } from "../src/platform";
-import { ElementPath } from "maestrozo-kernel";
 
 describe("Maestrozo platform", async () => {
   let platform: MaestrozoPlatform | null = null;

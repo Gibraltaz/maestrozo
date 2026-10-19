@@ -1,4 +1,4 @@
-import { ElementName, ElementPath, rootName, rootTypeContainerPath } from "maestrozo-kernel";
+import { ElementName, ElementPath, rootName, rootTypeContainerPath } from '@maestrozo/kernel';
 
 // name of element «#/types/user»
 const userTypeName = 'user' as ElementName;

@@ -32,7 +32,7 @@
     "esbuild": true
   },
   "dependencies": {
-    "maestrozo-core": "file:../core",
-    "maestrozo-kernel": "file:../kernel"
+    "@maestrozo/core": "file:../core",
+    "@maestrozo/kernel": "file:../kernel"
   }
 }

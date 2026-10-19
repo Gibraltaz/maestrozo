@@ -3,14 +3,13 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { maestrozoCore, MaestrozoCore, rootName } from "maestrozo-core";
-import { ElementPath, MaestrozoStore } from "maestrozo-kernel"; // FIXME import direct de core
+import { maestrozoCore, MaestrozoCore, rootName } from "@maestrozo/core";
+import { ElementPath, MaestrozoStore } from "@maestrozo/kernel"; // FIXME import direct de core
 
 import { userTypeDeclaration } from './typeHandlers/userTypeHandler';
 import {
   registryContainerName, registryContainerPath, userRegistryContainerName,
-  platformContainerName, platformContainerPath,
-  authenticatorContainerName, authenticatorContainerPath
+  platformContainerName, platformContainerPath, authenticatorContainerName
 } from "./global";
 
 class MtzPlatformManager {

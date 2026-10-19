@@ -3,9 +3,9 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { maestrozoCore } from "maestrozo-core";
+import { maestrozoCore } from "@maestrozo/core";
 import { MtzPlatformManager } from "./PlatformManager";
-import { ElementPath, MaestrozoStore, MtzElement } from "maestrozo-kernel";
+import { ElementPath, MaestrozoStore, MtzElement } from "@maestrozo/kernel";
 
 const VERSION = '0.0.1';
 
