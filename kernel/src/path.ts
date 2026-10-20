@@ -51,36 +51,40 @@ function pathEquals(path1: ElementPath, path2: ElementPath): boolean {
 }
 
 
-function checkElementName(elementName: ElementName, acceptRoot:boolean = false) {
+function checkElementName(elementName: ElementName, acceptRoot:boolean = false, what?:string) {
+  if (what === undefined)
+    what = 'Element name';
   if (elementName === undefined)
-    throw new Error("Element name is not defined");
+    throw new Error(`${what} is not defined`);
   if (typeof(elementName) !== 'string')
-    throw new Error("Element name is not a string");
+    throw new Error(`${what} is not a string`);
   if (elementName.length === 0)
-    throw new Error("Element name can not be an empty string");
+    throw new Error(`${what} can not be an empty string`);
   for (const invalidCharacter of invalidCharacters) {
     if (acceptRoot && invalidCharacter === rootName )
       continue;
     if (elementName.includes(invalidCharacter)) {
-      throw new Error(`Element name «${elementName}» containts invalid characters`);
+      throw new Error(`${what} «${elementName}» contains invalid characters`);
     }
   }
 }
 
-function checkElementPath(elementPath: ElementPath, absolutePath = true)
+function checkElementPath(elementPath: ElementPath, absolutePath = true, what?: string)
 {
+  if (what === undefined)
+    what = 'Element path';
   if (elementPath === undefined)
-    throw new Error("Element path is not defined");
+    throw new Error(`${what} is not defined`);
   if (! Array.isArray(elementPath))
-    throw new Error("Element path is not an array");
+    throw new Error(`${what}Element path is not an array`);
 
   if (absolutePath) {
     if (elementPath.length === 0 || elementPath[0] != rootName)
-      throw new Error(`Absolute path must start with «${rootName}»`);
+      throw new Error(`${what} «${pathToString(elementPath)}» must be absolute but does not start with «${rootName}»`);
   }
   else {
     if (elementPath[0] == rootName)
-      throw new Error(`Relative path must start with «${rootName}»`);
+      throw new Error(`${what} «${pathToString(elementPath)}» must be relative but does start with «${rootName}»`);
   }
 
   let i = 1;
@@ -98,12 +102,12 @@ function checkElementPath(elementPath: ElementPath, absolutePath = true)
   }
 }
 
-function checkAbsoluteElementPath(elementPath: ElementPath) {
-  checkElementPath(elementPath, true);
+function checkAbsoluteElementPath(elementPath: ElementPath, what?: string) {
+  checkElementPath(elementPath, true, what);
 }
 
-function checkRelativeElementPath(elementPath: ElementPath) {
-  checkElementPath(elementPath, false);
+function checkRelativeElementPath(elementPath: ElementPath, what?: string) {
+  checkElementPath(elementPath, false, what);
 }
 
 function checkRootElementName(elementName: ElementName): void {

@@ -12,7 +12,7 @@ import {
   isRootName,
   ElementPath,
   pathEquals
-} from '@maestrozo/kernel';
+} from '../src/path.js';
 
 describe("Path utilities", () => {
 
@@ -26,24 +26,32 @@ describe("Path utilities", () => {
       //@ts-ignore
       expect( () => checkElementName(undefined as ElementName) )
       .to.throw("Element name is not defined");
+      //@ts-ignore
+      expect( () => checkElementName(undefined as ElementName, true, "ABC") )
+      .to.throw("ABC is not defined");
     });
 
     it("should detected non-string name", () => {
       //@ts-ignore
       expect( () => checkElementName(123 as ElementName) )
       .to.throw("Element name is not a string");
+      //@ts-ignore
+      expect( () => checkElementName(123 as ElementName, true, "ABC") )
+      .to.throw("ABC is not a string");
     });
 
     it("should detected empty name", () => {
       expect( () => checkElementName('' as ElementName) )
       .to.throw("Element name can not be an empty string");
+      expect( () => checkElementName('' as ElementName, true, 'ABC') )
+      .to.throw("ABC can not be an empty string");
     });
 
     it("should detected invalid characters", () => {
       expect( () => checkElementName('ab/cd' as ElementName) )
-      .to.throw("Element name «ab/cd» containts invalid characters");
+      .to.throw("Element name «ab/cd» contains invalid characters");
       expect( () => checkElementName('ab#cd' as ElementName) )
-      .to.throw("Element name «ab#cd» containts invalid characters");
+      .to.throw("Element name «ab#cd» contains invalid characters");
     });
   });
 
@@ -88,12 +96,12 @@ describe("Path utilities", () => {
 
     it("should detected empty path", () => {
       expect( () => checkAbsoluteElementPath([] as ElementPath) )
-        .to.throw("Absolute path must start with «#»");
+        .to.throw("Element path «/» must be absolute but does not start with «#»");
     });
 
     it("should detected path not starting with «#»", () => {
       expect( () => checkAbsoluteElementPath(['abc'] as ElementPath) )
-        .to.throw("Absolute path must start with «#»");
+        .to.throw("Element path «/abc» must be absolute but does not start with «#»");
     });
 
     it("should accept root path «#/»", () => {
@@ -112,13 +120,13 @@ describe("Path utilities", () => {
         .to.throw("Element name can not be an empty string in path «/#/» at position 2");
 
       expect( () => checkAbsoluteElementPath(['#', 'a/b'] as ElementPath) )
-        .to.throw("Element name «a/b» containts invalid characters in path «/#/a/b» at position 2");
+        .to.throw("Element name «a/b» contains invalid characters in path «/#/a/b» at position 2");
 
       expect( () => checkAbsoluteElementPath(['#', 'abc', ''] as ElementPath) )
         .to.throw("Element name can not be an empty string in path «/#/abc/» at position 3");
 
       expect( () => checkAbsoluteElementPath(['#', 'abc', 'd/e'] as ElementPath) )
-        .to.throw("Element name «d/e» containts invalid characters in path «/#/abc/d/e» at position 3");
+        .to.throw("Element name «d/e» contains invalid characters in path «/#/abc/d/e» at position 3");
     });
 
   });
@@ -131,13 +139,23 @@ describe("Path utilities", () => {
       checkRelativeElementPath(['abc', 'def', 'ghi'] as ElementPath);
     });
 
-    it("should detect absolute path", () => {
+    it("should detect absolute path in relative paths", () => {
+
       expect(() => checkRelativeElementPath(['#', 'abc'] as ElementPath))
-        .to.throw("Relative path must start with «#»");
+        .to.throw("Element path «/#/abc» must be relative but does start with «#»");
+      expect(() => checkRelativeElementPath(['#', 'abc'] as ElementPath, 'ABC'))
+        .to.throw("ABC «/#/abc» must be relative but does start with «#»");
+
       expect(() => checkRelativeElementPath(['#', 'abc'] as ElementPath))
-        .to.throw("Relative path must start with «#»");
+        .to.throw("Element path «/#/abc» must be relative but does start with «#»");
+      expect(() => checkRelativeElementPath(['#', 'abc'] as ElementPath, 'ABC'))
+        .to.throw("ABC «/#/abc» must be relative but does start with «#»");
+
+
       expect(() => checkRelativeElementPath(['#', 'abc', 'def'] as ElementPath))
-        .to.throw("Relative path must start with «#»");
+        .to.throw("Element path «/#/abc/def» must be relative but does start with «#»");
+      expect(() => checkRelativeElementPath(['#', 'abc', 'def'] as ElementPath, 'ABC'))
+        .to.throw("ABC «/#/abc/def» must be relative but does start with «#»");
     });
 
   });
