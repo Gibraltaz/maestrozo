@@ -76,7 +76,7 @@ function checkElementPath(elementPath: ElementPath, absolutePath = true, what?: 
   if (elementPath === undefined)
     throw new Error(`${what} is not defined`);
   if (! Array.isArray(elementPath))
-    throw new Error(`${what}Element path is not an array`);
+    throw new Error(`${what} is not an array`);
 
   if (absolutePath) {
     if (elementPath.length === 0 || elementPath[0] != rootName)
