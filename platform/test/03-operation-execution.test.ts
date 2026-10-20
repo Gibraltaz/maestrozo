@@ -18,15 +18,32 @@ describe("Platform operation", async () => {
     expect(platform).to.be.instanceOf(Object);
   });
 
-  it("should execute single operation", async ({skip}) => {
+  it("should execute a single operation to create an element", async ({skip}) => {
     skip(platform === null);
     assert(platform !== null);
     const operation:MtzCreateElementOperation = {
       type: MtzOperationType.ElementCreation,
       elementName: 'test01' as ElementName,
       parentPath: [ '#', 'runtime' ] as ElementPath,
+      typePath: [ '#', 'types', 'component', 'constant' ] as ElementPath,
+      params: { 
+        dataType: ['#', 'types', 'data', 'string'],
+        value: 'abc' 
+      }
     };
     platform.execute(operation);
+  });
+
+  it("should find the newly created element", async ({skip}) => {
+    skip(platform === null);
+    assert(platform !== null);
+    const element = await platform.getElement([ '#', 'runtime', 'test01' ] as ElementPath);
+    expect(element).not.to.equal(null);
+    assert(element !== null);
+    expect(element).to.be.instanceOf(Object);
+    expect(element).to.be.have.property('elementName', 'test01');
+    expect(element).to.be.have.property('data');
+    expect(element.data).to.be.have.property('value', 'abc');
   });
 
     

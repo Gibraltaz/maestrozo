@@ -25,7 +25,7 @@ const buildElementDataFunction: BuildElementDataFunction = async (
 
   // type de données lié au composant Constant
   try {
-    checkElementPath(dataTypePath);
+    checkElementPath(dataTypePath, true, 'params.dataType');
     if (! pathStartsWith(dataTypePath, dataTypePath))
         throw new Error(`Type «${pathToString(dataTypePath)} is not a data type»`);
   }

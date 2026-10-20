@@ -129,16 +129,16 @@ class MtzEngine {
     // mise en place de «#/types/pins/output-pin»
     await this._kernel.declareType(outputPinTypeDeclaration);
 
-    // mise en place de «#/types/components»
+    // mise en place de «#/types/component»
     await this._kernel.declareType(componentTypeDeclaration);
 
-    // mise en place de «#/types/components/composite»
+    // mise en place de «#/types/component/composite»
     await this._kernel.declareType(compositeComponentTypeDeclaration);
 
-    // mise en place de «#/types/components/constant»
+    // mise en place de «#/types/component/constant»
     await this._kernel.declareType(constantComponentTypeDeclaration);
 
-    // mise en place de «#/types/components/variable»
+    // mise en place de «#/types/component/variable»
     await this._kernel.declareType(variableComponentTypeDeclaration);
 
     // mise en place de «#/types/links/connection»

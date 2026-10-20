@@ -1,5 +1,6 @@
 import { ElementName, ElementPath } from '@maestrozo/kernel';
 import { MtzPlatformManager } from "./PlatformManager";
+import { checkElementName, checkElementPath } from '@maestrozo/kernel';
 
 enum MtzOperationType {
   TypeDeclaration = 'declare-type',
@@ -12,7 +13,9 @@ type MtzOperation = {
 
 type MtzCreateElementOperation = MtzOperation & {
   elementName: ElementName,
-  parentPath: ElementPath
+  parentPath: ElementPath,
+  typePath: ElementPath,
+  params: Record<string, any>
 };
 
 const declareType = async (_platformManager: MtzPlatformManager, operation: MtzOperation) => {
@@ -21,15 +24,22 @@ const declareType = async (_platformManager: MtzPlatformManager, operation: MtzO
   throw new Error("Declare type operation not implemented");
 };
 
-const createElement = async (_platformManager: MtzPlatformManager, operation: MtzCreateElementOperation ) => {
+const createElement = async (platformManager: MtzPlatformManager, operation: MtzCreateElementOperation ) => {
   if (operation.type !== MtzOperationType.ElementCreation)
     throw new Error(`Operation type is not ${MtzOperationType.ElementCreation}`);
-  const elementName = operation.elementName;
-  if (elementName === undefined)
-    throw new Error("Property «elementName» is not defined in operation");
-  if (typeof(elementName) !== 'string')
-    throw new Error("Property «elementName» is not a string");
-  throw new Error("Create element operation not implemented");
+
+  checkElementName(operation.elementName, true, "Property «elementName»");
+  checkElementPath(operation.parentPath, true, "Property «parentPath»");
+  checkElementPath(operation.typePath, true, "Property «typePath»");
+
+  
+  platformManager.core.createElement(
+    operation.elementName,
+    operation.parentPath,
+    operation.typePath,
+    operation.params
+  );
+
 };
 
 const executeSingleOperation = async (platformManager: MtzPlatformManager, operation: MtzOperation) => {
