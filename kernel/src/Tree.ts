@@ -257,7 +257,7 @@ public async storeNewElement(element: MtzElement): Promise<void> {
     const typePath = element.elementType;
     const typeElement = await this.getStoredElement(typePath);
     if (typeElement === null)
-      throw new Error(`Can not find parent «${pathToString(typePath)}»`);
+      throw new Error(`Can not find type «${pathToString(typePath)}»`);
     const typeHandler: TypeHandler | null = typeElement?.data?.typeHandler as TypeHandler ?? null;
     if ( typeHandler === null)
       throw new Error(`Type handler not defined in type «${pathToString(getElementPath(typeElement))}»`);
@@ -300,7 +300,7 @@ public async storeNewElement(element: MtzElement): Promise<void> {
 
     const typeElement = await this.getStoredElement(typePath);
     if (typeElement === null)
-      throw new Error(`Can not find parent «${pathToString(typePath)}»`);
+      throw new Error(`Can not find type «${pathToString(typePath)}»`);
 
     const typeHandler: TypeHandler | null = typeElement?.data?.typeHandler as TypeHandler ?? null;
     if ( typeHandler === null)
