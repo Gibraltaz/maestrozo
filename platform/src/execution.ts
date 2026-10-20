@@ -1,4 +1,4 @@
-import { ElementName, ElementPath } from '@maestrozo/kernel';
+import { ElementName, ElementPath, TypeDeclaration } from '@maestrozo/kernel';
 import { MtzPlatformManager } from "./PlatformManager";
 import { checkElementName, checkElementPath } from '@maestrozo/kernel';
 
@@ -11,6 +11,15 @@ type MtzOperation = {
   type: MtzOperationType;
 };
 
+type MtzDeclareTypeOperation = MtzOperation & {
+  elementName: ElementName,
+  parentPath: ElementPath,
+  typePath: ElementPath,
+  params: Record<string, any>,
+  isContainer: boolean,
+  isDerivable: boolean,
+};
+
 type MtzCreateElementOperation = MtzOperation & {
   elementName: ElementName,
   parentPath: ElementPath,
@@ -18,10 +27,32 @@ type MtzCreateElementOperation = MtzOperation & {
   params: Record<string, any>
 };
 
-const declareType = async (_platformManager: MtzPlatformManager, operation: MtzOperation) => {
+
+const declareType = async (platformManager: MtzPlatformManager, operation: MtzDeclareTypeOperation) => {
   if (operation.type !== MtzOperationType.TypeDeclaration)
     throw new Error(`Operation type is not ${MtzOperationType.TypeDeclaration}`);
-  throw new Error("Declare type operation not implemented");
+
+  checkElementName(operation.elementName, true, "Property «elementName»");
+  checkElementPath(operation.parentPath, true, "Property «parentPath»");
+  checkElementPath(operation.typePath, true, "Property «typePath»");
+
+  if (operation.isDerivable === undefined)
+    throw new Error(`Type declaration has no «isDerivable» property`);
+  if (operation.isContainer === undefined)
+    throw new Error(`Type declaration has no «isContainer» property`);
+
+
+  const typeDeclaration:TypeDeclaration = {
+    elementName: operation.elementName,
+    parentPath: operation.parentPath,
+    elementType: operation.typePath,
+    isContainer: operation.isContainer,
+    isDerivable: operation.isDerivable,
+    isVolatile: true,
+    callbacks: [] 
+  };
+
+  platformManager.core.declareType(typeDeclaration);
 };
 
 const createElement = async (platformManager: MtzPlatformManager, operation: MtzCreateElementOperation ) => {
@@ -31,9 +62,8 @@ const createElement = async (platformManager: MtzPlatformManager, operation: Mtz
   checkElementName(operation.elementName, true, "Property «elementName»");
   checkElementPath(operation.parentPath, true, "Property «parentPath»");
   checkElementPath(operation.typePath, true, "Property «typePath»");
-
   
-  platformManager.core.createElement(
+  await platformManager.core.createElement(
     operation.elementName,
     operation.parentPath,
     operation.typePath,
@@ -50,7 +80,7 @@ const executeSingleOperation = async (platformManager: MtzPlatformManager, opera
     throw new Error("Invalid operation type");
   switch (operationType) {
     case MtzOperationType.TypeDeclaration:
-      await declareType(platformManager, operation);
+      await declareType(platformManager, operation as MtzDeclareTypeOperation);
       break;
     case MtzOperationType.ElementCreation:
       await createElement(platformManager, operation as MtzCreateElementOperation);
@@ -73,6 +103,7 @@ const execute = async (platformManager: MtzPlatformManager, what: MtzOperation|M
 export {
   execute, executeSingleOperation, 
   MtzOperationType,
-  MtzOperation ,
-  MtzCreateElementOperation 
+  MtzOperation,
+  MtzCreateElementOperation,
+  MtzDeclareTypeOperation
 };
