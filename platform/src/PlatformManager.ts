@@ -4,7 +4,7 @@
  */
 
 import { MaestrozoCore } from '@maestrozo/core';
-import { MaestrozoStore } from '@maestrozo/kernel'; // FIXME import direct de core
+import { ElementName, ElementPath, MaestrozoStore, MtzElement } from '@maestrozo/kernel'; // FIXME import direct de core
 import { MtzOperation } from "./execution";
 
 abstract class MtzPlatformManager {
@@ -14,6 +14,16 @@ abstract class MtzPlatformManager {
   public abstract get core(): MaestrozoCore;
 
   public abstract execute(what: MtzOperation|MtzOperation[]): Promise<void>;
+
+  public abstract createElement(
+    elementName: ElementName,
+    parentPath: ElementPath,
+    typePath: ElementPath,
+    params: Record<string, any>): Promise<MtzElement>;
+
+  public abstract modifyElement(element:MtzElement): Promise<void>;
+
+  public abstract loadPlugin(name: ElementName, pluginPath: string): Promise<MtzElement>;
 
 }
 

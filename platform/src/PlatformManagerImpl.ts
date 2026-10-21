@@ -1,13 +1,16 @@
 import { MaestrozoCore, maestrozoCore } from '@maestrozo/core';
-import { MaestrozoStore, rootName, ElementPath } from '@maestrozo/kernel';
+import { MaestrozoStore, rootName, ElementPath, ElementName, MtzElement } from '@maestrozo/kernel';
 
 import { MtzPlatformManager } from './PlatformManager.js';
 import { execute as executeOp, MtzOperation } from "./execution.js";
 import { 
   registryContainerName, userRegistryContainerName, registryContainerPath,
-  platformContainerName, authenticatorContainerName, platformContainerPath
+  platformContainerName, authenticatorContainerName, platformContainerPath,
+  pluginContainerName
 } from './global.js';
 import { userTypeDeclaration } from './typeHandlers/userTypeHandler.js';
+import { pluginTypeDeclaration } from './typeHandlers/pluginTypeHandler.js';
+import { loadPlugin as loadPluginUtil } from './plugin.js';
 
 class MtzPlatformManagerImpl extends MtzPlatformManager  {
 
@@ -20,7 +23,8 @@ class MtzPlatformManagerImpl extends MtzPlatformManager  {
   }
 
   public async initialize (store?: MaestrozoStore) {
-    assert(this._core !== null);
+    if (this._core === null)
+      throw new Error("Core not initialized");
     if (this._initialized)
       throw new Error("Maestrozo Plantform already initialized");
 
@@ -31,7 +35,11 @@ class MtzPlatformManagerImpl extends MtzPlatformManager  {
       this._core = await maestrozoCore(store);
     }
 
-    // mise en place de «#/types/users»
+
+    // type declaration «#/types/plugin»
+    await this._core.declareType(pluginTypeDeclaration);
+
+    // type declaration «#/types/user»
     await this._core.declareType(userTypeDeclaration);
 
     // mise en place de «#/registry»
@@ -58,6 +66,14 @@ class MtzPlatformManagerImpl extends MtzPlatformManager  {
       }
     );
 
+    // mise en place de «#/platform/plugins»
+    await this._core.declareContainer({
+        elementName: pluginContainerName,
+        parentPath: platformContainerPath ,
+        isVolatile: true
+      }
+    );
+
     // mise en place de «#/platform/authenticators»
     await this._core.declareContainer({
         elementName: authenticatorContainerName ,
@@ -68,13 +84,29 @@ class MtzPlatformManagerImpl extends MtzPlatformManager  {
 
   }
 
-
   public get core(): MaestrozoCore {
     return this._core;
   }
 
   public async execute(what: MtzOperation|MtzOperation[]) {
     executeOp(this, what);
+  }
+
+  public async createElement(
+    elementName: ElementName,
+    parentPath: ElementPath,
+    typePath: ElementPath,
+    params: Record<string, any>
+  ) {
+    return await this._core.createElement(elementName, parentPath, typePath, params);
+  }
+
+  public async modifyElement(element: MtzElement) {
+    return await this._core.modifyElement(element);
+  }
+
+  public async loadPlugin(name: ElementName, pluginPath: string): Promise<MtzElement> {
+    return await loadPluginUtil(name, pluginPath, this);
   }
 
 }
