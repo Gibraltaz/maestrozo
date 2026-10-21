@@ -19,6 +19,7 @@ type MaestrozoCoreDeclareType = (typeDeclaration: TypeDeclaration) => Promise<Mt
 type MaestrozoCoreDeclareContainerFunction = (containerDeclaration: ContainerDeclaration) => Promise<MtzElement>;
 type MaestrozoCoreCreateElementFunction =
   (elementName:ElementName, parentPath:ElementPath, typePath:ElementPath, params: Record<string,any>) => Promise<MtzElement>;
+type MaestrozoCoreModifyElementFunction = (element: MtzElement) => Promise<void>;
 
 type MaestrozoCore = {
   version: string,
@@ -26,6 +27,7 @@ type MaestrozoCore = {
   isInitialized: MaestrozoCoreIsInitializedFunction,
   getElement: MaestrozoCoreGetElementFunction,
   createElement: MaestrozoCoreCreateElementFunction,
+  modifyElement: MaestrozoCoreModifyElementFunction,
   runOnce: () => Promise<void>,
   declareType: MaestrozoCoreDeclareType ,
   declareContainer: MaestrozoCoreDeclareContainerFunction,
@@ -52,6 +54,7 @@ const maestrozoCore = async (store?: MaestrozoStore) : Promise<MaestrozoCore> =>
     getElement: async (elementPath: ElementPath) => kernel.getStoredElement(elementPath),
     createElement: async (elementName:ElementName, parentPath:ElementPath, typePath:ElementPath, params: Record<string,any>) =>
       kernel.createElement(elementName, parentPath, typePath, params),
+    modifyElement: async (element:MtzElement) => kernel.modifyElement(element),
     declareType: (typeDeclaration: TypeDeclaration) => kernel.declareType(typeDeclaration),
     declareContainer: (containerDeclaration: ContainerDeclaration) => kernel.declareContainer(containerDeclaration)
   };

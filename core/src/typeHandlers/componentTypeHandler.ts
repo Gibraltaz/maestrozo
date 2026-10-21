@@ -42,7 +42,7 @@ const buildElementDataFunction : BuildElementDataFunction = async (
   _parentPath: ElementPath,
   _params:Record<string, any>
 ): Promise<ElementData> => {
-  throw new Error(`Cannot instantiate component type «${pathToString(componentTypePath)}»`);
+  throw new Error(`Cannot instanciate component type «${pathToString(componentTypePath)}»`);
 };
 
 type GetChildHelper = (elementName: ElementName) => Promise<MtzElement | null>;
