@@ -7,7 +7,7 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
+    "module": "nodenext", // to use ESM modules
     "target": "ES2022",
     "types": [ "node"], // type:node ← import spawn in backend helper
 

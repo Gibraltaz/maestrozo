@@ -3,12 +3,13 @@
  * Copyright (C) 2026 Executive Gibraltaz
  */
 
-import { maestrozoCore } from '@maestrozo/core';
+import { maestrozoPlatform } from 'maestrozo-platform';
 import { CouchDbStore } from '@maestrozo/couchdb-store';
 
 import { loadConfig, StoreType } from './config.js';
 import { server } from './server.js';
 import { MemoryStore, type MaestrozoStore } from '@maestrozo/kernel';
+import { loadPluginArray } from './plugin.js';
 
 const main = async () => {
   let configPath = './config.json';
@@ -39,10 +40,11 @@ const main = async () => {
 
   if (store === null)
     throw new Error("Store not initialized");
-  const core = await maestrozoCore(store);
-  console.log("Core version", core.version);
+  const platform = await maestrozoPlatform(store);
 
-  await server(config);
+  await loadPluginArray(config.plugins, platform);
+
+  await server(config, platform);
 }
 
 try {

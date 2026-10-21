@@ -7,6 +7,7 @@ enum StoreType  {
   COUCH_DB = 'couch-db',
 };
 
+
 type Config = {
   general: {
     name: string,
@@ -22,7 +23,8 @@ type Config = {
     port: number,
     user: string,
     password: string
-  }
+  },
+  plugins: ConfigPluginDefinition[]
 };
 
 type ConfigSectionParameterDefinition = {
@@ -36,6 +38,10 @@ type ConfigSectionDefinition = {
   parameters: Array<ConfigSectionParameterDefinition>;
 };
 
+type ConfigPluginDefinition = {
+  name: string,
+  path: string
+};
 
 const loadConfigSection = (configSectionDefinition: ConfigSectionDefinition, configPath: string): Record<string, any> => {
   const sectionName = configSectionDefinition.name;
@@ -47,10 +53,15 @@ const loadConfigSection = (configSectionDefinition: ConfigSectionDefinition, con
   for (const parameterDefinition of configSectionDefinition.parameters) {
     const parameterName = parameterDefinition.name;
     const parameterValue = nconfSection[parameterName];
-    if (parameterValue === undefined)
+    if (parameterValue === undefined) {
+      const required = parameterDefinition?.required ?? true;
+      if (required)
         throw new Error(`Can find parameter «${parameterName}» in section «${sectionName}» of ${configPath}`);
+      else
+        continue;
+    }
     const parameterType = parameterDefinition.type;
-    if (typeof(parameterValue) !== parameterType) 
+    if (typeof(parameterValue) !== parameterType)
         throw new Error(`Type of parameter «${parameterName}» is not «${parameterType}» in section «${sectionName}» of ${configPath}`);
     parameters[parameterName] = parameterValue;
   }
@@ -58,6 +69,44 @@ const loadConfigSection = (configSectionDefinition: ConfigSectionDefinition, con
   return parameters;
 };
 
+/**
+ * returns an empty plugin array if plugins section does not exist in configuration file.
+ */
+const loadPluginsSection = (configPath: string): Array<ConfigPluginDefinition> => {
+  const pluginSectionName = 'plugins';
+  const plugins: Array<ConfigPluginDefinition> = [];
+
+  const nconfPluginSection = nconf.get(pluginSectionName);
+  if (nconfPluginSection === undefined)
+    return plugins;
+
+  if (! (nconfPluginSection instanceof Array))
+    throw new Error(`Section «${pluginSectionName}» of ${configPath} is not an array`);
+
+  for (const [iSection, nconfOperationSection] of nconfPluginSection.entries()) {
+    if (! (nconfOperationSection instanceof Object))
+      throw new Error(`Entry n°${iSection + 1} of section «${pluginSectionName}» in ${configPath} is not an object`);
+
+    const pluginSectionPath = `${pluginSectionName}:${iSection}`;
+    const pluginSection = loadConfigSection(
+      {
+        name: pluginSectionPath,
+        parameters: [
+          { name: 'name', type: 'string'},
+          { name: 'path', type: 'string'}
+        ]
+      },
+      configPath
+    );
+    const plugin: ConfigPluginDefinition = {
+      name: pluginSection.name,
+      path: pluginSection.path
+    };
+    plugins.push(plugin);
+
+  }
+  return plugins;
+};
 
 const loadConfig = async(configPath: string): Promise<Config> => {
 
@@ -80,8 +129,8 @@ const loadConfig = async(configPath: string): Promise<Config> => {
 
   const generalConfig = loadConfigSection(
     {
-      name: 'general', 
-      parameters: [ 
+      name: 'general',
+      parameters: [
         { name: 'name', type: 'string'},
         { name: 'description', type: 'string'}
       ]
@@ -91,17 +140,18 @@ const loadConfig = async(configPath: string): Promise<Config> => {
 
   const serverConfig = loadConfigSection(
     {
-      name: 'server', 
-      parameters: [ 
+      name: 'server',
+      parameters: [
         { name: 'port', type: 'number'}
       ]
     },
     configPath
   );
+
   const storeConfig = loadConfigSection(
     {
-      name: 'store', 
-      parameters: [ 
+      name: 'store',
+      parameters: [
         { name: 'type',     type: 'string'},
         { name: 'database', type: 'string'},
         { name: 'host',     type: 'string'},
@@ -112,6 +162,8 @@ const loadConfig = async(configPath: string): Promise<Config> => {
     },
     configPath
   );
+
+  const pluginArrayConfig = loadPluginsSection(configPath);
 
   const config: Config = {
     general: {
@@ -128,10 +180,11 @@ const loadConfig = async(configPath: string): Promise<Config> => {
       port:     storeConfig.port,
       user:     storeConfig.user,
       password: storeConfig.password
-    }
+    },
+    plugins: pluginArrayConfig
   }
   return config;
 }
 
 export { loadConfig, StoreType };
-export type { Config };
+export type { Config, ConfigPluginDefinition };

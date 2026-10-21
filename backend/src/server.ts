@@ -1,7 +1,8 @@
 import express from 'express';
 import type { Config } from './config.js';
+import type { MaestrozoPlatform } from '../../platform/dist/platform.js';
 
-const server = async (config: Config) => {
+const server = async (config: Config, _platform: MaestrozoPlatform) => {
   const port = config.server.port;
   const app = express();
   app.use(express.json());

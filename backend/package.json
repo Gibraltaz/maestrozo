@@ -14,10 +14,11 @@
     "test_watch": "vitest --watch"
   },
   "dependencies": {
-    "express": "^5.2.1",
     "@maestrozo/core": "file:../core",
     "@maestrozo/couchdb-store": "file:../ext/couchdb-store",
     "@maestrozo/kernel": "file:../kernel",
+    "express": "^5.2.1",
+    "maestrozo-platform": "file:../platform",
     "nconf": "^0.13.0",
     "vitest": "^5.0.5"
   },
