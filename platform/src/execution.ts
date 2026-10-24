@@ -1,6 +1,6 @@
 import { ElementName, ElementPath, TypeDeclaration } from '@maestrozo/kernel';
-import { MtzPlatformManager } from "./PlatformManager";
 import { checkElementName, checkElementPath } from '@maestrozo/kernel';
+import { MtzPlatformManager } from "./PlatformManager.js";
 
 enum MtzOperationType {
   TypeDeclaration = 'declare-type',

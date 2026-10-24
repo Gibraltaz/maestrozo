@@ -5,7 +5,7 @@
 
 import { MaestrozoCore } from '@maestrozo/core';
 import { ElementName, ElementPath, MaestrozoStore, MtzElement } from '@maestrozo/kernel'; // FIXME import direct de core
-import { MtzOperation } from "./execution";
+import { MtzOperation } from "./execution.js";
 
 abstract class MtzPlatformManager {
 

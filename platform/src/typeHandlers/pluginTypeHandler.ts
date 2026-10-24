@@ -9,7 +9,7 @@ import {
   BuildElementDataCallback, BuildElementDataFunction
 } from '@maestrozo/kernel';
 
-import { pluginTypeName } from '../global';
+import { pluginTypeName } from '../global.js';
 
 enum PluginStatus {
   loading = 'Loading',

@@ -10,7 +10,7 @@ import {
 } from '@maestrozo/kernel';
 
 
-import { userTypeName, userTypePath } from '../global';
+import { userTypeName, userTypePath } from '../global.js';
 
 const buildElementDataFunction : BuildElementDataFunction = async (
   _elementName: ElementName,
