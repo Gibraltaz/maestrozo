@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  * Copyright (C) 2026 Executive Gibraltaz
  */
+import { program } from 'commander';
 
 import { maestrozoPlatform } from 'maestrozo-platform';
 import { CouchDbStore } from '@maestrozo/couchdb-store';
@@ -12,9 +13,17 @@ import { MemoryStore, type MaestrozoStore } from '@maestrozo/kernel';
 import { loadPluginArray } from './plugin.js';
 
 const main = async () => {
-  let configPath = './config.json';
-  if (process.argv.length > 2)
-    configPath = process.argv[2] as string;
+
+  program
+    .name('maestrozo-backend')
+    .description('Maestrozo backend')
+    .version('0.0.1')
+    .option('-f, --config <char>', 'Configuration file path')
+    .parse();
+  const options = program.opts();
+
+  let configPath = options?.config ??  './config.json';
+  console.log("dOm conf", configPath);
   const config = await loadConfig(configPath);
 
   let store: MaestrozoStore | null = null;
