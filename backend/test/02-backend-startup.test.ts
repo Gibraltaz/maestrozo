@@ -7,10 +7,10 @@ import { describe, it, expect } from "vitest";
 import { backendJsonGet, startMaestrozoBackend, stopMaestrozoBackend, testConfig } from './helpers/backend.js';
 
 
-describe("Maestrozo core", async () => {
+describe("Maestrozo core", () => {
 
   it("should start Maestrozo backend", async () => {
-    await startMaestrozoBackend()
+    await startMaestrozoBackend();
   }, 10000);
 
   it("should request root API", async () => {
@@ -22,7 +22,7 @@ describe("Maestrozo core", async () => {
   });
 
   it("should stop Maestrozo backend", async () => {
-    await stopMaestrozoBackend()
+    await stopMaestrozoBackend();
   });
 
 });

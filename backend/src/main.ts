@@ -8,7 +8,7 @@ import { maestrozoPlatform } from 'maestrozo-platform';
 import { CouchDbStore } from '@maestrozo/couchdb-store';
 
 import { loadConfig, StoreType } from './config.js';
-import { server } from './server.js';
+import { startServer } from './server.js';
 import { MemoryStore, type MaestrozoStore } from '@maestrozo/kernel';
 import { loadPluginArray } from './plugin.js';
 
@@ -18,13 +18,18 @@ const main = async () => {
     .name('maestrozo-backend')
     .description('Maestrozo backend')
     .version('0.0.1')
+    .option('-v, --verbose',       'Verbose mode')
     .option('-f, --config <char>', 'Configuration file path')
     .parse();
   const options = program.opts();
 
+  let verbose = options?.verbose ?? false;
+  if (verbose)
+    console.log("Verbose mode set");
+
   let configPath = options?.config ??  './config.json';
-  console.log("dOm conf", configPath);
-  const config = await loadConfig(configPath);
+  configPath = configPath.trim();
+  const config = await loadConfig(configPath, verbose);
 
   let store: MaestrozoStore | null = null;
   switch (config.store.type) {
@@ -53,17 +58,16 @@ const main = async () => {
 
   await loadPluginArray(config.plugins, platform);
 
-  await server(config, platform);
+  await startServer(config, platform);
 }
 
 try {
   await main();
 }
-catch (error) {
-  console.error(error);
+catch (error: unknown) {
+  console.log(
+    'Error :',
+    error instanceof Error ? error.message : error
+  );
+  process.exitCode = 2;
 }
-
-
-
-
-

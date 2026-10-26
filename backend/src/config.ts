@@ -108,25 +108,38 @@ const loadPluginsSection = (configPath: string): Array<ConfigPluginDefinition> =
   return plugins;
 };
 
-const loadConfig = async(configPath: string): Promise<Config> => {
+const loadConfig = async(configPath: string, verbose = false): Promise<Config> => {
 
   let stat: Stats;
+  if (verbose)
+    console.log(`Getting file info «${configPath}»…`);
   try {
     stat = await fs.stat(configPath);
   }
   catch (_error) {
-      throw new Error(`Can not read config file «${configPath}»`);
+    if (verbose)
+      console.log(`Can not get file info «${configPath}»…`);
+    throw new Error(`Can not read config file «${configPath}»`);
   }
-  if (! stat.isFile())
+  if (! stat.isFile()) {
+    if (verbose)
+      console.log(`Config file «${configPath}» is not a file`);
     throw new Error(`«Config path ${configPath}» is not a file`);
+  }
 
   try {
+    if (verbose)
+      console.log(`Reading config file «${configPath}»…`);
     nconf.file({ file: configPath});
   }
-  catch (_error) {
-      throw new Error(`Can not parse JSON config file «${configPath}»`);
+  catch (error: any) {
+    if (verbose)
+      console.log(`Can not read config file «${configPath}» : ${error?.message ?? error}`);
+    throw new Error(`Can not parse JSON config file «${configPath}»`);
   }
 
+  if (verbose)
+    console.log(`Interpreting general section of config file…`);
   const generalConfig = loadConfigSection(
     {
       name: 'general',
@@ -138,6 +151,8 @@ const loadConfig = async(configPath: string): Promise<Config> => {
     configPath
   );
 
+  if (verbose)
+    console.log(`Interpreting server section of config file…`);
   const serverConfig = loadConfigSection(
     {
       name: 'server',
@@ -148,6 +163,8 @@ const loadConfig = async(configPath: string): Promise<Config> => {
     configPath
   );
 
+  if (verbose)
+    console.log(`Interpreting store section of config file…`);
   const storeConfig = loadConfigSection(
     {
       name: 'store',
@@ -163,6 +180,8 @@ const loadConfig = async(configPath: string): Promise<Config> => {
     configPath
   );
 
+  if (verbose)
+    console.log(`Interpreting plugin section of config file…`);
   const pluginArrayConfig = loadPluginsSection(configPath);
 
   const config: Config = {
@@ -183,6 +202,9 @@ const loadConfig = async(configPath: string): Promise<Config> => {
     },
     plugins: pluginArrayConfig
   }
+
+  if (verbose)
+    console.log(`Configuration file successfully loaded`);
   return config;
 }
 
