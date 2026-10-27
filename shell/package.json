@@ -14,6 +14,7 @@
     "test_watch": "vitest --watch"
   },
   "dependencies": {
+    "@maestrozo/client-lib": "file:../client",
     "commander": "^15.0.0",
     "nconf": "^0.13.0",
     "readline": "^1.3.0",

@@ -1,5 +1,5 @@
 import { shellContext, type ShellContext } from './shell.js';
-import { jsonGet } from './json-request.js';
+import { clientInit, pingBackend } from '@maestrozo/client-lib';
 
 type CommandLineResult = {
   exit?: boolean;
@@ -17,12 +17,10 @@ const helpCommand: CommandFunction = async (_argStr: string[], _context: ShellCo
 };
 
 const pingCommand: CommandFunction = async (_argStr: string[], context: ShellContext): Promise<CommandLineResult> => {
-  const url = `http://${context.serverHost}:${context.serverPort}/`;
+  const clientContext = clientInit(context.serverHost, context.serverPort);
   try {
-    const json = await jsonGet(url);
-    if (json.name === undefined || json.description === undefined)
-        throw new Error("Invalid backend response");
-      console.log(`${json.description} communication successful`);
+    await pingBackend(clientContext);
+    console.log(`Backend communication successful`);
     return {} as CommandLineResult
   }
   catch (err: any) {
