@@ -4,21 +4,11 @@ import { program } from 'commander';
 
 import { processCommandLine } from './command.js';
 import { defaultConfigPath, loadConfig } from './config.js';
+import { shellContext } from './shell.js';
 
 const PROMPT = 'maestrozo> ';
-const DEFAULT_SERVER_HOST = 'localhost';
-const DEFAULT_SERVER_PORT = 9101;
 
 
-type ShellContext = {
-  serverHost: string;
-  serverPort: number;
-};
-
-const shellContext: ShellContext = {
-  serverHost: DEFAULT_SERVER_HOST,
-  serverPort: DEFAULT_SERVER_PORT   
-};
 
 const main = async () => {
 
@@ -89,3 +79,4 @@ catch (error: unknown) {
   );
   process.exitCode = 2;
 }
+

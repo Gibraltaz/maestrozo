@@ -1,11 +1,14 @@
+import { shellContext, type ShellContext } from './shell.js';
+import { jsonGet } from './json-request.js';
+
 type CommandLineResult = {
   exit?: boolean;
   error?: string
 };
 
-type CommandFunction = (argStr: string[]) => CommandLineResult;
+type CommandFunction = (argStr: string[], context: ShellContext) => Promise<CommandLineResult>;
 
-const helpCommand: CommandFunction = (_argStr: string[]): CommandLineResult => {
+const helpCommand: CommandFunction = async (_argStr: string[], _context: ShellContext): Promise<CommandLineResult> => {
   console.log('Available commands :');
   commandList.forEach(commandDescriptor => {
     console.log(`  • ${commandDescriptor.name} : ${commandDescriptor.description}`);
@@ -13,8 +16,22 @@ const helpCommand: CommandFunction = (_argStr: string[]): CommandLineResult => {
   return {} as CommandLineResult
 };
 
-const quitCommand: CommandFunction = (_argStr: string[]): CommandLineResult => {
-  return { exit: true } as CommandLineResult
+const pingCommand: CommandFunction = async (_argStr: string[], context: ShellContext): Promise<CommandLineResult> => {
+  const url = `http://${context.serverHost}:${context.serverPort}/`;
+  try {
+    const json = await jsonGet(url);
+    if (json.name === undefined || json.description === undefined)
+        throw new Error("Invalid backend response");
+      console.log(`${json.description} communication successful`);
+    return {} as CommandLineResult
+  }
+  catch (err: any) {
+    return { error: err?.message ?? err } as CommandLineResult
+  }
+};
+
+const quitCommand: CommandFunction = async (_argStr: string[], _context: ShellContext): Promise<CommandLineResult> => {
+  return { exit: true } as CommandLineResult;
 };
 
 type CommandDescriptor = {
@@ -24,6 +41,11 @@ type CommandDescriptor = {
 };
 
 const commandList: Array<CommandDescriptor> = [
+  {
+    name: 'ping',
+    description: 'Test backend connection',
+    function: pingCommand
+  },
   {
     name: 'quit',
     description: 'Exit the shell',
@@ -49,7 +71,7 @@ const processCommandLine = async (commandLine: string): Promise<CommandLineResul
   if (commandName === undefined) throw new Error();  // juste to avoid typescript error
   const commandDescriptor = commandTable[commandName];
   if (commandDescriptor !== undefined)
-    return commandDescriptor.function(commandArgs);
+    return await commandDescriptor.function(commandArgs, shellContext);
   else
     return { error: `Unknown command «${commandName}»` } as CommandLineResult;
 };
